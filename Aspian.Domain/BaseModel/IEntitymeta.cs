@@ -1,0 +1,9 @@
+using System;
+using Aspian.Domain.UserModel;
+
+namespace Aspian.Domain.BaseModel
+{
+    public interface IEntitymeta : IEntity, IEntityBase, IEntityCreate, IEntityModify, IEntityInfo, IEntityMetadata
+    {
+    }
+}
