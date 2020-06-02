@@ -18,9 +18,9 @@ namespace Aspian.Domain.TaxonomyModel
 
         #region Navigation Properties
             public Guid PostId { get; set; }
-            public Post Post { get; set; }
+            public virtual Post Post { get; set; }
             public Guid TermTaxonomyId { get; set; }
-            public TermTaxonomy TermTaxonomy { get; set; }
+            public virtual TermTaxonomy TermTaxonomy { get; set; }
         #endregion
     }
 }

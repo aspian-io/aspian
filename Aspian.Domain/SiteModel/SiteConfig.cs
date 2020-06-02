@@ -12,6 +12,10 @@ namespace Aspian.Domain.SiteModel
             builder
                 .Property(s => s.SiteType)
                 .HasConversion(converter);
+            
+            builder
+                .HasIndex(s => s.SiteType)
+                .IsUnique();
         }
     }
 }

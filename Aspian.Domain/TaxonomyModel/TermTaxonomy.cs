@@ -17,7 +17,6 @@ namespace Aspian.Domain.TaxonomyModel
             public virtual TermTaxonomy Parent { get; set; }
             public virtual ICollection<TermTaxonomy> ChildTaxonomies { get; set; }
             public virtual ICollection<TermPost> TermPosts { get; set; }
-            public virtual ICollection<Post> Posts { get; set; }
             public virtual Term Term { get; set; }
             public Guid SiteId { get; set; }
             public virtual Site Site { get; set; }

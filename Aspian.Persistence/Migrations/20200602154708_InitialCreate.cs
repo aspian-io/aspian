@@ -273,6 +273,58 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Posts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedById = table.Column<string>(nullable: true),
+                    ModifiedById = table.Column<string>(nullable: true),
+                    UserAgent = table.Column<string>(nullable: true),
+                    UserIPAddress = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(nullable: true),
+                    Subtitle = table.Column<string>(nullable: true),
+                    Excerpt = table.Column<string>(nullable: true),
+                    Content = table.Column<string>(nullable: true),
+                    Slug = table.Column<string>(nullable: true),
+                    PostStatus = table.Column<string>(nullable: false),
+                    CommentAllowed = table.Column<bool>(nullable: false),
+                    Order = table.Column<int>(nullable: false),
+                    ViewCount = table.Column<int>(nullable: false),
+                    ParentId = table.Column<Guid>(nullable: true),
+                    SiteId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Posts_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Posts_AspNetUsers_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Posts_Posts_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Posts_Sites_SiteId",
+                        column: x => x.SiteId,
+                        principalTable: "Sites",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TermTaxonomies",
                 columns: table => new
                 {
@@ -379,103 +431,6 @@ namespace Aspian.Persistence.Migrations
                         name: "FK_Optionmetas_Options_OptionId",
                         column: x => x.OptionId,
                         principalTable: "Options",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Posts",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
-                    ModifiedById = table.Column<string>(nullable: true),
-                    UserAgent = table.Column<string>(nullable: true),
-                    UserIPAddress = table.Column<string>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    Subtitle = table.Column<string>(nullable: true),
-                    Excerpt = table.Column<string>(nullable: true),
-                    Content = table.Column<string>(nullable: true),
-                    Slug = table.Column<string>(nullable: true),
-                    PostStatus = table.Column<string>(nullable: false),
-                    CommentAllowed = table.Column<bool>(nullable: false),
-                    Order = table.Column<int>(nullable: false),
-                    ViewCount = table.Column<int>(nullable: false),
-                    ParentId = table.Column<Guid>(nullable: true),
-                    SiteId = table.Column<Guid>(nullable: false),
-                    TermTaxonomyId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Posts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Posts_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Posts_AspNetUsers_ModifiedById",
-                        column: x => x.ModifiedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Posts_Posts_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Posts_Sites_SiteId",
-                        column: x => x.SiteId,
-                        principalTable: "Sites",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Posts_TermTaxonomies_TermTaxonomyId",
-                        column: x => x.TermTaxonomyId,
-                        principalTable: "TermTaxonomies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Terms",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
-                    ModifiedById = table.Column<string>(nullable: true),
-                    UserAgent = table.Column<string>(nullable: true),
-                    UserIPAddress = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Slug = table.Column<string>(nullable: true),
-                    TermTaxonomyId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Terms", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Terms_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Terms_AspNetUsers_ModifiedById",
-                        column: x => x.ModifiedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Terms_TermTaxonomies_TermTaxonomyId",
-                        column: x => x.TermTaxonomyId,
-                        principalTable: "TermTaxonomies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -657,7 +612,7 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Termmetas",
+                name: "Terms",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -667,29 +622,29 @@ namespace Aspian.Persistence.Migrations
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
-                    Key = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: true),
-                    TermId = table.Column<Guid>(nullable: false)
+                    Name = table.Column<string>(nullable: true),
+                    Slug = table.Column<string>(nullable: true),
+                    TermTaxonomyId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Termmetas", x => x.Id);
+                    table.PrimaryKey("PK_Terms", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Termmetas_AspNetUsers_CreatedById",
+                        name: "FK_Terms_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Termmetas_AspNetUsers_ModifiedById",
+                        name: "FK_Terms_AspNetUsers_ModifiedById",
                         column: x => x.ModifiedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Termmetas_Terms_TermId",
-                        column: x => x.TermId,
-                        principalTable: "Terms",
+                        name: "FK_Terms_TermTaxonomies_TermTaxonomyId",
+                        column: x => x.TermTaxonomyId,
+                        principalTable: "TermTaxonomies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -767,6 +722,44 @@ namespace Aspian.Persistence.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Termmetas",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedById = table.Column<string>(nullable: true),
+                    ModifiedById = table.Column<string>(nullable: true),
+                    UserAgent = table.Column<string>(nullable: true),
+                    UserIPAddress = table.Column<string>(nullable: true),
+                    Key = table.Column<string>(nullable: true),
+                    Value = table.Column<string>(nullable: true),
+                    TermId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Termmetas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Termmetas_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Termmetas_AspNetUsers_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Termmetas_Terms_TermId",
+                        column: x => x.TermId,
+                        principalTable: "Terms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -952,11 +945,6 @@ namespace Aspian.Persistence.Migrations
                 name: "IX_Posts_SiteId",
                 table: "Posts",
                 column: "SiteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_TermTaxonomyId",
-                table: "Posts",
-                column: "TermTaxonomyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Termmetas_CreatedById",

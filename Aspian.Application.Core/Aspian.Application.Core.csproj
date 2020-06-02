@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
-    <ProjectReference Include="..\Aspian.Domain\Aspian.Domain.csproj" />
-    <ProjectReference Include="..\Aspian.Persistence\Aspian.Persistence.csproj" />
+    <ProjectReference Include="..\Aspian.Domain\Aspian.Domain.csproj"/>
+    <ProjectReference Include="..\Aspian.Persistence\Aspian.Persistence.csproj"/>
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0"/>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0"/>
+  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
 </Project>

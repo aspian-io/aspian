@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200530140512_InitialCreate")]
+    [Migration("20200602154708_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -380,9 +380,6 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("Subtitle")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TermTaxonomyId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -404,8 +401,6 @@ namespace Aspian.Persistence.Migrations
                     b.HasIndex("ParentId");
 
                     b.HasIndex("SiteId");
-
-                    b.HasIndex("TermTaxonomyId");
 
                     b.ToTable("Posts");
                 });
@@ -1096,10 +1091,6 @@ namespace Aspian.Persistence.Migrations
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Aspian.Domain.TaxonomyModel.TermTaxonomy", null)
-                        .WithMany("Posts")
-                        .HasForeignKey("TermTaxonomyId");
                 });
 
             modelBuilder.Entity("Aspian.Domain.PostModel.PostHistory", b =>

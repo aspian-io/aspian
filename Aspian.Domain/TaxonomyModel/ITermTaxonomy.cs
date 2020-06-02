@@ -18,7 +18,6 @@ namespace Aspian.Domain.TaxonomyModel
             TermTaxonomy Parent { get; set; }
             ICollection<TermTaxonomy> ChildTaxonomies { get; set; }
             ICollection<TermPost> TermPosts { get; set; }
-            ICollection<Post> Posts { get; set; }
             Term Term { get; set; }
             Guid SiteId { get; set; }
             Site Site { get; set; }
