@@ -56,28 +56,32 @@ namespace Aspian.Persistence
                         Domain = "localhost",
                         Path = "/",
                         Registered = DateTime.UtcNow,
-                        SiteType = SiteTypeEnum.Blog
+                        SiteType = SiteTypeEnum.Blog,
+                        Activated = true
                     },
                     new Site {
                         Id = Guid.Parse("134D3087-EFE9-4AB6-F13C-08D80310CDEE"),
                         Domain = "localhost",
                         Path = "/store",
                         Registered = DateTime.UtcNow,
-                        SiteType = SiteTypeEnum.Store
+                        SiteType = SiteTypeEnum.Store,
+                        Activated = true
                     },
                     new Site {
                         Id = Guid.Parse("5AE37FF3-C221-43D3-F13D-08D80310CDEE"),
                         Domain = "localhost",
                         Path = "/lms",
                         Registered = DateTime.UtcNow,
-                        SiteType = SiteTypeEnum.LMS
+                        SiteType = SiteTypeEnum.LMS,
+                        Activated = true
                     },
                     new Site {
                         Id = Guid.Parse("B56877AE-FB1E-479C-F13E-08D80310CDEE"),
                         Domain = "localhost",
                         Path = "/ehealth",
                         Registered = DateTime.UtcNow,
-                        SiteType = SiteTypeEnum.eHealth
+                        SiteType = SiteTypeEnum.eHealth,
+                        Activated = true
                     }
                 };
 

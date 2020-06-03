@@ -1,15 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Domain.BaseModel;
-using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Persistence;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 
-namespace Aspian.Application.Core.TaxonomyService
+namespace Aspian.Application.Core.TaxonomyServices
 {
     public class Create
     {
@@ -20,9 +19,17 @@ namespace Aspian.Application.Core.TaxonomyService
 
 
             public Guid? ParentId { get; set; }
-            public string TermName { get; set; }
-            public string TermSlug { get; set; }
+            public Term Term { get; set; }
             public Guid SiteId { get; set; }
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Taxonomy).NotEmpty();
+                RuleFor(x => x.Term.Name).NotEmpty().WithName("Term name");
+            }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -37,16 +44,7 @@ namespace Aspian.Application.Core.TaxonomyService
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var taxonomy = new TermTaxonomy {
-                    Taxonomy = request.Taxonomy,
-                    Description = request.Description,
-                    ParentId = request.ParentId,
-                    SiteId = request.SiteId,
-                    Term = new Term {
-                        Name = request.TermName,
-                        Slug = request.TermSlug
-                    }
-                };
+                var taxonomy = _mapper.Map<Create.Command, TermTaxonomy>(request);
 
                 _context.TermTaxonomies.Add(taxonomy);
 

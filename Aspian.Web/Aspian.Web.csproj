@@ -19,6 +19,6 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Custom' ">
     <StartAction>Project</StartAction>
     <ExternalConsole>true</ExternalConsole>
-    <ApplicationURL>http://localhost:21482</ApplicationURL>
+    <ApplicationURL>http://localhost:5001</ApplicationURL>
   </PropertyGroup>
 </Project>

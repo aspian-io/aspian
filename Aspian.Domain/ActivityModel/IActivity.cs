@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Aspian.Domain.BaseModel;
 
 namespace Aspian.Domain.ActivityModel
 {

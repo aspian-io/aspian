@@ -1,8 +1,6 @@
 using System;
-using Aspian.Domain.PostModel;
-using Aspian.Domain.TaxonomyModel;
 
-namespace Aspian.Application.Core.TaxonomyService
+namespace Aspian.Application.Core.TaxonomyServices.DTOs
 {
     public class TermPostDto
     {

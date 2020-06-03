@@ -1,4 +1,3 @@
-using System;
 using Aspian.Domain.BaseModel;
 
 namespace Aspian.Domain.UserModel

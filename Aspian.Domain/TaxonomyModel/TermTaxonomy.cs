@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Aspian.Domain.BaseModel;
-using Aspian.Domain.PostModel;
 using Aspian.Domain.SiteModel;
 
 namespace Aspian.Domain.TaxonomyModel

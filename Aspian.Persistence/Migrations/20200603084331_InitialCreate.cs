@@ -71,7 +71,7 @@ namespace Aspian.Persistence.Migrations
                     Path = table.Column<string>(nullable: true),
                     Registered = table.Column<DateTime>(nullable: false),
                     LastUpdated = table.Column<DateTime>(nullable: true),
-                    SiteType = table.Column<int>(nullable: false),
+                    SiteType = table.Column<string>(nullable: false),
                     Activated = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -945,6 +945,12 @@ namespace Aspian.Persistence.Migrations
                 name: "IX_Posts_SiteId",
                 table: "Posts",
                 column: "SiteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sites_SiteType",
+                table: "Sites",
+                column: "SiteType",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Termmetas_CreatedById",

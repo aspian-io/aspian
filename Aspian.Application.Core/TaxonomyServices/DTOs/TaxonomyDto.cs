@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Aspian.Domain.BaseModel;
-using Aspian.Domain.PostModel;
 using Aspian.Domain.TaxonomyModel;
 
-namespace Aspian.Application.Core.TaxonomyService
+namespace Aspian.Application.Core.TaxonomyServices.DTOs
 {
     public class TaxonomyDto : Entitymeta
     {

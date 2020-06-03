@@ -533,10 +533,14 @@ namespace Aspian.Persistence.Migrations
                     b.Property<DateTime>("Registered")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SiteType")
-                        .HasColumnType("int");
+                    b.Property<string>("SiteType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SiteType")
+                        .IsUnique();
 
                     b.ToTable("Sites");
                 });

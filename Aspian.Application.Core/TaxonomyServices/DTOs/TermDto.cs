@@ -1,6 +1,6 @@
 using Aspian.Domain.BaseModel;
 
-namespace Aspian.Application.Core.TaxonomyService
+namespace Aspian.Application.Core.TaxonomyServices.DTOs
 {
     public class TermDto : Entitymeta
     {

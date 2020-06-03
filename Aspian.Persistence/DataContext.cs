@@ -39,11 +39,12 @@ namespace Aspian.Persistence
         public DbSet<Usermeta> Usermetas { get; set; }
 
 
-        protected override void OnModelCreating(ModelBuilder builder) 
+        protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             // Model configurations
+            builder.ApplyConfiguration(new SiteConfig());
             builder.ApplyConfiguration(new UserConfig());
             builder.ApplyConfiguration(new UsermetaConfig());
             builder.ApplyConfiguration(new ActivityOccurrenceConfig());
@@ -81,21 +82,21 @@ namespace Aspian.Persistence
         private void AddMetaData()
         {
             var entities = ChangeTracker.Entries().Where(x => x.Entity is IEntityMetadata && (x.State == EntityState.Added || x.State == EntityState.Modified));
- 
- 
+
+
             foreach (var entity in entities)
             {
                 if (entity.State == EntityState.Added && entity.Entity is IEntityCreate)
                 {
                     ((IEntityCreate)entity.Entity).CreatedDate = DateTime.UtcNow;
-                } 
-                else if (entity.State == EntityState.Modified && entity is IEntityModify)
+                }
+                if (entity.State == EntityState.Modified && entity.Entity is IEntityModify)
                 {
                     ((IEntityModify)entity.Entity).ModifiedDate = DateTime.UtcNow;
                 }
 
             }
         }
- 
+
     }
 }

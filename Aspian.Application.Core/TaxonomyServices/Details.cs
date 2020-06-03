@@ -1,12 +1,13 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Aspian.Application.Core.TaxonomyServices.DTOs;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Persistence;
 using AutoMapper;
 using MediatR;
 
-namespace Aspian.Application.Core.TaxonomyService
+namespace Aspian.Application.Core.TaxonomyServices
 {
     public class Details
     {

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Aspian.Domain.BaseModel;
 using Aspian.Domain.SiteModel;
-using Aspian.Domain.UserModel;
 
 namespace Aspian.Domain.ActivityModel
 {

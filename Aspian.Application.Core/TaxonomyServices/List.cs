@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Aspian.Application.Core.TaxonomyServices.DTOs;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Persistence;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Aspian.Application.Core.TaxonomyService
+namespace Aspian.Application.Core.TaxonomyServices
 {
     public class List
     {
@@ -28,7 +29,7 @@ namespace Aspian.Application.Core.TaxonomyService
             {
                 var taxonomies = await _context.TermTaxonomies.ToListAsync();
 
-                return _mapper.Map<List<TermTaxonomy>, List<TaxonomyDto>>(taxonomies); 
+                return _mapper.Map<List<TermTaxonomy>, List<TaxonomyDto>>(taxonomies);
             }
         }
     }
