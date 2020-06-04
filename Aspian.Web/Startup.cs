@@ -1,3 +1,4 @@
+using System;
 using Aspian.Application.Core.TaxonomyServices;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
@@ -7,6 +8,7 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +39,15 @@ namespace Aspian.Web
 
             // Providing full mvc ASP.NET Core framework
             services.AddControllersWithViews()
+                    // .ConfigureApiBehaviorOptions(options =>
+                    // {
+                    //     options.SuppressConsumesConstraintForFormFileParameters = true;
+                    //     options.SuppressInferBindingSourcesForParameters = true;
+                    //     options.SuppressModelStateInvalidFilter = true;
+                    //     options.SuppressMapClientErrors = true;
+                    //     options.ClientErrorMapping[StatusCodes.Status404NotFound].Link =
+                    //         "https://httpstatuses.com/404";
+                    // })
                     // providing FluentValidation service for Aspian.Application.Core Assembly
                     .AddFluentValidation(cfg =>
                     {
@@ -59,17 +70,41 @@ namespace Aspian.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // Custom API Error middleware
-            app.UseMiddleware<APIErrorHandlingMiddleware>();
-            app.UseExceptionHandler("/Home/Error");
-
             if (env.IsDevelopment())
             {
-                //app.UseDeveloperExceptionPage();
+                app.UseWhen(ctx => ctx.Request.Path.StartsWithSegments("/api", StringComparison.InvariantCultureIgnoreCase),
+                    appBuilder =>
+                    {
+                        // Custom API Error handler
+                        appBuilder.UseMiddleware<APIErrorHandlingMiddleware>();
+                    }
+                );
+
+                app.UseWhen(ctx => !ctx.Request.Path.StartsWithSegments("/api", StringComparison.InvariantCultureIgnoreCase),
+                    appBuilder =>
+                    {
+                        // Default mvc error handler
+                        appBuilder.UseDeveloperExceptionPage();
+                    }
+                );
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseWhen(ctx => ctx.Request.Path.StartsWithSegments("/api", StringComparison.InvariantCultureIgnoreCase),
+                    appBuilder =>
+                    {
+                        // Custom API Error handler
+                        appBuilder.UseMiddleware<APIErrorHandlingMiddleware>();
+                    }
+                );
+
+                app.UseWhen(ctx => !ctx.Request.Path.StartsWithSegments("/api", StringComparison.InvariantCultureIgnoreCase),
+                    appBuilder =>
+                    {
+                        // Default mvc error handler
+                        appBuilder.UseExceptionHandler("/Home/Error");
+                    }
+                );
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }

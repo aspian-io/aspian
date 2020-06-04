@@ -1,6 +1,8 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Aspian.Application.Core.Errors;
 using Aspian.Domain.BaseModel;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Persistence;
@@ -42,7 +44,7 @@ namespace Aspian.Application.Core.TaxonomyServices
                 var taxonomy = await _context.TermTaxonomies.FindAsync(request.Id);
 
                 if (taxonomy == null)
-                    throw new Exception("Could not find taxonomy");
+                    throw new RestException(HttpStatusCode.NotFound, new { taxonomy = "Not found!" });
 
                 _mapper.Map(request, taxonomy);
 
