@@ -2,6 +2,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Errors;
+using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.UserServices.DTOs;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
@@ -32,8 +33,10 @@ namespace Aspian.Application.Core.UserServices
         {
             private readonly UserManager<User> _userManager;
             private readonly SignInManager<User> _signInManager;
-            public Handler(UserManager<User> userManager, SignInManager<User> signInManager)
+            private readonly IJwtGenerator _jwtGenerator;
+            public Handler(UserManager<User> userManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)
             {
+                _jwtGenerator = jwtGenerator;
                 _signInManager = signInManager;
                 _userManager = userManager;
             }
@@ -53,7 +56,7 @@ namespace Aspian.Application.Core.UserServices
                     return new UserDto
                     {
                         DisplayName = user.DisplayName,
-                        Token = "This will be a token",
+                        Token = _jwtGenerator.CreateToken(user),
                         UserName = user.UserName,
                         Image = null
                     };

@@ -1,11 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
     <ProjectReference Include="..\Aspian.Application.Core\Aspian.Application.Core.csproj" />
     <ProjectReference Include="..\Aspian.Persistence\Aspian.Persistence.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\" />
@@ -15,6 +18,7 @@
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>d140a837-e8e2-4b89-80a5-eb8ae1ada1eb</UserSecretsId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Custom' ">
     <StartAction>Project</StartAction>

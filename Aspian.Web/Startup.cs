@@ -1,19 +1,26 @@
 using System;
+using System.Text;
+using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.TaxonomyServices;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
 using Aspian.Web.Middleware.API;
 using AutoMapper;
 using FluentValidation.AspNetCore;
+using Infrastructure.Security;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Aspian.Web
 {
@@ -38,16 +45,11 @@ namespace Aspian.Web
             });
 
             // Providing full mvc ASP.NET Core framework
-            services.AddControllersWithViews()
-                    // .ConfigureApiBehaviorOptions(options =>
-                    // {
-                    //     options.SuppressConsumesConstraintForFormFileParameters = true;
-                    //     options.SuppressInferBindingSourcesForParameters = true;
-                    //     options.SuppressModelStateInvalidFilter = true;
-                    //     options.SuppressMapClientErrors = true;
-                    //     options.ClientErrorMapping[StatusCodes.Status404NotFound].Link =
-                    //         "https://httpstatuses.com/404";
-                    // })
+            services.AddControllersWithViews(opt =>
+            {
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                opt.Filters.Add(new AuthorizeFilter(policy));
+            })
                     // providing FluentValidation service for Aspian.Application.Core Assembly
                     .AddFluentValidation(cfg =>
                     {
@@ -59,7 +61,21 @@ namespace Aspian.Web
             var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
             identityBuilder.AddEntityFrameworkStores<DataContext>();
             identityBuilder.AddSignInManager<SignInManager<User>>();
-            services.AddAuthentication();
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"]));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt =>
+                {
+                    opt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = key,
+                        ValidateAudience = false,
+                        ValidateIssuer = false
+                    };
+                });
+            // Providing our JWT Generator services 
+            services.AddScoped<IJwtGenerator, JwtGenerator>();
 
             // Providing MediatR service for Aspian.Application.Core Assembly
             services.AddMediatR(typeof(List.Handler).Assembly);
