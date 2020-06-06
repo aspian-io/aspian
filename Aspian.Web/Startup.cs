@@ -76,6 +76,7 @@ namespace Aspian.Web
                 });
             // Providing our JWT Generator services 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
+            services.AddScoped<IUserAccessor, UserAccessor>();
 
             // Providing MediatR service for Aspian.Application.Core Assembly
             services.AddMediatR(typeof(List.Handler).Assembly);
