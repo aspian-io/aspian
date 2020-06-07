@@ -9,8 +9,15 @@ namespace Aspian.Domain.PostModel
         string MetaValue { get; set; }
 
         #region Navigation Properties
-            Guid PostId { get; set; }
-            Post Post { get; set; }
+        Guid PostId { get; set; }
+        Post Post { get; set; }
         #endregion
+    }
+
+    public enum PhotoUploadFieldsEnum
+    {
+        Id,
+        Url,
+        IsMain
     }
 }

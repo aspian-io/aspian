@@ -8,11 +8,16 @@ namespace Aspian.Domain.PostModel
     {
         public void Configure(EntityTypeBuilder<Post> builder)
         {
-            var converter = new EnumToStringConverter<PostStatusEnum>();
+            var statusConverter = new EnumToStringConverter<PostStatusEnum>();
             builder
                 .Property(p => p.PostStatus)
-                .HasConversion(converter);
-                
+                .HasConversion(statusConverter);
+
+            var typeConverter = new EnumToStringConverter<PostTypeEnum>();
+            builder
+                .Property(p => p.Type)
+                .HasConversion(typeConverter);
+
             builder
                 .HasOne(p => p.CreatedBy)
                 .WithMany(u => u.CreatedPosts)

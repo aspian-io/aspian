@@ -4,14 +4,16 @@ using Aspian.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200607152835_PostTypeAdded")]
+    partial class PostTypeAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -368,14 +370,11 @@ namespace Aspian.Persistence.Migrations
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("PhotoOwnerId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("PostStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SiteId")
+                    b.Property<Guid>("SiteId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Slug")
@@ -387,9 +386,8 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserAgent")
                         .HasColumnType("nvarchar(max)");
@@ -407,8 +405,6 @@ namespace Aspian.Persistence.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.HasIndex("ParentId");
-
-                    b.HasIndex("PhotoOwnerId");
 
                     b.HasIndex("SiteId");
 
@@ -743,9 +739,6 @@ namespace Aspian.Persistence.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("Bio")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -1103,13 +1096,11 @@ namespace Aspian.Persistence.Migrations
                         .WithMany("ChildPosts")
                         .HasForeignKey("ParentId");
 
-                    b.HasOne("Aspian.Domain.UserModel.User", "PhotoOwner")
-                        .WithMany("Photos")
-                        .HasForeignKey("PhotoOwnerId");
-
                     b.HasOne("Aspian.Domain.SiteModel.Site", "Site")
                         .WithMany("Posts")
-                        .HasForeignKey("SiteId");
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Aspian.Domain.PostModel.PostHistory", b =>

@@ -7,6 +7,7 @@ using Aspian.Persistence;
 using Aspian.Web.Middleware.API;
 using AutoMapper;
 using FluentValidation.AspNetCore;
+using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -77,6 +78,9 @@ namespace Aspian.Web
             // Providing our JWT Generator services 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();
+
+            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
 
             // Providing MediatR service for Aspian.Application.Core Assembly
             services.AddMediatR(typeof(List.Handler).Assembly);
