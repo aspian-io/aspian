@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Domain.ActivityModel;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.BaseModel;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.OptionModel;
@@ -57,6 +58,8 @@ namespace Aspian.Persistence
             builder.ApplyConfiguration(new PostConfig());
             builder.ApplyConfiguration(new PostmetaConfig());
             builder.ApplyConfiguration(new PostHistoryConfig());
+            builder.ApplyConfiguration(new AttachmentConfig());
+            builder.ApplyConfiguration(new AttachmentmetaConfig());
             builder.ApplyConfiguration(new TermConfig());
             builder.ApplyConfiguration(new TermmetaConfig());
             builder.ApplyConfiguration(new TermTaxonomyConfig());

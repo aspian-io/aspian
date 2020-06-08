@@ -1,16 +1,16 @@
 using System;
 using Aspian.Domain.BaseModel;
 
-namespace Aspian.Domain.PostModel
+namespace Aspian.Domain.AttachmentModel
 {
-    public interface IPostmeta : IEntitymeta
+    public interface IAttachmentmeta : IEntitymeta
     {
         string MetaKey { get; set; }
         string MetaValue { get; set; }
 
         #region Navigation Properties
         Guid PostId { get; set; }
-        Post Post { get; set; }
+        Attachment Attachment { get; set; }
         #endregion
     }
 }

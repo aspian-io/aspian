@@ -9,8 +9,8 @@ namespace Aspian.Domain.UserModel
         {
             builder
                 .HasMany(u => u.Photos)
-                .WithOne(p => p.PhotoOwner)
-                .HasForeignKey(p => p.PhotoOwnerId);
+                .WithOne(a => a.User)
+                .HasForeignKey(a => a.UserId);
         }
     }
 }

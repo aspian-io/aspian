@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.BaseModel;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.SiteModel;
@@ -20,21 +21,25 @@ namespace Aspian.Domain.PostModel
         public int Order { get; set; }
         public int ViewCount { get; set; }
         public PostTypeEnum Type { get; set; }
-        public string MimeType { get; set; }
 
 
         #region Navigation Properties
+        public virtual ICollection<Attachment> Photos { get; set; }
+        public virtual ICollection<Attachment> Videos { get; set; }
+        public virtual ICollection<Attachment> Audios { get; set; }
+        public virtual ICollection<Attachment> Pdfs { get; set; }
+        public virtual ICollection<Attachment> TextFiles { get; set; }
+        public virtual ICollection<Attachment> OtherFiles { get; set; }
+        public virtual ICollection<Attachment> AllAttachments { get; set; }
         public Guid? ParentId { get; set; }
         public virtual Post Parent { get; set; }
         public virtual ICollection<Post> ChildPosts { get; set; }
-        public Guid? SiteId { get; set; }
+        public Guid SiteId { get; set; }
         public virtual Site Site { get; set; }
         public virtual ICollection<TermPost> TermPosts { get; set; }
         public virtual ICollection<Postmeta> Postmetas { get; set; }
         public virtual ICollection<PostHistory> PostHistories { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
-        public string PhotoOwnerId { get; set; }
-        public virtual User PhotoOwner { get; set; }
         #endregion
 
     }

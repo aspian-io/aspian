@@ -117,6 +117,144 @@ namespace Aspian.Persistence.Migrations
                     b.ToTable("ActivityOccurrencemetas");
                 });
 
+            modelBuilder.Entity("Aspian.Domain.AttachmentModel.Attachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AttachmentOwnerPostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AudioOwnerPostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MimeType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("OtherFileOwnerPostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PdfOwnerPostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PhotoOwnerPostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SiteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TextFileOwnerPostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserIPAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("VideoOwnerPostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AttachmentOwnerPostId");
+
+                    b.HasIndex("AudioOwnerPostId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("OtherFileOwnerPostId");
+
+                    b.HasIndex("PdfOwnerPostId");
+
+                    b.HasIndex("PhotoOwnerPostId");
+
+                    b.HasIndex("SiteId");
+
+                    b.HasIndex("TextFileOwnerPostId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("VideoOwnerPostId");
+
+                    b.ToTable("Attachment");
+                });
+
+            modelBuilder.Entity("Aspian.Domain.AttachmentModel.Attachmentmeta", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AttachmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MetaKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserIPAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AttachmentId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("Attachmentmeta");
+                });
+
             modelBuilder.Entity("Aspian.Domain.CommentModel.Comment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -353,9 +491,6 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("Excerpt")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MimeType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
 
@@ -368,14 +503,11 @@ namespace Aspian.Persistence.Migrations
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("PhotoOwnerId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("PostStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SiteId")
+                    b.Property<Guid>("SiteId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Slug")
@@ -407,8 +539,6 @@ namespace Aspian.Persistence.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.HasIndex("ParentId");
-
-                    b.HasIndex("PhotoOwnerId");
 
                     b.HasIndex("SiteId");
 
@@ -1007,6 +1137,68 @@ namespace Aspian.Persistence.Migrations
                         .HasForeignKey("OccurrenceId");
                 });
 
+            modelBuilder.Entity("Aspian.Domain.AttachmentModel.Attachment", b =>
+                {
+                    b.HasOne("Aspian.Domain.PostModel.Post", "AttachmentOwnerPost")
+                        .WithMany("AllAttachments")
+                        .HasForeignKey("AttachmentOwnerPostId");
+
+                    b.HasOne("Aspian.Domain.PostModel.Post", "AudioOwnerPost")
+                        .WithMany("Audios")
+                        .HasForeignKey("AudioOwnerPostId");
+
+                    b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
+                        .WithMany("CreatedAttachments")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
+                        .WithMany("ModifiedAttachments")
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("Aspian.Domain.PostModel.Post", "OtherFileOwnerPost")
+                        .WithMany("OtherFiles")
+                        .HasForeignKey("OtherFileOwnerPostId");
+
+                    b.HasOne("Aspian.Domain.PostModel.Post", "PdfOwnerPost")
+                        .WithMany("Pdfs")
+                        .HasForeignKey("PdfOwnerPostId");
+
+                    b.HasOne("Aspian.Domain.PostModel.Post", "PhotoOwnerPost")
+                        .WithMany("Photos")
+                        .HasForeignKey("PhotoOwnerPostId");
+
+                    b.HasOne("Aspian.Domain.SiteModel.Site", "Site")
+                        .WithMany("Attachments")
+                        .HasForeignKey("SiteId");
+
+                    b.HasOne("Aspian.Domain.PostModel.Post", "TextFileOwnerPost")
+                        .WithMany("TextFiles")
+                        .HasForeignKey("TextFileOwnerPostId");
+
+                    b.HasOne("Aspian.Domain.UserModel.User", "User")
+                        .WithMany("Photos")
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("Aspian.Domain.PostModel.Post", "VideoOwnerPost")
+                        .WithMany("Videos")
+                        .HasForeignKey("VideoOwnerPostId");
+                });
+
+            modelBuilder.Entity("Aspian.Domain.AttachmentModel.Attachmentmeta", b =>
+                {
+                    b.HasOne("Aspian.Domain.AttachmentModel.Attachment", "Attachment")
+                        .WithMany("Attachmentmetas")
+                        .HasForeignKey("AttachmentId");
+
+                    b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
+                        .WithMany("CreatedAttachmentmetas")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
+                        .WithMany("ModifiedAttachmentmetas")
+                        .HasForeignKey("ModifiedById");
+                });
+
             modelBuilder.Entity("Aspian.Domain.CommentModel.Comment", b =>
                 {
                     b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
@@ -1103,13 +1295,11 @@ namespace Aspian.Persistence.Migrations
                         .WithMany("ChildPosts")
                         .HasForeignKey("ParentId");
 
-                    b.HasOne("Aspian.Domain.UserModel.User", "PhotoOwner")
-                        .WithMany("Photos")
-                        .HasForeignKey("PhotoOwnerId");
-
                     b.HasOne("Aspian.Domain.SiteModel.Site", "Site")
                         .WithMany("Posts")
-                        .HasForeignKey("SiteId");
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Aspian.Domain.PostModel.PostHistory", b =>

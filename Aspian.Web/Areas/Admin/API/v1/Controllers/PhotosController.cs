@@ -8,7 +8,7 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
     public class PhotosController : BaseAPIController
     {
         [HttpPost]
-        public async Task<ActionResult<Photo>> Add([FromForm] Add.Command command)
+        public async Task<ActionResult<PhotoDto>> Add([FromForm] Add.Command command)
         {
             return await Mediator.Send(command);
         }

@@ -20,21 +20,18 @@ namespace Aspian.Domain.PostModel
         int Order { get; set; }
         int ViewCount { get; set; }
         PostTypeEnum Type { get; set; }
-        string MimeType { get; set; }
 
 
         #region Navigation Properties
         Guid? ParentId { get; set; }
         Post Parent { get; set; }
         ICollection<Post> ChildPosts { get; set; }
-        Guid? SiteId { get; set; }
+        Guid SiteId { get; set; }
         Site Site { get; set; }
         ICollection<TermPost> TermPosts { get; set; }
         ICollection<Postmeta> Postmetas { get; set; }
         ICollection<PostHistory> PostHistories { get; set; }
         ICollection<Comment> Comments { get; set; }
-        string PhotoOwnerId { get; set; }
-        User PhotoOwner { get; set; }
         #endregion
     }
 
@@ -55,11 +52,6 @@ namespace Aspian.Domain.PostModel
     {
         Posts,
         Products,
-        Pages,
-        Attachments,
-        Photo,
-        Video,
-        PDF,
-        TextFile
+        Pages
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Aspian.Domain.ActivityModel;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.BaseModel;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.PostModel;
@@ -13,7 +14,7 @@ namespace Aspian.Domain.UserModel
 
 
         #region Navigation Properties
-        ICollection<Post> Photos { get; set; }
+        ICollection<Attachment> Photos { get; set; }
         ICollection<Usermeta> CreatedUsermetas { get; set; }
         ICollection<Usermeta> ModifiedUsermetas { get; set; }
         ICollection<Term> CreatedTerms { get; set; }

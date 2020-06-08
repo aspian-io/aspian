@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Aspian.Domain.ActivityModel;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.PostModel;
 using Aspian.Domain.TaxonomyModel;
@@ -14,7 +15,7 @@ namespace Aspian.Domain.UserModel
 
 
         #region Navigation Properties
-        public virtual ICollection<Post> Photos { get; set; }
+        public virtual ICollection<Attachment> Photos { get; set; }
         public virtual ICollection<Usermeta> CreatedUsermetas { get; set; }
         public virtual ICollection<Usermeta> ModifiedUsermetas { get; set; }
         public virtual ICollection<Term> CreatedTerms { get; set; }
@@ -29,6 +30,10 @@ namespace Aspian.Domain.UserModel
         public virtual ICollection<Post> ModifiedPosts { get; set; }
         public virtual ICollection<Postmeta> CreatedPostmetas { get; set; }
         public virtual ICollection<Postmeta> ModifiedPostmetas { get; set; }
+        public virtual ICollection<Attachment> CreatedAttachments { get; set; }
+        public virtual ICollection<Attachment> ModifiedAttachments { get; set; }
+        public virtual ICollection<Attachmentmeta> CreatedAttachmentmetas { get; set; }
+        public virtual ICollection<Attachmentmeta> ModifiedAttachmentmetas { get; set; }
         public virtual ICollection<PostHistory> CreatedPostHistories { get; set; }
         public virtual ICollection<PostHistory> ModifiedPostHistories { get; set; }
         public virtual ICollection<Comment> CreatedComments { get; set; }

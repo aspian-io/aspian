@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Aspian.Domain.ActivityModel;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.BaseModel;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.OptionModel;
@@ -20,11 +21,12 @@ namespace Aspian.Domain.SiteModel
 
 
         #region Navigation Properties
-            ICollection<Option> Options { get; set; }
-            ICollection<ActivityOccurrence> Occurrences { get; set; }
-            ICollection<Comment> Comments { get; set; }
-            ICollection<Post> Posts { get; set; }
-            ICollection<TermTaxonomy> TermTaxonomies { get; set; }
+        ICollection<Option> Options { get; set; }
+        ICollection<ActivityOccurrence> Occurrences { get; set; }
+        ICollection<Comment> Comments { get; set; }
+        ICollection<Post> Posts { get; set; }
+        ICollection<Attachment> Attachments { get; set; }
+        ICollection<TermTaxonomy> TermTaxonomies { get; set; }
         #endregion
     }
 

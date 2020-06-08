@@ -5,8 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.Photos.DTOs;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.PostModel;
 using Aspian.Persistence;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -15,60 +17,42 @@ namespace Aspian.Application.Core.Photos
 {
     public class Add
     {
-        public class Command : IRequest<Photo>
+        public class Command : IRequest<PhotoDto>
         {
             public IFormFile File { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command, Photo>
+        public class Handler : IRequestHandler<Command, PhotoDto>
         {
             private readonly DataContext _context;
             private readonly IUserAccessor _userAccessor;
             private readonly IPhotoAccessor _photoAccessor;
-            public Handler(DataContext context, IUserAccessor userAccessor, IPhotoAccessor photoAccessor)
+            private readonly IMapper _mapper;
+            public Handler(DataContext context, IUserAccessor userAccessor, IPhotoAccessor photoAccessor, IMapper mapper)
             {
+                _mapper = mapper;
                 _photoAccessor = photoAccessor;
                 _userAccessor = userAccessor;
                 _context = context;
             }
 
-            public async Task<Photo> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<PhotoDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var photoUploadResult = _photoAccessor.AddPhoto(request.File);
 
                 var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername());
 
-                var photo = new Photo
+                var photo = new PhotoDto
                 {
                     Url = photoUploadResult.Url,
-                    Id = photoUploadResult.PublicId
                 };
 
-                if (!user.Photos.Any(x => x.Postmetas.Any(pm => pm.MetaKey == PhotoUploadFieldsEnum.IsMain.ToString() && pm.MetaValue == "true")))
+                if (!user.Photos.Any(x => x.IsMain))
                     photo.IsMain = true;
 
-                var postPhotoType = new Post
-                {
-                    PostStatus = PostStatusEnum.Inherit,
-                    Type = PostTypeEnum.Photo,
-                    MimeType = "",
-                    Postmetas = new List<Postmeta> {
-                        new Postmeta {
-                            MetaKey = PhotoUploadFieldsEnum.Id.ToString(),
-                            MetaValue = photo.Id
-                        },
-                        new Postmeta {
-                            MetaKey = PhotoUploadFieldsEnum.Url.ToString(),
-                            MetaValue = photo.Url
-                        },
-                        new Postmeta {
-                            MetaKey = PhotoUploadFieldsEnum.IsMain.ToString(),
-                            MetaValue = photo.IsMain.ToString()
-                        }
-                    }
-                };
+                var userPhotos = _mapper.Map<PhotoDto, Attachment>(photo);
 
-                user.Photos.Add(postPhotoType);
+                user.Photos.Add(userPhotos);
 
                 var success = await _context.SaveChangesAsync() > 0;
 
