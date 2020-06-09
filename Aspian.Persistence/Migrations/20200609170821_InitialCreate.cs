@@ -407,15 +407,16 @@ namespace Aspian.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    PublicKeyName = table.Column<string>(nullable: true),
                     Key = table.Column<string>(nullable: false),
                     KeyDescription = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: false),
-                    DefaultValue = table.Column<string>(nullable: true),
                     ValueDescription = table.Column<string>(nullable: true),
+                    DefaultValue = table.Column<string>(nullable: false),
+                    DefaultValueDescription = table.Column<string>(nullable: true),
                     AdditionalInfo = table.Column<string>(nullable: true),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
-                    Version = table.Column<int>(nullable: false),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
                     OptionId = table.Column<Guid>(nullable: false)
@@ -449,6 +450,9 @@ namespace Aspian.Persistence.Migrations
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
                     Type = table.Column<string>(nullable: false),
+                    FileName = table.Column<string>(nullable: true),
+                    FileExtension = table.Column<string>(nullable: true),
+                    FileSize = table.Column<string>(nullable: true),
                     MimeType = table.Column<string>(nullable: true),
                     Url = table.Column<string>(nullable: true),
                     IsMain = table.Column<bool>(nullable: false),

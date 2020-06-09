@@ -17,6 +17,11 @@ namespace Aspian.Domain.OptionModel
             builder
                 .Property(om => om.Value)
                 .HasConversion(valueConverter);
+
+            var defaultValueConverter = new EnumToStringConverter<ValueEnum>();
+            builder
+                .Property(om => om.DefaultValue)
+                .HasConversion(defaultValueConverter);
         }
     }
 }

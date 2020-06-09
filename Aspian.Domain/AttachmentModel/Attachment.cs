@@ -10,6 +10,9 @@ namespace Aspian.Domain.AttachmentModel
     public class Attachment : Entitymeta, IAttachment
     {
         public AttachmentTypeEnum Type { get; set; }
+        public string FileName { get; set; }
+        public string FileExtension { get; set; }
+        public string FileSize { get; set; }
         public string MimeType { get; set; }
         public string Url { get; set; }
         public bool IsMain { get; set; }

@@ -7,7 +7,7 @@ using Aspian.Persistence;
 using Aspian.Web.Middleware.API;
 using AutoMapper;
 using FluentValidation.AspNetCore;
-using Infrastructure.Photos;
+using Infrastructure.Upload;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,6 +22,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Infrastructure.Option;
 
 namespace Aspian.Web
 {
@@ -79,8 +80,9 @@ namespace Aspian.Web
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();
 
-            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
-            services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
+            services.AddScoped<IFileAccessor, FileAccessor>();
+            services.AddScoped<IOptionAccessor, OptionAccessor>();
+            //services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
 
             // Providing MediatR service for Aspian.Application.Core Assembly
             services.AddMediatR(typeof(List.Handler).Assembly);

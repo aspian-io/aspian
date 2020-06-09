@@ -9,7 +9,7 @@ namespace Aspian.Domain.OptionModel
     {
         SectionEnum Section { get; set; }
         string Description { get; set; }
-        
+
 
         #region Navigation Properties
         Guid SiteId { get; set; }
@@ -18,11 +18,13 @@ namespace Aspian.Domain.OptionModel
         #endregion
     }
 
-    public enum SectionEnum {
+    public enum SectionEnum
+    {
         Activity,
         Comment,
         Post,
         Taxonomy,
-        User
+        User,
+        Attachment
     }
 }

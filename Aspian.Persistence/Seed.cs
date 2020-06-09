@@ -47,7 +47,7 @@ namespace Aspian.Persistence
             }
 
             // Sedding Sites
-            if(!context.Sites.Any())
+            if (!context.Sites.Any())
             {
                 var sites = new List<Site>
                 {
@@ -90,7 +90,7 @@ namespace Aspian.Persistence
             }
 
             // Seeding Posts
-            if(!context.Posts.Any())
+            if (!context.Posts.Any())
             {
                 var posts = new List<Post>
                 {
@@ -305,16 +305,337 @@ namespace Aspian.Persistence
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
                         Optionmetas = new List<Optionmeta> {
                             new Optionmeta {
+                                PublicKeyName = "Logging Activities",
                                 Key = KeyEnum.Activity__LoggingActivities,
                                 KeyDescription = "Enable/Disable Ativity logging",
                                 Value = ValueEnum.Activity__LoggingActivities_Enable,
-                                ValueDescription = "Enabled"
+                                ValueDescription = "Enabled",
+                                DefaultValue = ValueEnum.Activity__LoggingActivities_Enable,
+                                DefaultValueDescription = "Enabled"
                             },
                             new Optionmeta {
+                                PublicKeyName = "Pruning Date",
                                 Key = KeyEnum.Activity__PruningDate,
                                 KeyDescription = "Pruning Activity logs date",
                                 Value = ValueEnum.Activity__PruningDate_EveryMonth,
-                                ValueDescription = "Every month"
+                                ValueDescription = "Every month",
+                                DefaultValue = ValueEnum.Activity__PruningDate_EveryMonth,
+                                DefaultValueDescription = "Every month"
+                            }
+                        }
+                    },
+                    new Option {
+                        Section = SectionEnum.Attachment,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                        Optionmetas = new List<Optionmeta> {
+                            new Optionmeta {
+                                PublicKeyName = ".aac",
+                                Key = KeyEnum.Attachment__Audio_Aac,
+                                KeyDescription = "audio/x-aac",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".m3u",
+                                Key = KeyEnum.Attachment__Audio_M3u,
+                                KeyDescription = "audio/x-mpegurl",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".mid",
+                                Key = KeyEnum.Attachment__Audio_Mid,
+                                KeyDescription = "audio/midi",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".mp4a",
+                                Key = KeyEnum.Attachment__Audio_Mp4a,
+                                KeyDescription = "audio/mp4",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".mp3",
+                                Key = KeyEnum.Attachment__Audio_Mp3,
+                                KeyDescription = "audio/mpeg",
+                                Value = ValueEnum.Attachments__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".oga",
+                                Key = KeyEnum.Attachment__Audio_Oga,
+                                KeyDescription = "audio/ogg",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".wav",
+                                Key = KeyEnum.Attachment__Audio_Wav,
+                                KeyDescription = "audio/x-wav",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".weba",
+                                Key = KeyEnum.Attachment__Audio_Weba,
+                                KeyDescription = "audio/webm",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".wma",
+                                Key = KeyEnum.Attachment__Audio_Wma,
+                                KeyDescription = "audio/x-ms-wma",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".mka",
+                                Key = KeyEnum.Attachment__Audio_Mka,
+                                KeyDescription = "audio/x-matroska",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+
+                            new Optionmeta {
+                                PublicKeyName = ".bmp",
+                                Key = KeyEnum.Attachment__Photo_Bmp,
+                                KeyDescription = "image/bmp",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".gif",
+                                Key = KeyEnum.Attachment__Photo_Gif,
+                                KeyDescription = "image/gif",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".jpg/.jpeg",
+                                Key = KeyEnum.Attachment__Photo_Jpg,
+                                KeyDescription = "image/jpeg",
+                                Value = ValueEnum.Attachments__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".png",
+                                Key = KeyEnum.Attachment__Photo_Png,
+                                KeyDescription = "image/png",
+                                Value = ValueEnum.Attachments__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".svg",
+                                Key = KeyEnum.Attachment__Photo_Svg,
+                                KeyDescription = "image/svg+xml",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".tiff",
+                                Key = KeyEnum.Attachment__Photo_Tiff,
+                                KeyDescription = "image/tiff",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+
+                            new Optionmeta {
+                                PublicKeyName = ".doc",
+                                Key = KeyEnum.Attachment__Text_Doc,
+                                KeyDescription = "application/msword",
+                                Value = ValueEnum.Attachments__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".docx",
+                                Key = KeyEnum.Attachment__Text_Docx,
+                                KeyDescription = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                Value = ValueEnum.Attachments__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".pdf",
+                                Key = KeyEnum.Attachment__Text_Pdf,
+                                KeyDescription = "application/pdf",
+                                Value = ValueEnum.Attachments__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".rtf",
+                                Key = KeyEnum.Attachment__Text_Rtf,
+                                KeyDescription = "application/rtf",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".txt",
+                                Key = KeyEnum.Attachment__Text_Txt,
+                                KeyDescription = "text/plain",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".xls",
+                                Key = KeyEnum.Attachment__Text_Xls,
+                                KeyDescription = "application/vnd.ms-excel",
+                                Value = ValueEnum.Attachments__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".xlsx",
+                                Key = KeyEnum.Attachment__Text_Xlsx,
+                                KeyDescription = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                Value = ValueEnum.Attachments__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+
+                            new Optionmeta {
+                                PublicKeyName = ".3gp",
+                                Key = KeyEnum.Attachment__Video_3gp,
+                                KeyDescription = "video/3gpp",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".avi",
+                                Key = KeyEnum.Attachment__Video_Avi,
+                                KeyDescription = "video/x-msvideo",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".flv",
+                                Key = KeyEnum.Attachment__Video_Flv,
+                                KeyDescription = "video/x-flv",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".m4v",
+                                Key = KeyEnum.Attachment__Video_M4v,
+                                KeyDescription = "video/x-m4v",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".mp4",
+                                Key = KeyEnum.Attachment__Video_Mp4,
+                                KeyDescription = "video/mp4",
+                                Value = ValueEnum.Attachments__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".mpeg",
+                                Key = KeyEnum.Attachment__Video_Mpeg,
+                                KeyDescription = "video/mpeg",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".ogg",
+                                Key = KeyEnum.Attachment__Video_Ogg,
+                                KeyDescription = "video/ogg",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".webm",
+                                Key = KeyEnum.Attachment__Video_Webm,
+                                KeyDescription = "video/webm",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".wm",
+                                Key = KeyEnum.Attachment__Video_Wm,
+                                KeyDescription = "video/x-ms-wm",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".wmv",
+                                Key = KeyEnum.Attachment__Video_Wmv,
+                                KeyDescription = "video/x-ms-wmv",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".mkv",
+                                Key = KeyEnum.Attachment__Video_Mkv,
+                                KeyDescription = "video/x-matroska",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
                             }
                         }
                     },

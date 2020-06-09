@@ -24,13 +24,7 @@ namespace Aspian.Domain.PostModel
 
 
         #region Navigation Properties
-        public virtual ICollection<Attachment> Photos { get; set; }
-        public virtual ICollection<Attachment> Videos { get; set; }
-        public virtual ICollection<Attachment> Audios { get; set; }
-        public virtual ICollection<Attachment> Pdfs { get; set; }
-        public virtual ICollection<Attachment> TextFiles { get; set; }
-        public virtual ICollection<Attachment> OtherFiles { get; set; }
-        public virtual ICollection<Attachment> AllAttachments { get; set; }
+        public virtual ICollection<Attachment> Attachments { get; set; }
         public Guid? ParentId { get; set; }
         public virtual Post Parent { get; set; }
         public virtual ICollection<Post> ChildPosts { get; set; }

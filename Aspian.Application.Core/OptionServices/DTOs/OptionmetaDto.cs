@@ -1,29 +1,22 @@
 using System;
-using Aspian.Domain.BaseModel;
-using Aspian.Domain.UserModel;
+using Aspian.Application.Core.UserServices.DTOs;
 
-namespace Aspian.Domain.OptionModel
+namespace Aspian.Application.Core.OptionServices.DTOs
 {
-    public class Optionmeta : EntityBase, IOptionmeta
+    public class OptionmetaDto
     {
         public string PublicKeyName { get; set; }
-        public KeyEnum Key { get; set; }
+        public string Key { get; set; }
         public string KeyDescription { get; set; }
-        public ValueEnum Value { get; set; }
+        public string Value { get; set; }
         public string ValueDescription { get; set; }
-        public ValueEnum DefaultValue { get; set; }
+        public string DefaultValue { get; set; }
         public string DefaultValueDescription { get; set; }
         public string AdditionalInfo { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string ModifiedById { get; set; }
-        public User ModifiedBy { get; set; }
+        public UserDto ModifiedBy { get; set; }
         public string UserAgent { get; set; }
         public string UserIPAddress { get; set; }
-
-
-        #region Navigation Properties
-        public Guid OptionId { get; set; }
-        public virtual Option Option { get; set; }
-        #endregion
     }
 }

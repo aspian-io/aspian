@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200608113708_InitialCreate")]
+    [Migration("20200609170821_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,6 +136,15 @@ namespace Aspian.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("FileExtension")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileSize")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
@@ -429,6 +438,10 @@ namespace Aspian.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DefaultValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DefaultValueDescription")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Key")
@@ -447,6 +460,9 @@ namespace Aspian.Persistence.Migrations
                     b.Property<Guid>("OptionId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("PublicKeyName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserAgent")
                         .HasColumnType("nvarchar(max)");
 
@@ -459,9 +475,6 @@ namespace Aspian.Persistence.Migrations
 
                     b.Property<string>("ValueDescription")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1142,11 +1155,11 @@ namespace Aspian.Persistence.Migrations
             modelBuilder.Entity("Aspian.Domain.AttachmentModel.Attachment", b =>
                 {
                     b.HasOne("Aspian.Domain.PostModel.Post", "AttachmentOwnerPost")
-                        .WithMany("AllAttachments")
+                        .WithMany("Attachments")
                         .HasForeignKey("AttachmentOwnerPostId");
 
                     b.HasOne("Aspian.Domain.PostModel.Post", "AudioOwnerPost")
-                        .WithMany("Audios")
+                        .WithMany()
                         .HasForeignKey("AudioOwnerPostId");
 
                     b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
@@ -1158,15 +1171,15 @@ namespace Aspian.Persistence.Migrations
                         .HasForeignKey("ModifiedById");
 
                     b.HasOne("Aspian.Domain.PostModel.Post", "OtherFileOwnerPost")
-                        .WithMany("OtherFiles")
+                        .WithMany()
                         .HasForeignKey("OtherFileOwnerPostId");
 
                     b.HasOne("Aspian.Domain.PostModel.Post", "PdfOwnerPost")
-                        .WithMany("Pdfs")
+                        .WithMany()
                         .HasForeignKey("PdfOwnerPostId");
 
                     b.HasOne("Aspian.Domain.PostModel.Post", "PhotoOwnerPost")
-                        .WithMany("Photos")
+                        .WithMany()
                         .HasForeignKey("PhotoOwnerPostId");
 
                     b.HasOne("Aspian.Domain.SiteModel.Site", "Site")
@@ -1174,15 +1187,15 @@ namespace Aspian.Persistence.Migrations
                         .HasForeignKey("SiteId");
 
                     b.HasOne("Aspian.Domain.PostModel.Post", "TextFileOwnerPost")
-                        .WithMany("TextFiles")
+                        .WithMany()
                         .HasForeignKey("TextFileOwnerPostId");
 
                     b.HasOne("Aspian.Domain.UserModel.User", "User")
-                        .WithMany("Photos")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.HasOne("Aspian.Domain.PostModel.Post", "VideoOwnerPost")
-                        .WithMany("Videos")
+                        .WithMany()
                         .HasForeignKey("VideoOwnerPostId");
                 });
 
@@ -1276,7 +1289,7 @@ namespace Aspian.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("ModifiedById");
 
-                    b.HasOne("Aspian.Domain.OptionModel.Option", "Options")
+                    b.HasOne("Aspian.Domain.OptionModel.Option", "Option")
                         .WithMany("Optionmetas")
                         .HasForeignKey("OptionId")
                         .OnDelete(DeleteBehavior.Cascade)

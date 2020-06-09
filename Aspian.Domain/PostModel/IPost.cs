@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.BaseModel;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.SiteModel;
@@ -23,6 +24,7 @@ namespace Aspian.Domain.PostModel
 
 
         #region Navigation Properties
+        ICollection<Attachment> Attachments { get; set; }
         Guid? ParentId { get; set; }
         Post Parent { get; set; }
         ICollection<Post> ChildPosts { get; set; }

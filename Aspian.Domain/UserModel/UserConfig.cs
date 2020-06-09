@@ -7,10 +7,6 @@ namespace Aspian.Domain.UserModel
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder
-                .HasMany(u => u.Photos)
-                .WithOne(a => a.User)
-                .HasForeignKey(a => a.UserId);
         }
     }
 }

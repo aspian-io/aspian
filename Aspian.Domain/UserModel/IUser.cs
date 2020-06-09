@@ -14,7 +14,6 @@ namespace Aspian.Domain.UserModel
 
 
         #region Navigation Properties
-        ICollection<Attachment> Photos { get; set; }
         ICollection<Usermeta> CreatedUsermetas { get; set; }
         ICollection<Usermeta> ModifiedUsermetas { get; set; }
         ICollection<Term> CreatedTerms { get; set; }
@@ -31,6 +30,10 @@ namespace Aspian.Domain.UserModel
         ICollection<Postmeta> ModifiedPostmetas { get; set; }
         ICollection<PostHistory> CreatedPostHistories { get; set; }
         ICollection<PostHistory> ModifiedPostHistories { get; set; }
+        ICollection<Attachment> CreatedAttachments { get; set; }
+        ICollection<Attachment> ModifiedAttachments { get; set; }
+        ICollection<Attachmentmeta> CreatedAttachmentmetas { get; set; }
+        ICollection<Attachmentmeta> ModifiedAttachmentmetas { get; set; }
         ICollection<Comment> CreatedComments { get; set; }
         ICollection<Comment> ModifiedComments { get; set; }
         ICollection<Commentmeta> CreatedCommentmetas { get; set; }

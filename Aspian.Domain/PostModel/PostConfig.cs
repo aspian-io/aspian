@@ -35,31 +35,7 @@ namespace Aspian.Domain.PostModel
 
             // Attachment's custom navigation configs
             builder
-                .HasMany(p => p.Photos)
-                .WithOne(a => a.PhotoOwnerPost)
-                .HasForeignKey(a => a.PhotoOwnerPostId);
-            builder
-                .HasMany(p => p.Videos)
-                .WithOne(a => a.VideoOwnerPost)
-                .HasForeignKey(a => a.VideoOwnerPostId);
-            builder
-                .HasMany(p => p.Audios)
-                .WithOne(a => a.AudioOwnerPost)
-                .HasForeignKey(a => a.AudioOwnerPostId);
-            builder
-                .HasMany(p => p.Pdfs)
-                .WithOne(a => a.PdfOwnerPost)
-                .HasForeignKey(a => a.PdfOwnerPostId);
-            builder
-                .HasMany(p => p.TextFiles)
-                .WithOne(a => a.TextFileOwnerPost)
-                .HasForeignKey(a => a.TextFileOwnerPostId);
-            builder
-                .HasMany(p => p.OtherFiles)
-                .WithOne(a => a.OtherFileOwnerPost)
-                .HasForeignKey(a => a.OtherFileOwnerPostId);
-            builder
-                .HasMany(p => p.AllAttachments)
+                .HasMany(p => p.Attachments)
                 .WithOne(a => a.AttachmentOwnerPost)
                 .HasForeignKey(a => a.AttachmentOwnerPostId);
         }

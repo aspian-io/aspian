@@ -15,7 +15,6 @@ namespace Aspian.Domain.UserModel
 
 
         #region Navigation Properties
-        public virtual ICollection<Attachment> Photos { get; set; }
         public virtual ICollection<Usermeta> CreatedUsermetas { get; set; }
         public virtual ICollection<Usermeta> ModifiedUsermetas { get; set; }
         public virtual ICollection<Term> CreatedTerms { get; set; }
