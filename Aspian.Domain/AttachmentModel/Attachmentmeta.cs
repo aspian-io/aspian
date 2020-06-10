@@ -9,7 +9,7 @@ namespace Aspian.Domain.AttachmentModel
         public string MetaValue { get; set; }
 
         #region Navigation Properties
-        public Guid PostId { get; set; }
+        public Guid AttachmentId { get; set; }
         public virtual Attachment Attachment { get; set; }
         #endregion
     }

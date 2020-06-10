@@ -24,28 +24,28 @@ namespace Aspian.Application.Core.AttachmentServices
         {
             private readonly DataContext _context;
             private readonly IUserAccessor _userAccessor;
-            private readonly IFileAccessor _fileAccessor;
+            private readonly IUploadAccessor _uploadAccessor;
             private readonly IMapper _mapper;
-            public Handler(DataContext context, IUserAccessor userAccessor, IFileAccessor fileAccessor, IMapper mapper)
+            public Handler(DataContext context, IUserAccessor userAccessor, IUploadAccessor uploadAccessor, IMapper mapper)
             {
                 _mapper = mapper;
-                _fileAccessor = fileAccessor;
+                _uploadAccessor = uploadAccessor;
                 _userAccessor = userAccessor;
                 _context = context;
             }
 
             public async Task<AttachmentDto> Handle(Command request, CancellationToken cancellationToken)
             {
-                var fileUploadResult = await _fileAccessor.AddFileAsync(request.File);
+                var fileUploadResult = await _uploadAccessor.AddFileAsync(request.File);
 
                 var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername());
 
-                if (!user.CreatedAttachments.Any(x => x.IsMain))
+                if (!user.CreatedAttachments.Any(x => x.IsMain && x.Type == AttachmentTypeEnum.Photo))
                     fileUploadResult.IsMain = true;
 
-                var userPhotos = _mapper.Map<FileUploadResult, Attachment>(fileUploadResult);
+                var userAttachments = _mapper.Map<FileUploadResult, Attachment>(fileUploadResult);
 
-                user.CreatedAttachments.Add(userPhotos);
+                user.CreatedAttachments.Add(userAttachments);
 
                 var success = await _context.SaveChangesAsync() > 0;
 

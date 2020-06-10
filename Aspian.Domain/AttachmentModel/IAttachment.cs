@@ -23,23 +23,8 @@ namespace Aspian.Domain.AttachmentModel
         Guid? SiteId { get; set; }
         Site Site { get; set; }
 
-        Guid? PhotoOwnerPostId { get; set; }
-        Post PhotoOwnerPost { get; set; }
-        Guid? VideoOwnerPostId { get; set; }
-        Post VideoOwnerPost { get; set; }
-        Guid? AudioOwnerPostId { get; set; }
-        Post AudioOwnerPost { get; set; }
-        Guid? PdfOwnerPostId { get; set; }
-        Post PdfOwnerPost { get; set; }
-        Guid? TextFileOwnerPostId { get; set; }
-        Post TextFileOwnerPost { get; set; }
-        Guid? OtherFileOwnerPostId { get; set; }
-        Post OtherFileOwnerPost { get; set; }
         Guid? AttachmentOwnerPostId { get; set; }
         Post AttachmentOwnerPost { get; set; }
-
-        string UserId { get; set; }
-        User User { get; set; }
         #endregion
     }
 

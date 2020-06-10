@@ -32,6 +32,8 @@ namespace Aspian.Persistence
         public DbSet<Post> Posts { get; set; }
         public DbSet<Postmeta> Postmetas { get; set; }
         public DbSet<PostHistory> PostHistories { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
+        public DbSet<Attachmentmeta> Attachmentmetas { get; set; }
         public DbSet<Site> Sites { get; set; }
         public DbSet<Term> Terms { get; set; }
         public DbSet<Termmeta> Termmetas { get; set; }

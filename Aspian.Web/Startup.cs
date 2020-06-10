@@ -80,7 +80,7 @@ namespace Aspian.Web
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();
 
-            services.AddScoped<IFileAccessor, FileAccessor>();
+            services.AddScoped<IUploadAccessor, UploadAccessor>();
             services.AddScoped<IOptionAccessor, OptionAccessor>();
             //services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
 

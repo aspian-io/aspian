@@ -28,5 +28,11 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         {
             return await Mediator.Send(new CurrentUser.Query());
         }
+
+        [HttpGet("{username}")]
+        public async Task<ActionResult<UserProfileDto>> Profile(string username)
+        {
+            return await Mediator.Send(new UserProfile.Query { UserName = username });
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace Aspian.Domain.UserModel
     public interface IUser : IEntity
     {
         string DisplayName { get; set; }
+        string Bio { get; set; }
 
 
         #region Navigation Properties

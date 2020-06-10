@@ -12,12 +12,12 @@ using Aspian.Domain.OptionModel;
 
 namespace Infrastructure.Upload
 {
-    public class FileAccessor : IFileAccessor
+    public class UploadAccessor : IUploadAccessor
     {
         private readonly IWebHostEnvironment _env;
         private readonly IUserAccessor _userAccessor;
         private readonly IOptionAccessor _optionAccessor;
-        public FileAccessor(IWebHostEnvironment env, IUserAccessor userAccessor, IOptionAccessor optionAccessor)
+        public UploadAccessor(IWebHostEnvironment env, IUserAccessor userAccessor, IOptionAccessor optionAccessor)
         {
             _optionAccessor = optionAccessor;
             _userAccessor = userAccessor;
@@ -41,9 +41,9 @@ namespace Infrastructure.Upload
             if (size > 0)
             {
                 var fileType = CheckFileType(file);
-                Directory.CreateDirectory($"{_env.WebRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}");
-                var filePath = $"{_env.WebRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileName}";
-                using (var stream = System.IO.File.Create(filePath))
+                Directory.CreateDirectory($"{_env.WebRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}");
+                var filePath = $"{_env.WebRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
+                using (var stream = File.Create(filePath))
                 {
                     await file.CopyToAsync(stream);
                 }
@@ -60,6 +60,27 @@ namespace Infrastructure.Upload
             }
 
             throw new Exception("Problem uploading the file!");
+        }
+
+        public string DeleteFile(string filePath)
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    return "ok";
+                }
+                else
+                {
+                    throw new Exception("File not found!");
+                }
+            }
+            catch (IOException ioexception)
+            {
+
+                throw new IOException(ioexception.Message);
+            }
         }
 
         public AttachmentTypeEnum CheckFileType(IFormFile file)

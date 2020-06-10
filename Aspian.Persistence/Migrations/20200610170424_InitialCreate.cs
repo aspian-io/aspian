@@ -439,7 +439,7 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Attachment",
+                name: "Attachments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -457,82 +457,33 @@ namespace Aspian.Persistence.Migrations
                     Url = table.Column<string>(nullable: true),
                     IsMain = table.Column<bool>(nullable: false),
                     SiteId = table.Column<Guid>(nullable: true),
-                    PhotoOwnerPostId = table.Column<Guid>(nullable: true),
-                    VideoOwnerPostId = table.Column<Guid>(nullable: true),
-                    AudioOwnerPostId = table.Column<Guid>(nullable: true),
-                    PdfOwnerPostId = table.Column<Guid>(nullable: true),
-                    TextFileOwnerPostId = table.Column<Guid>(nullable: true),
-                    OtherFileOwnerPostId = table.Column<Guid>(nullable: true),
-                    AttachmentOwnerPostId = table.Column<Guid>(nullable: true),
-                    UserId = table.Column<string>(nullable: true)
+                    AttachmentOwnerPostId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Attachment", x => x.Id);
+                    table.PrimaryKey("PK_Attachments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Attachment_Posts_AttachmentOwnerPostId",
+                        name: "FK_Attachments_Posts_AttachmentOwnerPostId",
                         column: x => x.AttachmentOwnerPostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Attachment_Posts_AudioOwnerPostId",
-                        column: x => x.AudioOwnerPostId,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachment_AspNetUsers_CreatedById",
+                        name: "FK_Attachments_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Attachment_AspNetUsers_ModifiedById",
+                        name: "FK_Attachments_AspNetUsers_ModifiedById",
                         column: x => x.ModifiedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Attachment_Posts_OtherFileOwnerPostId",
-                        column: x => x.OtherFileOwnerPostId,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachment_Posts_PdfOwnerPostId",
-                        column: x => x.PdfOwnerPostId,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachment_Posts_PhotoOwnerPostId",
-                        column: x => x.PhotoOwnerPostId,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachment_Sites_SiteId",
+                        name: "FK_Attachments_Sites_SiteId",
                         column: x => x.SiteId,
                         principalTable: "Sites",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachment_Posts_TextFileOwnerPostId",
-                        column: x => x.TextFileOwnerPostId,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachment_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachment_Posts_VideoOwnerPostId",
-                        column: x => x.VideoOwnerPostId,
-                        principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -752,7 +703,7 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Attachmentmeta",
+                name: "Attachmentmetas",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -764,26 +715,25 @@ namespace Aspian.Persistence.Migrations
                     UserIPAddress = table.Column<string>(nullable: true),
                     MetaKey = table.Column<string>(nullable: true),
                     MetaValue = table.Column<string>(nullable: true),
-                    PostId = table.Column<Guid>(nullable: false),
-                    AttachmentId = table.Column<Guid>(nullable: true)
+                    AttachmentId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Attachmentmeta", x => x.Id);
+                    table.PrimaryKey("PK_Attachmentmetas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Attachmentmeta_Attachment_AttachmentId",
+                        name: "FK_Attachmentmetas_Attachments_AttachmentId",
                         column: x => x.AttachmentId,
-                        principalTable: "Attachment",
+                        principalTable: "Attachments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Attachmentmeta_AspNetUsers_CreatedById",
+                        name: "FK_Attachmentmetas_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Attachmentmeta_AspNetUsers_ModifiedById",
+                        name: "FK_Attachmentmetas_AspNetUsers_ModifiedById",
                         column: x => x.ModifiedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -968,74 +918,39 @@ namespace Aspian.Persistence.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attachment_AttachmentOwnerPostId",
-                table: "Attachment",
-                column: "AttachmentOwnerPostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachment_AudioOwnerPostId",
-                table: "Attachment",
-                column: "AudioOwnerPostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachment_CreatedById",
-                table: "Attachment",
-                column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachment_ModifiedById",
-                table: "Attachment",
-                column: "ModifiedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachment_OtherFileOwnerPostId",
-                table: "Attachment",
-                column: "OtherFileOwnerPostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachment_PdfOwnerPostId",
-                table: "Attachment",
-                column: "PdfOwnerPostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachment_PhotoOwnerPostId",
-                table: "Attachment",
-                column: "PhotoOwnerPostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachment_SiteId",
-                table: "Attachment",
-                column: "SiteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachment_TextFileOwnerPostId",
-                table: "Attachment",
-                column: "TextFileOwnerPostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachment_UserId",
-                table: "Attachment",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachment_VideoOwnerPostId",
-                table: "Attachment",
-                column: "VideoOwnerPostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Attachmentmeta_AttachmentId",
-                table: "Attachmentmeta",
+                name: "IX_Attachmentmetas_AttachmentId",
+                table: "Attachmentmetas",
                 column: "AttachmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attachmentmeta_CreatedById",
-                table: "Attachmentmeta",
+                name: "IX_Attachmentmetas_CreatedById",
+                table: "Attachmentmetas",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attachmentmeta_ModifiedById",
-                table: "Attachmentmeta",
+                name: "IX_Attachmentmetas_ModifiedById",
+                table: "Attachmentmetas",
                 column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Attachments_AttachmentOwnerPostId",
+                table: "Attachments",
+                column: "AttachmentOwnerPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Attachments_CreatedById",
+                table: "Attachments",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Attachments_ModifiedById",
+                table: "Attachments",
+                column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Attachments_SiteId",
+                table: "Attachments",
+                column: "SiteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CommentHistories_CommentId",
@@ -1261,7 +1176,7 @@ namespace Aspian.Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Attachmentmeta");
+                name: "Attachmentmetas");
 
             migrationBuilder.DropTable(
                 name: "CommentHistories");
@@ -1294,7 +1209,7 @@ namespace Aspian.Persistence.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Attachment");
+                name: "Attachments");
 
             migrationBuilder.DropTable(
                 name: "Comments");
