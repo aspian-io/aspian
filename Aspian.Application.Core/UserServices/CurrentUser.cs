@@ -34,7 +34,7 @@ namespace Aspian.Application.Core.UserServices
                 {
                     DisplayName = user.DisplayName,
                     UserName = user.UserName,
-                    Token = _jwtGenerator.CreateToken(user),
+                    //Token = _jwtGenerator.CreateToken(user),
                     Image = null
                 };
             }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.OptionModel;
@@ -43,6 +44,10 @@ namespace Aspian.Persistence
                 foreach (var user in users)
                 {
                     await userManager.CreateAsync(user, "Pa$$w0rd");
+
+                    // Add Admin policy as a claim to bob claims
+                    if (user.UserName == "bob")
+                        await userManager.AddClaimAsync(user, new Claim(AspianClaimTypes.Claim, AspianClaimValues.Admin));
                 }
             }
 

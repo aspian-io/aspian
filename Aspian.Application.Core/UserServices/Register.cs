@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Errors;
@@ -42,8 +44,12 @@ namespace Aspian.Application.Core.UserServices
             private readonly DataContext _context;
             private readonly UserManager<User> _userManager;
             private readonly IJwtGenerator _jwtGenerator;
-            public Handler(DataContext context, UserManager<User> userManager, IJwtGenerator jwtGenerator)
+            private readonly RoleManager<IdentityRole> _roleManager;
+            private readonly IUserAccessor _userAccessor;
+            public Handler(DataContext context, UserManager<User> userManager, IJwtGenerator jwtGenerator, RoleManager<IdentityRole> roleManager, IUserAccessor userAccessor)
             {
+                _userAccessor = userAccessor;
+                _roleManager = roleManager;
                 _jwtGenerator = jwtGenerator;
                 _userManager = userManager;
                 _context = context;
@@ -64,16 +70,18 @@ namespace Aspian.Application.Core.UserServices
                     UserName = request.UserName
                 };
 
-                var result = await _userManager.CreateAsync(user, request.Password);
+                var createUserResult = await _userManager.CreateAsync(user, request.Password);
 
-                if (result.Succeeded)
+                if (createUserResult.Succeeded)
                 {
                     return new UserDto
                     {
                         DisplayName = user.DisplayName,
-                        Token = _jwtGenerator.CreateToken(user),
+                        Token = _jwtGenerator.CreateToken(user, claim: null),
                         UserName = user.UserName,
-                        Image = null
+                        Image = null,
+                        IP = _userAccessor.GetCurrentUserIpAddress(),
+                        Agent = _userAccessor.GetCurrentUserAgent()
                     };
                 }
 

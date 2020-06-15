@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aspian.Application.Core.SiteServices;
 using Aspian.Application.Core.SiteServices.DTOs;
+using Aspian.Domain.UserModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aspian.Web.Areas.Admin.API.v1.Controllers
 {
+    [Authorize(Policy = AspianPolicy.AdminOnly)]
     public class SitesController : BaseAPIController
     {
         [HttpGet]

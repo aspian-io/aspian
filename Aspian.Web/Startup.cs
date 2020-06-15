@@ -48,10 +48,10 @@ namespace Aspian.Web
 
             // Providing full mvc ASP.NET Core framework
             services.AddControllersWithViews(opt =>
-            {
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                opt.Filters.Add(new AuthorizeFilter(policy));
-            })
+                   {
+                       var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                       opt.Filters.Add(new AuthorizeFilter(policy));
+                   })
                     // providing FluentValidation service for Aspian.Application.Core Assembly
                     .AddFluentValidation(cfg =>
                     {
@@ -59,13 +59,24 @@ namespace Aspian.Web
                     });
 
             // Identity services
-            var builder = services.AddIdentityCore<User>();
-            var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
-            identityBuilder.AddEntityFrameworkStores<DataContext>();
-            identityBuilder.AddSignInManager<SignInManager<User>>();
+            services
+                .AddDefaultIdentity<User>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<DataContext>();
+            // var builder = services.AddIdentityCore<User>().AddRoles<IdentityRole>();
+            // var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
+            // identityBuilder.AddEntityFrameworkStores<DataContext>();
+            // identityBuilder.AddSignInManager<SignInManager<User>>();
+            // identityBuilder.AddRoles<IdentityRole>();
+            // identityBuilder.AddRoleManager<RoleManager<IdentityRole>>();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"]));
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication()
+                // .AddCookie(options =>
+                // {
+                //     options.LoginPath = "/Account/Unauthorized/";
+                //     options.AccessDeniedPath = "/Account/Forbidden/";
+                // })
                 .AddJwtBearer(opt =>
                 {
                     opt.TokenValidationParameters = new TokenValidationParameters
@@ -76,6 +87,15 @@ namespace Aspian.Web
                         ValidateIssuer = false
                     };
                 });
+
+            services.AddAuthorization(options =>
+            {
+                // AdminOnly Policy
+                options.AddPolicy(AspianPolicy.AdminOnly, policy => policy.RequireClaim(AspianClaimTypes.Claim, AspianClaimValues.Admin));
+                // 
+                options.AddPolicy(AspianPolicy.RequiredSpecificClaims, policy => policy.RequireClaim(AspianClaimTypes.Claim, AspianClaimValues.Admin, AspianClaimValues.Member));
+            });
+
             // Providing our JWT Generator services 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();

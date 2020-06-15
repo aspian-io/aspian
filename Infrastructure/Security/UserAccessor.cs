@@ -19,5 +19,15 @@ namespace Infrastructure.Security
 
             return username;
         }
+
+        public string GetCurrentUserIpAddress()
+        {
+            return _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+        }
+
+        public string GetCurrentUserAgent()
+        {
+            return _httpContextAccessor.HttpContext.Request.Headers["User-Agent"];
+        }
     }
 }

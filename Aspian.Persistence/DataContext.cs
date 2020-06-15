@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Domain.ActivityModel;
@@ -11,6 +12,8 @@ using Aspian.Domain.PostModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Domain.UserModel;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,8 +21,11 @@ namespace Aspian.Persistence
 {
     public class DataContext : IdentityDbContext<User>
     {
-        public DataContext(DbContextOptions options) : base(options)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public DataContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : base(options)
         {
+            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public DbSet<Activity> Activities { get; set; }
@@ -93,11 +99,24 @@ namespace Aspian.Persistence
             {
                 if (entity.State == EntityState.Added && entity.Entity is IEntityCreate)
                 {
+                    var currentUserName = _httpContextAccessor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                     ((IEntityCreate)entity.Entity).CreatedDate = DateTime.UtcNow;
+
+                    if (currentUserName != null)
+                        ((IEntityCreate)entity.Entity).CreatedById = base.Users.SingleOrDefault(user => user.UserName == currentUserName).Id;
                 }
                 if (entity.State == EntityState.Modified && entity.Entity is IEntityModify)
                 {
+                    var currentUserName = _httpContextAccessor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                     ((IEntityModify)entity.Entity).ModifiedDate = DateTime.UtcNow;
+
+                    if (currentUserName != null)
+                        ((IEntityModify)entity.Entity).ModifiedById = base.Users.SingleOrDefault(user => user.UserName == currentUserName).Id;
+                }
+                if (entity.State == EntityState.Added && entity.Entity is IEntityCreate || entity.State == EntityState.Modified && entity.Entity is IEntityModify)
+                {
+                    ((IEntityInfo)entity.Entity).UserIPAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+                    ((IEntityInfo)entity.Entity).UserAgent = _httpContextAccessor.HttpContext.Request.Headers["User-Agent"];
                 }
 
             }

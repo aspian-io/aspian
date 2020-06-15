@@ -5,7 +5,6 @@ using Aspian.Domain.BaseModel;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
-using Aspian.Domain.UserModel;
 
 namespace Aspian.Domain.PostModel
 {
