@@ -14,7 +14,7 @@ namespace Aspian.Application.Core.Interfaces
         /// FileUploadResultDto class which will be containing uploaded file.
         /// </returns>
         /// <param name="file" >The file you want to upload which must be an IFormFile type.</param>
-        Task<FileUploadResult> AddFileAsync(IFormFile file);
+        Task<FileUploadResult> AddFileAsync(IFormFile file, UploadLocationEnum uploadLocation);
 
         /// <summary>
         /// Delete file by using <paramref name="filePath"/>.
@@ -24,15 +24,13 @@ namespace Aspian.Application.Core.Interfaces
         /// </returns>
         /// <exception cref="System.IO.IOException">IF there is a problem with filePath or the file while deleting.</exception>
         /// <param name="filePath" >Absolute path of the file.</param>
-        public string DeleteFile(string filePath);
+        string DeleteFile(string filePath, UploadLocationEnum uploadLocation);
 
-        /// <summary>
-        /// To determine AttachmentType by getting <paramref name="file"/>.
-        /// </summary>
-        /// <returns>
-        /// Attachment type.
-        /// </returns>
-        /// <param name="file" >The file you want to upload which must be an IFormFile type.</param>
-        AttachmentTypeEnum CheckFileType(IFormFile file);
+    }
+
+    public enum UploadLocationEnum
+    {
+        LocalHost,
+        FtpServer
     }
 }

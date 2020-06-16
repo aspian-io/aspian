@@ -1,4 +1,4 @@
-namespace Aspian.Domain.UserModel
+namespace Infrastructure.Security.Policy
 {
     public static class AspianPolicy
     {

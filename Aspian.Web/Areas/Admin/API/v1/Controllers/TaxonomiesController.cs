@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Aspian.Application.Core.TaxonomyServices;
 using Aspian.Application.Core.TaxonomyServices.DTOs;
 using Aspian.Domain.UserModel;
+using Infrastructure.Security.Policy;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,6 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
 {
     public class TaxonomiesController : BaseAPIController
     {
-        //[Authorize(Policy = AspianClaimTypes.Member)]
         [Authorize(Policy = AspianPolicy.AdminOnly)]
         [HttpGet]
         public async Task<ActionResult<List<TaxonomyDto>>> List()

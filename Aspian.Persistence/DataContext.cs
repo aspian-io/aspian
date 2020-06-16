@@ -99,7 +99,10 @@ namespace Aspian.Persistence
             {
                 if (entity.State == EntityState.Added && entity.Entity is IEntityCreate)
                 {
-                    var currentUserName = _httpContextAccessor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                    string currentUserName = null;
+                    if (_httpContextAccessor.HttpContext != null)
+                        currentUserName = _httpContextAccessor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
                     ((IEntityCreate)entity.Entity).CreatedDate = DateTime.UtcNow;
 
                     if (currentUserName != null)
@@ -107,7 +110,10 @@ namespace Aspian.Persistence
                 }
                 if (entity.State == EntityState.Modified && entity.Entity is IEntityModify)
                 {
-                    var currentUserName = _httpContextAccessor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                    string currentUserName = null;
+                    if (_httpContextAccessor.HttpContext != null)
+                        currentUserName = _httpContextAccessor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
                     ((IEntityModify)entity.Entity).ModifiedDate = DateTime.UtcNow;
 
                     if (currentUserName != null)
@@ -115,8 +121,16 @@ namespace Aspian.Persistence
                 }
                 if (entity.State == EntityState.Added && entity.Entity is IEntityCreate || entity.State == EntityState.Modified && entity.Entity is IEntityModify)
                 {
-                    ((IEntityInfo)entity.Entity).UserIPAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
-                    ((IEntityInfo)entity.Entity).UserAgent = _httpContextAccessor.HttpContext.Request.Headers["User-Agent"];
+                    if (_httpContextAccessor.HttpContext != null)
+                    {
+                        ((IEntityInfo)entity.Entity).UserIPAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+                        ((IEntityInfo)entity.Entity).UserAgent = _httpContextAccessor.HttpContext.Request.Headers["User-Agent"];
+                    }
+                    else
+                    {
+                        ((IEntityInfo)entity.Entity).UserIPAddress = "::1";
+                        ((IEntityInfo)entity.Entity).UserAgent = "Seeded Data";
+                    }
                 }
 
             }

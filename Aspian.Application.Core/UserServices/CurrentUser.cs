@@ -1,7 +1,9 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.UserServices.DTOs;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
 using MediatR;
@@ -29,13 +31,14 @@ namespace Aspian.Application.Core.UserServices
             public async Task<UserDto> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.FindByNameAsync(_userAccessor.GetCurrentUsername());
+                var claims = await _userManager.GetClaimsAsync(user);
 
                 return new UserDto
                 {
                     DisplayName = user.DisplayName,
                     UserName = user.UserName,
-                    //Token = _jwtGenerator.CreateToken(user),
-                    Image = null
+                    Token = _jwtGenerator.CreateToken(user, claims.ToList()),
+                    Image = user.CreatedAttachments.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain)?.Url
                 };
             }
         }

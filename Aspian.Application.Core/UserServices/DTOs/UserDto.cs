@@ -6,7 +6,6 @@ namespace Aspian.Application.Core.UserServices.DTOs
         public string Token { get; set; }
         public string UserName { get; set; }
         public string Image { get; set; }
-        public string IP { get; set; }
-        public string Agent { get; set; }
+        public string Role { get; set; }
     }
 }

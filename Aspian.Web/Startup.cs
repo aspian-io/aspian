@@ -23,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Infrastructure.Option;
+using Infrastructure.Security.Policy;
 
 namespace Aspian.Web
 {
@@ -61,14 +62,7 @@ namespace Aspian.Web
             // Identity services
             services
                 .AddDefaultIdentity<User>()
-                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>();
-            // var builder = services.AddIdentityCore<User>().AddRoles<IdentityRole>();
-            // var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
-            // identityBuilder.AddEntityFrameworkStores<DataContext>();
-            // identityBuilder.AddSignInManager<SignInManager<User>>();
-            // identityBuilder.AddRoles<IdentityRole>();
-            // identityBuilder.AddRoleManager<RoleManager<IdentityRole>>();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"]));
             services.AddAuthentication()
@@ -91,9 +85,7 @@ namespace Aspian.Web
             services.AddAuthorization(options =>
             {
                 // AdminOnly Policy
-                options.AddPolicy(AspianPolicy.AdminOnly, policy => policy.RequireClaim(AspianClaimTypes.Claim, AspianClaimValues.Admin));
-                // 
-                options.AddPolicy(AspianPolicy.RequiredSpecificClaims, policy => policy.RequireClaim(AspianClaimTypes.Claim, AspianClaimValues.Admin, AspianClaimValues.Member));
+                options.AddPolicy(AspianPolicy.AdminOnly, policy => policy.RequireClaim(AspianClaimType.Claim, AspianClaimValue.SpecificValues()));
             });
 
             // Providing our JWT Generator services 
@@ -102,7 +94,7 @@ namespace Aspian.Web
 
             services.AddScoped<IUploadAccessor, UploadAccessor>();
             services.AddScoped<IOptionAccessor, OptionAccessor>();
-            //services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
+            services.Configure<FtpServerSettings>(Configuration.GetSection("FtpServer"));
 
             // Providing MediatR service for Aspian.Application.Core Assembly
             services.AddMediatR(typeof(List.Handler).Assembly);

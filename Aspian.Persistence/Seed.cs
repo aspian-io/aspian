@@ -26,19 +26,22 @@ namespace Aspian.Persistence
                     {
                         DisplayName = "Bob",
                         UserName = "bob",
-                        Email = "bob@test.com"
+                        Email = "bob@test.com",
+                        Role = "Admin"
                     },
                     new User
                     {
                         DisplayName = "Tom",
                         UserName = "tom",
-                        Email = "tom@test.com"
+                        Email = "tom@test.com",
+                        Role = "Member"
                     },
                     new User
                     {
                         DisplayName = "Jane",
                         UserName = "jane",
-                        Email = "jane@test.com"
+                        Email = "jane@test.com",
+                        Role = "Member"
                     }
                 };
                 foreach (var user in users)
@@ -47,7 +50,7 @@ namespace Aspian.Persistence
 
                     // Add Admin policy as a claim to bob claims
                     if (user.UserName == "bob")
-                        await userManager.AddClaimAsync(user, new Claim(AspianClaimTypes.Claim, AspianClaimValues.Admin));
+                        await userManager.AddClaimAsync(user, new Claim("Claim", "Admin"));
                 }
             }
 

@@ -12,6 +12,7 @@ namespace Aspian.Domain.UserModel
     {
         string DisplayName { get; set; }
         string Bio { get; set; }
+        string Role { get; set; }
 
 
         #region Navigation Properties

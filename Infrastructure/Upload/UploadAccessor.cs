@@ -9,6 +9,8 @@ using Aspian.Domain.AttachmentModel;
 using System.Collections.Generic;
 using System.Linq;
 using Aspian.Domain.OptionModel;
+using System.Net;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Upload
 {
@@ -17,16 +19,23 @@ namespace Infrastructure.Upload
         private readonly IWebHostEnvironment _env;
         private readonly IUserAccessor _userAccessor;
         private readonly IOptionAccessor _optionAccessor;
-        public UploadAccessor(IWebHostEnvironment env, IUserAccessor userAccessor, IOptionAccessor optionAccessor)
+        private readonly string _baseUri;
+        private readonly string _username;
+        private readonly string _password;
+        public UploadAccessor(IWebHostEnvironment env, IUserAccessor userAccessor, IOptionAccessor optionAccessor, IOptions<FtpServerSettings> config)
         {
             _optionAccessor = optionAccessor;
             _userAccessor = userAccessor;
             _env = env;
+
+            _baseUri = config.Value.ServerUri;
+            _username = config.Value.ServerUsername;
+            _password = config.Value.ServerPassword;
         }
 
-        public async Task<FileUploadResult> AddFileAsync(IFormFile file)
+        public async Task<FileUploadResult> AddFileAsync(IFormFile file, UploadLocationEnum uploadLocation)
         {
-            var uploadFolderName = "uploads";
+            var uploadFolderName = "public_html";
             var userUploadSubFolderName = _userAccessor.GetCurrentUsername();
             var userUploadSubFolderByDateName = DateTime.UtcNow.ToString("yyyy-MM-dd");
             var extension = Path.GetExtension(file.FileName);
@@ -41,11 +50,41 @@ namespace Infrastructure.Upload
             if (size > 0)
             {
                 var fileType = CheckFileType(file);
-                Directory.CreateDirectory($"{_env.WebRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}");
-                var filePath = $"{_env.WebRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
-                using (var stream = File.Create(filePath))
+                string filePath = null;
+
+                if (uploadLocation == UploadLocationEnum.LocalHost)
                 {
-                    await file.CopyToAsync(stream);
+                    Directory.CreateDirectory($"{_env.ContentRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}");
+                    filePath = $"{_env.ContentRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
+
+                    using (var stream = File.Create(filePath))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+                if (uploadLocation == UploadLocationEnum.FtpServer)
+                {
+                    var path = $"{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}";
+                    filePath = $"{_baseUri}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
+                    var pathExists = PathCreatedOrExists(_baseUri, path);
+
+                    if (pathExists)
+                    {
+                        var ftp = (FtpWebRequest)FtpWebRequest.Create(filePath);
+                        ftp.Method = WebRequestMethods.Ftp.UploadFile;
+
+                        ftp.Credentials = new NetworkCredential(_username, _password);
+
+                        using (Stream requestStream = ftp.GetRequestStream())
+                        {
+                            await file.CopyToAsync(requestStream);
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Problem creating or finding the path");
+                    }
+
                 }
 
                 return new FileUploadResult
@@ -62,7 +101,7 @@ namespace Infrastructure.Upload
             throw new Exception("Problem uploading the file!");
         }
 
-        public string DeleteFile(string filePath)
+        public string DeleteFile(string filePath, UploadLocationEnum uploadLocation)
         {
             try
             {
@@ -83,7 +122,7 @@ namespace Infrastructure.Upload
             }
         }
 
-        public AttachmentTypeEnum CheckFileType(IFormFile file)
+        private AttachmentTypeEnum CheckFileType(IFormFile file)
         {
             var contentType = file.ContentType;
 
@@ -163,6 +202,52 @@ namespace Infrastructure.Upload
             }
 
             throw new Exception("Problem determining AttachmentType!");
+        }
+
+
+        private bool PathCreatedOrExists(string baseUri, string path)
+        {
+
+            bool exists = true;
+
+            string[] folders = path.Split('/');
+
+            foreach (string folder in folders)
+            {
+
+                if (folder != "")
+                {
+
+                    try
+                    {
+                        baseUri += "/" + folder;
+                        //create the directory
+                        FtpWebRequest requestDir = (FtpWebRequest)FtpWebRequest.Create(new Uri(baseUri));
+                        requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
+                        requestDir.Credentials = new NetworkCredential(_username, _password);
+
+                        using (FtpWebResponse response = (FtpWebResponse)requestDir.GetResponse())
+                        {
+                            using (Stream ftpStream = response.GetResponseStream())
+                            {
+
+                            }
+                        }
+                    }
+                    catch (WebException ex)
+                    {
+                        using (FtpWebResponse response = (FtpWebResponse)ex.Response)
+                        {
+                            if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                                exists = true;
+                            else
+                                exists = false;
+                        }
+                    }
+                }
+            }
+
+            return exists;
         }
 
     }

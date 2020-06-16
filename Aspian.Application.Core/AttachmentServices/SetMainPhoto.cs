@@ -1,16 +1,18 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aspian.Application.Core.AttachmentServices
 {
-    public class Delete
+    public class SetMainPhoto
     {
         public class Command : IRequest
         {
@@ -20,26 +22,26 @@ namespace Aspian.Application.Core.AttachmentServices
         public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext _context;
-            private readonly IUploadAccessor _uploadAccessor;
-            public Handler(DataContext context, IUploadAccessor uploadAccessor)
+            private readonly IUserAccessor _userAccessor;
+            public Handler(DataContext context, IUserAccessor userAccessor)
             {
-                _uploadAccessor = uploadAccessor;
+                _userAccessor = userAccessor;
                 _context = context;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var attachment = await _context.Attachments.SingleOrDefaultAsync(x => x.Id == request.Id);
+                var user  = await _context.Users.SingleOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername());
 
-                if (attachment == null)
-                    throw new RestException(HttpStatusCode.NotFound, new { Attachment = "Not found" });
+                var photo = user.CreatedAttachments.FirstOrDefault(x => x.Id == request.Id && x.Type == AttachmentTypeEnum.Photo);
 
-                var result = _uploadAccessor.DeleteFile(attachment.Url, UploadLocationEnum.LocalHost);
+                if (photo == null)
+                    throw new RestException(HttpStatusCode.NotFound, new {Photo = "Not found"});
 
-                if (result != "ok")
-                    throw new Exception("Problem deleting the file!");
+                var currentMain = user.CreatedAttachments.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain);
 
-                _context.Attachments.Remove(attachment);
+                currentMain.IsMain = false;
+                photo.IsMain = true;
 
                 var success = await _context.SaveChangesAsync() > 0;
 

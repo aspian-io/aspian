@@ -9,6 +9,7 @@ using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.UserServices.DTOs;
 using Aspian.Application.Core.Validators;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
 using FluentValidation;
@@ -44,12 +45,8 @@ namespace Aspian.Application.Core.UserServices
             private readonly DataContext _context;
             private readonly UserManager<User> _userManager;
             private readonly IJwtGenerator _jwtGenerator;
-            private readonly RoleManager<IdentityRole> _roleManager;
-            private readonly IUserAccessor _userAccessor;
-            public Handler(DataContext context, UserManager<User> userManager, IJwtGenerator jwtGenerator, RoleManager<IdentityRole> roleManager, IUserAccessor userAccessor)
+            public Handler(DataContext context, UserManager<User> userManager, IJwtGenerator jwtGenerator)
             {
-                _userAccessor = userAccessor;
-                _roleManager = roleManager;
                 _jwtGenerator = jwtGenerator;
                 _userManager = userManager;
                 _context = context;
@@ -67,7 +64,8 @@ namespace Aspian.Application.Core.UserServices
                 {
                     DisplayName = request.UserName,
                     Email = request.Email,
-                    UserName = request.UserName
+                    UserName = request.UserName,
+                    Role = Role.Member
                 };
 
                 var createUserResult = await _userManager.CreateAsync(user, request.Password);
@@ -79,9 +77,8 @@ namespace Aspian.Application.Core.UserServices
                         DisplayName = user.DisplayName,
                         Token = _jwtGenerator.CreateToken(user, claim: null),
                         UserName = user.UserName,
-                        Image = null,
-                        IP = _userAccessor.GetCurrentUserIpAddress(),
-                        Agent = _userAccessor.GetCurrentUserAgent()
+                        Image = user.CreatedAttachments.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain)?.Url,
+                        Role = user.Role
                     };
                 }
 

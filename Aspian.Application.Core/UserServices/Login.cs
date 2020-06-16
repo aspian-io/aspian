@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.UserServices.DTOs;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
 using FluentValidation;
@@ -37,12 +38,8 @@ namespace Aspian.Application.Core.UserServices
             private readonly UserManager<User> _userManager;
             private readonly SignInManager<User> _signInManager;
             private readonly IJwtGenerator _jwtGenerator;
-            private readonly RoleManager<IdentityRole> _roleManager;
-            private readonly DataContext _context;
-            public Handler(DataContext context, UserManager<User> userManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator, RoleManager<IdentityRole> roleManager)
+            public Handler(UserManager<User> userManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator)
             {
-                _context = context;
-                _roleManager = roleManager;
                 _jwtGenerator = jwtGenerator;
                 _signInManager = signInManager;
                 _userManager = userManager;
@@ -65,7 +62,7 @@ namespace Aspian.Application.Core.UserServices
                         DisplayName = user.DisplayName,
                         Token = _jwtGenerator.CreateToken(user, claims.ToList()),
                         UserName = user.UserName,
-                        Image = null
+                        Image = user.CreatedAttachments.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain)?.Url
                     };
                 }
 
