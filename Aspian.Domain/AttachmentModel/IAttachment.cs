@@ -14,7 +14,8 @@ namespace Aspian.Domain.AttachmentModel
         string FileExtension { get; set; }
         string FileSize { get; set; }
         string MimeType { get; set; }
-        string Url { get; set; }
+        UploadLocationEnum UploadLocation { get; set; }
+        string RelativePath { get; set; }
         bool IsMain { get; set; }
 
         #region Navigation Properties
@@ -36,5 +37,11 @@ namespace Aspian.Domain.AttachmentModel
         PDF,
         TextFile,
         Other
+    }
+
+    public enum UploadLocationEnum
+    {
+        LocalHost,
+        FtpServer
     }
 }

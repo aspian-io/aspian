@@ -3,7 +3,7 @@ namespace Aspian.Application.Core.AttachmentServices.DTOs
     public class AttachmentDto
     {
         public string Type { get; set; }
-        public string Url { get; set; }
+        public string RelativePath { get; set; }
         public string MimeType { get; set; }
         public string FileName { get; set; }
         public string FileExtension { get; set; }

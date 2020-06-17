@@ -11,6 +11,7 @@ using System.Linq;
 using Aspian.Domain.OptionModel;
 using System.Net;
 using Microsoft.Extensions.Options;
+using FluentFTP;
 
 namespace Infrastructure.Upload
 {
@@ -20,6 +21,7 @@ namespace Infrastructure.Upload
         private readonly IUserAccessor _userAccessor;
         private readonly IOptionAccessor _optionAccessor;
         private readonly string _baseUri;
+        private readonly int _port;
         private readonly string _username;
         private readonly string _password;
         public UploadAccessor(IWebHostEnvironment env, IUserAccessor userAccessor, IOptionAccessor optionAccessor, IOptions<FtpServerSettings> config)
@@ -29,13 +31,14 @@ namespace Infrastructure.Upload
             _env = env;
 
             _baseUri = config.Value.ServerUri;
+            _port = config.Value.ServerPort;
             _username = config.Value.ServerUsername;
             _password = config.Value.ServerPassword;
         }
 
         public async Task<FileUploadResult> AddFileAsync(IFormFile file, UploadLocationEnum uploadLocation)
         {
-            var uploadFolderName = "public_html";
+            var uploadFolderName = "uploads";
             var userUploadSubFolderName = _userAccessor.GetCurrentUsername();
             var userUploadSubFolderByDateName = DateTime.UtcNow.ToString("yyyy-MM-dd");
             var extension = Path.GetExtension(file.FileName);
@@ -50,76 +53,104 @@ namespace Infrastructure.Upload
             if (size > 0)
             {
                 var fileType = CheckFileType(file);
-                string filePath = null;
+                string fileRelativePath = null;
 
                 if (uploadLocation == UploadLocationEnum.LocalHost)
                 {
+                    var root = _env.ContentRootPath;
                     Directory.CreateDirectory($"{_env.ContentRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}");
-                    filePath = $"{_env.ContentRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
+                    fileRelativePath = $"/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
+                    var fileAbsolutePath = $"{root}{fileRelativePath}";
 
-                    using (var stream = File.Create(filePath))
+
+                    using (var stream = File.Create(fileAbsolutePath))
                     {
                         await file.CopyToAsync(stream);
                     }
                 }
                 if (uploadLocation == UploadLocationEnum.FtpServer)
                 {
-                    var path = $"{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}";
-                    filePath = $"{_baseUri}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
-                    var pathExists = PathCreatedOrExists(_baseUri, path);
+                    var path = $"/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}";
+                    fileRelativePath = $"/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
+                    // create an FTP client
+                    FtpClient client = new FtpClient(_baseUri, _port, _username, _password);
+                    // begin connecting to the server
+                    await client.ConnectAsync();
+                    // check if a folder doesn't exist
+                    if (!await client.DirectoryExistsAsync(path))
+                        await client.CreateDirectoryAsync(path);
 
-                    if (pathExists)
+                    using (var stream = file.OpenReadStream())
                     {
-                        var ftp = (FtpWebRequest)FtpWebRequest.Create(filePath);
-                        ftp.Method = WebRequestMethods.Ftp.UploadFile;
+                        // upload the file
+                        var ftpStatus = await client.UploadAsync(stream, fileRelativePath);
 
-                        ftp.Credentials = new NetworkCredential(_username, _password);
-
-                        using (Stream requestStream = ftp.GetRequestStream())
+                        if (ftpStatus.IsFailure())
                         {
-                            await file.CopyToAsync(requestStream);
+                            await client.DisconnectAsync();
+                            throw new Exception("Uploading file failed!");
                         }
                     }
-                    else
-                    {
-                        throw new Exception("Problem creating or finding the path");
-                    }
-
+                    // disconnect!
+                    await client.DisconnectAsync();
                 }
 
                 return new FileUploadResult
                 {
                     Type = fileType,
-                    Url = filePath,
+                    RelativePath = fileRelativePath,
                     MimeType = mimeType,
                     FileName = fileName,
                     FileExtension = extension,
-                    FileSize = size
+                    FileSize = size,
                 };
             }
 
             throw new Exception("Problem uploading the file!");
         }
 
-        public string DeleteFile(string filePath, UploadLocationEnum uploadLocation)
+        public async Task<string> DeleteFileAsync(string fileRelativePath, UploadLocationEnum uploadLocation)
         {
-            try
+            if (uploadLocation == UploadLocationEnum.LocalHost)
             {
-                if (File.Exists(filePath))
+                var filePath = $"{_env.ContentRootPath}{fileRelativePath}";
+
+                try
                 {
-                    File.Delete(filePath);
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                        return "ok";
+                    }
+                    else
+                    {
+                        throw new Exception("File not found!");
+                    }
+                }
+                catch (IOException ioexception)
+                {
+
+                    throw new IOException(ioexception.Message);
+                }
+            }
+
+            if (uploadLocation == UploadLocationEnum.FtpServer)
+            {
+                // create an FTP client
+                FtpClient client = new FtpClient(_baseUri, _port, _username, _password);
+                // begin connecting to the server
+                await client.ConnectAsync();
+
+                // check if a file exists
+                if (await client.FileExistsAsync(fileRelativePath))
+                {
+                    // delete the file
+                    await client.DeleteFileAsync(fileRelativePath);
                     return "ok";
                 }
-                else
-                {
-                    throw new Exception("File not found!");
-                }
             }
-            catch (IOException ioexception)
-            {
 
-                throw new IOException(ioexception.Message);
-            }
+            throw new Exception("Problem deleting the file!");
         }
 
         private AttachmentTypeEnum CheckFileType(IFormFile file)
@@ -203,52 +234,5 @@ namespace Infrastructure.Upload
 
             throw new Exception("Problem determining AttachmentType!");
         }
-
-
-        private bool PathCreatedOrExists(string baseUri, string path)
-        {
-
-            bool exists = true;
-
-            string[] folders = path.Split('/');
-
-            foreach (string folder in folders)
-            {
-
-                if (folder != "")
-                {
-
-                    try
-                    {
-                        baseUri += "/" + folder;
-                        //create the directory
-                        FtpWebRequest requestDir = (FtpWebRequest)FtpWebRequest.Create(new Uri(baseUri));
-                        requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
-                        requestDir.Credentials = new NetworkCredential(_username, _password);
-
-                        using (FtpWebResponse response = (FtpWebResponse)requestDir.GetResponse())
-                        {
-                            using (Stream ftpStream = response.GetResponseStream())
-                            {
-
-                            }
-                        }
-                    }
-                    catch (WebException ex)
-                    {
-                        using (FtpWebResponse response = (FtpWebResponse)ex.Response)
-                        {
-                            if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
-                                exists = true;
-                            else
-                                exists = false;
-                        }
-                    }
-                }
-            }
-
-            return exists;
-        }
-
     }
 }

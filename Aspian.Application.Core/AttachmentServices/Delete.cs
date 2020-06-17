@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -34,10 +35,19 @@ namespace Aspian.Application.Core.AttachmentServices
                 if (attachment == null)
                     throw new RestException(HttpStatusCode.NotFound, new { Attachment = "Not found" });
 
-                var result = _uploadAccessor.DeleteFile(attachment.Url, UploadLocationEnum.LocalHost);
+                if (attachment.UploadLocation == UploadLocationEnum.LocalHost)
+                {
+                    var result = await _uploadAccessor.DeleteFileAsync(attachment.RelativePath, UploadLocationEnum.LocalHost);
+                    if (result != "ok")
+                        throw new Exception("Problem deleting the file!");
+                }
 
-                if (result != "ok")
-                    throw new Exception("Problem deleting the file!");
+                if (attachment.UploadLocation == UploadLocationEnum.FtpServer)
+                {
+                    var result = await _uploadAccessor.DeleteFileAsync(attachment.RelativePath, UploadLocationEnum.FtpServer);
+                    if (result != "ok")
+                        throw new Exception("Problem deleting the file!");
+                }
 
                 _context.Attachments.Remove(attachment);
 

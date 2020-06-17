@@ -8,10 +8,15 @@ namespace Aspian.Domain.AttachmentModel
     {
         public void Configure(EntityTypeBuilder<Attachment> builder)
         {
-            var converter = new EnumToStringConverter<AttachmentTypeEnum>();
+            var attachmentTypeConverter = new EnumToStringConverter<AttachmentTypeEnum>();
             builder
                 .Property(a => a.Type)
-                .HasConversion(converter);
+                .HasConversion(attachmentTypeConverter);
+
+            var UploadLocationConverter = new EnumToStringConverter<UploadLocationEnum>();
+            builder
+                .Property(a => a.UploadLocation)
+                .HasConversion(UploadLocationConverter);
 
             builder
                 .HasOne(a => a.CreatedBy)

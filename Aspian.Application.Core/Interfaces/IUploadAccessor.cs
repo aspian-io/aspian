@@ -23,14 +23,8 @@ namespace Aspian.Application.Core.Interfaces
         /// a string containing "ok" if the deletion process is successful.
         /// </returns>
         /// <exception cref="System.IO.IOException">IF there is a problem with filePath or the file while deleting.</exception>
-        /// <param name="filePath" >Absolute path of the file.</param>
-        string DeleteFile(string filePath, UploadLocationEnum uploadLocation);
+        /// <param name="fileRelativePath" >Relative path of the file.</param>
+        Task<string> DeleteFileAsync(string fileRelativePath, UploadLocationEnum uploadLocation);
 
-    }
-
-    public enum UploadLocationEnum
-    {
-        LocalHost,
-        FtpServer
     }
 }

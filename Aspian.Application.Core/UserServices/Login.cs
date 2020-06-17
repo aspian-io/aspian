@@ -62,7 +62,7 @@ namespace Aspian.Application.Core.UserServices
                         DisplayName = user.DisplayName,
                         Token = _jwtGenerator.CreateToken(user, claims.ToList()),
                         UserName = user.UserName,
-                        Image = user.CreatedAttachments.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain)?.Url
+                        //Image = user.CreatedAttachments.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain)?.Url
                     };
                 }
 

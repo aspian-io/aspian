@@ -5,6 +5,7 @@
   <ItemGroup>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.6.0"/>
     <PackageReference Include="CloudinaryDotNet" Version="1.11.0"/>
+    <PackageReference Include="FluentFTP" Version="32.4.3"/>
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
