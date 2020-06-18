@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using Aspian.Application.Core.AttachmentServices;
 using Aspian.Domain.AttachmentModel;
@@ -26,5 +27,14 @@ namespace Aspian.Application.Core.Interfaces
         /// <param name="fileRelativePath" >Relative path of the file.</param>
         Task<string> DeleteFileAsync(string fileRelativePath, UploadLocationEnum uploadLocation);
 
+        /// <summary>
+        /// Get requested image stream using <paramref name="imageRelativePath"/> and <paramref name="uploadLocation"/>.
+        /// </summary>
+        /// <returns>
+        /// Stream of the requested image.
+        /// </returns>
+        /// <param name="imageRelativePath" >Relative path of the image.</param>
+        /// <param name="uploadLocation" >The location of a requested image which could be LocalHost or FtpServer.</param>
+        Task<MemoryStream> GetImageAsync(string imageRelativePath, UploadLocationEnum uploadLocation);
     }
 }

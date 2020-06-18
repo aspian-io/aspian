@@ -109,6 +109,54 @@ namespace Infrastructure.Upload
             throw new Exception("Problem uploading the file!");
         }
 
+        //
+        public async Task<MemoryStream> GetImageAsync(string imageRelativePath, UploadLocationEnum uploadLocation)
+        {
+            if (uploadLocation == UploadLocationEnum.LocalHost)
+            {
+                var root = _env.ContentRootPath;
+                var imageAbsolutePath = $"{root}{imageRelativePath}";
+                if (File.Exists(imageAbsolutePath))
+                {
+                    var memory = new MemoryStream();
+                    using (var stream = new FileStream(imageAbsolutePath, FileMode.Open))
+                    {
+                        await stream.CopyToAsync(memory);
+                    }
+
+                    memory.Position = 0;
+                    return memory;
+                }
+                throw new Exception("The requested image does not exist!");
+            }
+
+            if (uploadLocation == UploadLocationEnum.FtpServer)
+            {
+                // create an FTP client
+                FtpClient client = new FtpClient(_baseUri, _port, _username, _password);
+                // begin connecting to the server
+                await client.ConnectAsync();
+                if (await client.FileExistsAsync(imageRelativePath))
+                {
+                    var memory = new MemoryStream();
+                    using (var stream = await client.OpenReadAsync(imageRelativePath))
+                    {
+                        await stream.CopyToAsync(memory);
+                    }
+
+                    memory.Position = 0;
+                    // disconnect!
+                    await client.DisconnectAsync();
+
+                    return memory;
+                }
+                throw new Exception("The requested image does not exist!");
+            }
+
+            throw new Exception("Problem getting the requested image!");
+        }
+
+        //
         public async Task<string> DeleteFileAsync(string fileRelativePath, UploadLocationEnum uploadLocation)
         {
             if (uploadLocation == UploadLocationEnum.LocalHost)

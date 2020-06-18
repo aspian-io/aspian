@@ -28,15 +28,11 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
             return await Mediator.Send(new SetMainPhoto.Command { Id = id });
         }
 
-        [HttpGet("viewimage")]
-        public FileStreamResult ViewImage(string filename)
+        [HttpGet("images/{filename}")]
+        public async Task<ActionResult> GetImage(string filename)
         {
-            string filepath = Path.Combine("uploads/tom/2020-06-16/photo/", filename);
-
-            byte[] data = System.IO.File.ReadAllBytes(filepath);
-
-            Stream stream = new MemoryStream(data);
-            return new FileStreamResult(stream, "image/jpeg");
+            var getImageDto = await Mediator.Send(new GetImage.Query { FileName = filename });
+            return File(getImageDto.Memory, getImageDto.MimeType, getImageDto.FileName);
         }
     }
 }
