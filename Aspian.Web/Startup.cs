@@ -23,7 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Infrastructure.Option;
-using Infrastructure.Security.Policy;
+using Aspian.Domain.UserModel.Policy;
 
 namespace Aspian.Web
 {

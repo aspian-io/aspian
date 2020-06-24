@@ -37,7 +37,7 @@ namespace Aspian.Application.Core.AttachmentServices
             public async Task<AttachmentDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 // Upload location specified here
-                var uploadLocation = UploadLocationEnum.FtpServer;
+                var uploadLocation = UploadLocationEnum.LocalHost;
                 var fileUploadResult = await _uploadAccessor.AddFileAsync(request.File, uploadLocation);
 
                 var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername());

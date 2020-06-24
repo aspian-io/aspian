@@ -1,6 +1,6 @@
-namespace Infrastructure.Security.Policy
+namespace Aspian.Domain.UserModel.Policy
 {
-    public static class AspianPolicy
+    public class AspianPolicy
     {
         public const string AdminOnly = "AdminOnly";
         public const string RequiredSpecificClaims = "RequiredSpecificClaims";

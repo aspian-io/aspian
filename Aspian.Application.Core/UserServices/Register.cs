@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -9,8 +8,8 @@ using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.UserServices.DTOs;
 using Aspian.Application.Core.Validators;
-using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.UserModel;
+using Aspian.Domain.UserModel.Policy;
 using Aspian.Persistence;
 using FluentValidation;
 using MediatR;
@@ -65,7 +64,7 @@ namespace Aspian.Application.Core.UserServices
                     DisplayName = request.UserName,
                     Email = request.Email,
                     UserName = request.UserName,
-                    Role = Role.Member
+                    Role = AspianClaimValue.Member
                 };
 
                 var createUserResult = await _userManager.CreateAsync(user, request.Password);

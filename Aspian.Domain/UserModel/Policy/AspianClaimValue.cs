@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace Infrastructure.Security.Policy
+namespace Aspian.Domain.UserModel.Policy
 {
-    public static class AspianClaimValue
+    public class AspianClaimValue
     {
         public const string Admin = "Admin";
         public const string Member = "Member";

@@ -36,6 +36,7 @@ namespace Aspian.Domain.AttachmentModel
         Audio,
         PDF,
         TextFile,
+        Compressed,
         Other
     }
 

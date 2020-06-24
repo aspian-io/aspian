@@ -9,6 +9,7 @@ using Aspian.Domain.PostModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Domain.UserModel;
+using Aspian.Domain.UserModel.Policy;
 using Microsoft.AspNetCore.Identity;
 
 namespace Aspian.Persistence
@@ -50,7 +51,7 @@ namespace Aspian.Persistence
 
                     // Add Admin policy as a claim to bob claims
                     if (user.UserName == "bob")
-                        await userManager.AddClaimAsync(user, new Claim("Claim", "Admin"));
+                        await userManager.AddClaimAsync(user, new Claim(AspianClaimType.Role, AspianClaimValue.Admin));
                 }
             }
 
@@ -337,42 +338,6 @@ namespace Aspian.Persistence
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
                         Optionmetas = new List<Optionmeta> {
                             new Optionmeta {
-                                PublicKeyName = ".aac",
-                                Key = KeyEnum.Attachment__Audio_Aac,
-                                KeyDescription = "audio/x-aac",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
-                                PublicKeyName = ".m3u",
-                                Key = KeyEnum.Attachment__Audio_M3u,
-                                KeyDescription = "audio/x-mpegurl",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
-                                PublicKeyName = ".mid",
-                                Key = KeyEnum.Attachment__Audio_Mid,
-                                KeyDescription = "audio/midi",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
-                                PublicKeyName = ".mp4a",
-                                Key = KeyEnum.Attachment__Audio_Mp4a,
-                                KeyDescription = "audio/mp4",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
                                 PublicKeyName = ".mp3",
                                 Key = KeyEnum.Attachment__Audio_Mp3,
                                 KeyDescription = "audio/mpeg",
@@ -382,45 +347,9 @@ namespace Aspian.Persistence
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
-                                PublicKeyName = ".oga",
-                                Key = KeyEnum.Attachment__Audio_Oga,
-                                KeyDescription = "audio/ogg",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
-                                PublicKeyName = ".wav",
-                                Key = KeyEnum.Attachment__Audio_Wav,
-                                KeyDescription = "audio/x-wav",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
-                                PublicKeyName = ".weba",
-                                Key = KeyEnum.Attachment__Audio_Weba,
-                                KeyDescription = "audio/webm",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
                                 PublicKeyName = ".wma",
                                 Key = KeyEnum.Attachment__Audio_Wma,
                                 KeyDescription = "audio/x-ms-wma",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
-                                PublicKeyName = ".mka",
-                                Key = KeyEnum.Attachment__Audio_Mka,
-                                KeyDescription = "audio/x-matroska",
                                 Value = ValueEnum.Attachments__NotAllowed,
                                 ValueDescription = "NotAllowed",
                                 DefaultValue = ValueEnum.Attachments__NotAllowed,
@@ -467,15 +396,6 @@ namespace Aspian.Persistence
                                 PublicKeyName = ".svg",
                                 Key = KeyEnum.Attachment__Photo_Svg,
                                 KeyDescription = "image/svg+xml",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
-                                PublicKeyName = ".tiff",
-                                Key = KeyEnum.Attachment__Photo_Tiff,
-                                KeyDescription = "image/tiff",
                                 Value = ValueEnum.Attachments__NotAllowed,
                                 ValueDescription = "NotAllowed",
                                 DefaultValue = ValueEnum.Attachments__NotAllowed,
@@ -574,15 +494,6 @@ namespace Aspian.Persistence
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
-                                PublicKeyName = ".m4v",
-                                Key = KeyEnum.Attachment__Video_M4v,
-                                KeyDescription = "video/x-m4v",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
                                 PublicKeyName = ".mp4",
                                 Key = KeyEnum.Attachment__Video_Mp4,
                                 KeyDescription = "video/mp4",
@@ -592,36 +503,9 @@ namespace Aspian.Persistence
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
-                                PublicKeyName = ".mpeg",
+                                PublicKeyName = ".mpeg/.mpg",
                                 Key = KeyEnum.Attachment__Video_Mpeg,
                                 KeyDescription = "video/mpeg",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
-                                PublicKeyName = ".ogg",
-                                Key = KeyEnum.Attachment__Video_Ogg,
-                                KeyDescription = "video/ogg",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
-                                PublicKeyName = ".webm",
-                                Key = KeyEnum.Attachment__Video_Webm,
-                                KeyDescription = "video/webm",
-                                Value = ValueEnum.Attachments__NotAllowed,
-                                ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
-                                DefaultValueDescription = "NotAllowed"
-                            },
-                            new Optionmeta {
-                                PublicKeyName = ".wm",
-                                Key = KeyEnum.Attachment__Video_Wm,
-                                KeyDescription = "video/x-ms-wm",
                                 Value = ValueEnum.Attachments__NotAllowed,
                                 ValueDescription = "NotAllowed",
                                 DefaultValue = ValueEnum.Attachments__NotAllowed,
@@ -640,6 +524,34 @@ namespace Aspian.Persistence
                                 PublicKeyName = ".mkv",
                                 Key = KeyEnum.Attachment__Video_Mkv,
                                 KeyDescription = "video/x-matroska",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+
+                            new Optionmeta {
+                                PublicKeyName = ".zip",
+                                Key = KeyEnum.Attachment__Compressed_Zip,
+                                KeyDescription = "application/zip",
+                                Value = ValueEnum.Attachments__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".rar",
+                                Key = KeyEnum.Attachment__Compressed_Rar,
+                                KeyDescription = "application/vnd.rar",
+                                Value = ValueEnum.Attachments__NotAllowed,
+                                ValueDescription = "NotAllowed",
+                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValueDescription = "NotAllowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = ".7z",
+                                Key = KeyEnum.Attachment__Compressed_7z,
+                                KeyDescription = "application/x-7z-compressed",
                                 Value = ValueEnum.Attachments__NotAllowed,
                                 ValueDescription = "NotAllowed",
                                 DefaultValue = ValueEnum.Attachments__NotAllowed,

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aspian.Application.Core.SiteServices;
 using Aspian.Application.Core.SiteServices.DTOs;
-using Aspian.Domain.UserModel;
-using Infrastructure.Security.Policy;
+using Aspian.Domain.UserModel.Policy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

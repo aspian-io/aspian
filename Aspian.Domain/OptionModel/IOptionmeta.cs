@@ -22,13 +22,7 @@ namespace Aspian.Domain.OptionModel
 
     public enum KeyEnum
     {
-        /// <summary>
-        /// Enable/Disable Avtivity Logging
-        /// </summary>
         Activity__LoggingActivities,
-        /// <summary>
-        /// Determines Activity pruning date
-        /// </summary>
         Activity__PruningDate,
 
         Attachment__Photo_Png,
@@ -36,30 +30,17 @@ namespace Aspian.Domain.OptionModel
         Attachment__Photo_Bmp,
         Attachment__Photo_Gif,
         Attachment__Photo_Svg,
-        Attachment__Photo_Tiff,
 
         Attachment__Video_3gp,
         Attachment__Video_Avi,
         Attachment__Video_Flv,
-        Attachment__Video_M4v,
-        Attachment__Video_Wm,
         Attachment__Video_Wmv,
         Attachment__Video_Mp4,
         Attachment__Video_Mpeg,
-        Attachment__Video_Ogg,
-        Attachment__Video_Webm,
         Attachment__Video_Mkv,
 
-        Attachment__Audio_Aac,
-        Attachment__Audio_M3u,
         Attachment__Audio_Wma,
-        Attachment__Audio_Mid,
         Attachment__Audio_Mp3,
-        Attachment__Audio_Mp4a,
-        Attachment__Audio_Oga,
-        Attachment__Audio_Weba,
-        Attachment__Audio_Wav,
-        Attachment__Audio_Mka,
 
         Attachment__Text_Pdf,
 
@@ -68,7 +49,11 @@ namespace Aspian.Domain.OptionModel
         Attachment__Text_Doc,
         Attachment__Text_Docx,
         Attachment__Text_Xls,
-        Attachment__Text_Xlsx
+        Attachment__Text_Xlsx,
+
+        Attachment__Compressed_Zip,
+        Attachment__Compressed_Rar,
+        Attachment__Compressed_7z
     }
 
     public enum ValueEnum

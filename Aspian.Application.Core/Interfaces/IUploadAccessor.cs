@@ -36,5 +36,15 @@ namespace Aspian.Application.Core.Interfaces
         /// <param name="imageRelativePath" >Relative path of the image.</param>
         /// <param name="uploadLocation" >The location of a requested image which could be LocalHost or FtpServer.</param>
         Task<MemoryStream> GetImageAsync(string imageRelativePath, UploadLocationEnum uploadLocation);
+
+        /// <summary>
+        /// Download requested file using <paramref name="fileRelativePath"/> and <paramref name="uploadLocation"/>.
+        /// </summary>
+        /// <returns>
+        /// Stream of the requested file.
+        /// </returns>
+        /// <param name="fileRelativePath" >Relative path of the file.</param>
+        /// <param name="uploadLocation" >The location of a requested file which could be LocalHost or FtpServer.</param>
+        Task<MemoryStream> DownloadFileAsync(string fileRelativePath, UploadLocationEnum uploadLocation);
     }
 }

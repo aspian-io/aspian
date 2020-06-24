@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Aspian.Application.Core.AttachmentServices;
 using Aspian.Application.Core.AttachmentServices.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aspian.Web.Areas.Admin.API.v1.Controllers
@@ -31,8 +33,15 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         [HttpGet("images/{filename}")]
         public async Task<ActionResult> GetImage(string filename)
         {
-            var getImageDto = await Mediator.Send(new GetImage.Query { FileName = filename });
-            return File(getImageDto.Memory, getImageDto.MimeType, getImageDto.FileName);
+            var imageDto = await Mediator.Send(new GetImage.Query { FileName = filename });
+            return File(imageDto.Memory, imageDto.MimeType, imageDto.FileName);
+        }
+
+        [HttpGet("download/{filename}")]
+        public async Task<ActionResult> Download(string filename)
+        {
+            var downloadFileDto = await Mediator.Send(new Download.Query { FileName = filename });
+            return File(downloadFileDto.Memory, downloadFileDto.MimeType, downloadFileDto.FileName);
         }
     }
 }
