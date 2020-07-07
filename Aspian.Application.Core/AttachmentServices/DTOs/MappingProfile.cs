@@ -8,6 +8,7 @@ namespace Aspian.Application.Core.AttachmentServices.DTOs
         public MappingProfile()
         {
             CreateMap<AttachmentDto, Attachment>();
+            CreateMap<Attachment, AttachmentDto>();
             CreateMap<FileUploadResult, Attachment>();
             CreateMap<FileUploadResult, AttachmentDto>();
         }

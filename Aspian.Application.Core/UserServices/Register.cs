@@ -53,6 +53,7 @@ namespace Aspian.Application.Core.UserServices
 
             public async Task<UserDto> Handle(Command request, CancellationToken cancellationToken)
             {
+                
                 if (await _context.Users.Where(x => x.Email == request.Email).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { Email = "Email already exists!" });
 
@@ -61,7 +62,7 @@ namespace Aspian.Application.Core.UserServices
 
                 var user = new User
                 {
-                    DisplayName = request.UserName,
+                    DisplayName = request.DisplayName,
                     Email = request.Email,
                     UserName = request.UserName,
                     Role = AspianClaimValue.Member

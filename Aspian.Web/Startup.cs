@@ -24,6 +24,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Infrastructure.Option;
 using Aspian.Domain.UserModel.Policy;
+using Infrastructure.Utility;
 
 namespace Aspian.Web
 {
@@ -85,12 +86,13 @@ namespace Aspian.Web
             services.AddAuthorization(options =>
             {
                 // AdminOnly Policy
-                options.AddPolicy(AspianPolicy.AdminOnly, policy => policy.RequireClaim(AspianClaimType.Claim, AspianClaimValue.SpecificValues()));
+                options.AddPolicy(AspianPolicy.AdminOnly, policy => policy.RequireClaim(AspianClaimType.Role, AspianClaimValue.AdminOnly()));
             });
 
             // Providing our JWT Generator services 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();
+            services.AddSingleton<ISlugGenerator, SlugGenerator>();
 
             services.AddScoped<IUploadAccessor, UploadAccessor>();
             services.AddScoped<IOptionAccessor, OptionAccessor>();

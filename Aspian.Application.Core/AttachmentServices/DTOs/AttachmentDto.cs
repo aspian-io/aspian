@@ -1,7 +1,10 @@
+using System;
+
 namespace Aspian.Application.Core.AttachmentServices.DTOs
 {
     public class AttachmentDto
     {
+        public Guid Id { get; set; }
         public string Type { get; set; }
         public string RelativePath { get; set; }
         public string MimeType { get; set; }

@@ -8,6 +8,14 @@ namespace Aspian.Domain.TaxonomyModel
         public void Configure(EntityTypeBuilder<Term> builder)
         {
             builder
+                .HasIndex(t => t.Name)
+                .IsUnique();
+
+            builder
+                .HasIndex(t => t.Slug)
+                .IsUnique();
+
+            builder
                 .HasOne(t => t.CreatedBy)
                 .WithMany(u => u.CreatedTerms)
                 .HasForeignKey(t => t.CreatedById);

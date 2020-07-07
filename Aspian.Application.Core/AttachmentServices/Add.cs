@@ -52,7 +52,7 @@ namespace Aspian.Application.Core.AttachmentServices
 
                 var success = await _context.SaveChangesAsync() > 0;
 
-                if (success) return _mapper.Map<AttachmentDto>(fileUploadResult);
+                if (success) return _mapper.Map<AttachmentDto>(userAttachments);
 
                 throw new Exception("Problem saving changes!");
             }

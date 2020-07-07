@@ -19,6 +19,14 @@ namespace Aspian.Domain.PostModel
                 .HasConversion(typeConverter);
 
             builder
+                .HasIndex(p => p.Title)
+                .IsUnique();
+
+            builder
+                .HasIndex(p => p.Slug)
+                .IsUnique();
+
+            builder
                 .HasOne(p => p.CreatedBy)
                 .WithMany(u => u.CreatedPosts)
                 .HasForeignKey(p => p.CreatedById);
