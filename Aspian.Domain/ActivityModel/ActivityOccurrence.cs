@@ -9,7 +9,7 @@ namespace Aspian.Domain.ActivityModel
     public class ActivityOccurrence : EntityBase, IActivityOccurrence
     {
         public bool IsRead { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedAt { get; set; }
         public string CreatedById { get; set; }
         public User CreatedBy { get; set; }
         public string UserAgent { get; set; }

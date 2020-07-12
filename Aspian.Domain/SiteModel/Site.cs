@@ -26,7 +26,7 @@ namespace Aspian.Domain.SiteModel
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
         public virtual ICollection<Attachment> Attachments { get; set; }
-        public virtual ICollection<TermTaxonomy> TermTaxonomies { get; set; }
+        public virtual ICollection<Taxonomy> Taxonomies { get; set; }
         #endregion
 
     }

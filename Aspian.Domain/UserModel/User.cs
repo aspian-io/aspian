@@ -22,14 +22,16 @@ namespace Aspian.Domain.UserModel
         public virtual ICollection<Term> ModifiedTerms { get; set; }
         public virtual ICollection<Termmeta> CreatedTermmetas { get; set; }
         public virtual ICollection<Termmeta> ModifiedTermmetas { get; set; }
-        public virtual ICollection<TermTaxonomy> CreatedTermTaxonomies { get; set; }
-        public virtual ICollection<TermTaxonomy> ModifiedTermTaxonomies { get; set; }
-        public virtual ICollection<TermPost> CreatedTermPosts { get; set; }
-        public virtual ICollection<TermPost> ModifiedTermPosts { get; set; }
+        public virtual ICollection<Taxonomy> CreatedTaxonomies { get; set; }
+        public virtual ICollection<Taxonomy> ModifiedTaxonomies { get; set; }
+        public virtual ICollection<TaxonomyPost> CreatedTaxonomyPosts { get; set; }
+        public virtual ICollection<TaxonomyPost> ModifiedTaxonomyPosts { get; set; }
         public virtual ICollection<Post> CreatedPosts { get; set; }
         public virtual ICollection<Post> ModifiedPosts { get; set; }
         public virtual ICollection<Postmeta> CreatedPostmetas { get; set; }
         public virtual ICollection<Postmeta> ModifiedPostmetas { get; set; }
+        public virtual ICollection<PostAttachment> CreatedPostAttachments { get; set; }
+        public virtual ICollection<PostAttachment> ModifiedPostAttachments { get; set; }
         public virtual ICollection<Attachment> CreatedAttachments { get; set; }
         public virtual ICollection<Attachment> ModifiedAttachments { get; set; }
         public virtual ICollection<Attachmentmeta> CreatedAttachmentmetas { get; set; }

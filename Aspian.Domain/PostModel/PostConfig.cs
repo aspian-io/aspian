@@ -40,12 +40,6 @@ namespace Aspian.Domain.PostModel
                 .HasMany(p => p.ChildPosts)
                 .WithOne(p => p.Parent)
                 .HasForeignKey(p => p.ParentId);
-
-            // Attachment's custom navigation configs
-            builder
-                .HasMany(p => p.Attachments)
-                .WithOne(a => a.AttachmentOwnerPost)
-                .HasForeignKey(a => a.AttachmentOwnerPostId);
         }
     }
 }

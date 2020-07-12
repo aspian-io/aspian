@@ -38,13 +38,14 @@ namespace Aspian.Persistence
         public DbSet<Post> Posts { get; set; }
         public DbSet<Postmeta> Postmetas { get; set; }
         public DbSet<PostHistory> PostHistories { get; set; }
+        public DbSet<PostAttachment> PostAttachments { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Attachmentmeta> Attachmentmetas { get; set; }
         public DbSet<Site> Sites { get; set; }
         public DbSet<Term> Terms { get; set; }
         public DbSet<Termmeta> Termmetas { get; set; }
-        public DbSet<TermTaxonomy> TermTaxonomies { get; set; }
-        public DbSet<TermPost> TermPosts { get; set; }
+        public DbSet<Taxonomy> Taxonomies { get; set; }
+        public DbSet<TaxonomyPost> TaxonomyPosts { get; set; }
         public DbSet<Usermeta> Usermetas { get; set; }
 
 
@@ -66,12 +67,13 @@ namespace Aspian.Persistence
             builder.ApplyConfiguration(new PostConfig());
             builder.ApplyConfiguration(new PostmetaConfig());
             builder.ApplyConfiguration(new PostHistoryConfig());
+            builder.ApplyConfiguration(new PostAttachmentConfig());
             builder.ApplyConfiguration(new AttachmentConfig());
             builder.ApplyConfiguration(new AttachmentmetaConfig());
             builder.ApplyConfiguration(new TermConfig());
             builder.ApplyConfiguration(new TermmetaConfig());
-            builder.ApplyConfiguration(new TermTaxonomyConfig());
-            builder.ApplyConfiguration(new TermPostConfig());
+            builder.ApplyConfiguration(new TaxonomyConfig());
+            builder.ApplyConfiguration(new TaxonomyPostConfig());
             builder.ApplyConfiguration(new UserConfig());
             builder.ApplyConfiguration(new UsermetaConfig());
         }
@@ -103,7 +105,7 @@ namespace Aspian.Persistence
                     if (_httpContextAccessor.HttpContext != null)
                         currentUserName = _httpContextAccessor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
-                    ((IEntityCreate)entity.Entity).CreatedDate = DateTime.UtcNow;
+                    ((IEntityCreate)entity.Entity).CreatedAt = DateTime.UtcNow;
 
                     if (currentUserName != null)
                         ((IEntityCreate)entity.Entity).CreatedById = base.Users.SingleOrDefault(user => user.UserName == currentUserName).Id;
@@ -114,7 +116,7 @@ namespace Aspian.Persistence
                     if (_httpContextAccessor.HttpContext != null)
                         currentUserName = _httpContextAccessor.HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
-                    ((IEntityModify)entity.Entity).ModifiedDate = DateTime.UtcNow;
+                    ((IEntityModify)entity.Entity).ModifiedAt = DateTime.UtcNow;
 
                     if (currentUserName != null)
                         ((IEntityModify)entity.Entity).ModifiedById = base.Users.SingleOrDefault(user => user.UserName == currentUserName).Id;

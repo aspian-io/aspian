@@ -31,12 +31,12 @@ namespace Aspian.Application.Core.TaxonomyServices
 
             public async Task<TaxonomyDto> Handle(Query request, CancellationToken cancellationToken)
             {
-                var taxonomy = await _constext.TermTaxonomies.FindAsync(request.Id);
+                var taxonomy = await _constext.Taxonomies.FindAsync(request.Id);
 
                 if (taxonomy == null)
                     throw new RestException(HttpStatusCode.NotFound, new { taxonomy = "Not found!" });
 
-                return _mapper.Map<TermTaxonomy, TaxonomyDto>(taxonomy);
+                return _mapper.Map<Taxonomy, TaxonomyDto>(taxonomy);
             }
         }
     }

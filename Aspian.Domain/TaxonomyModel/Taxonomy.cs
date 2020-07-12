@@ -5,17 +5,17 @@ using Aspian.Domain.SiteModel;
 
 namespace Aspian.Domain.TaxonomyModel
 {
-    public class TermTaxonomy : Entitymeta, ITermTaxonomy
+    public class Taxonomy : Entitymeta, ITaxonomy
     {
-        public TaxonomyEnum Taxonomy { get; set; }
+        public TaxonomyEnum Name { get; set; }
         public string Description { get; set; }
 
         
         #region Navigaiton Properties
             public Guid? ParentId { get; set; }
-            public virtual TermTaxonomy Parent { get; set; }
-            public virtual ICollection<TermTaxonomy> ChildTaxonomies { get; set; }
-            public virtual ICollection<TermPost> TermPosts { get; set; }
+            public virtual Taxonomy Parent { get; set; }
+            public virtual ICollection<Taxonomy> ChildTaxonomies { get; set; }
+            public virtual ICollection<TaxonomyPost> TaxonomyPosts { get; set; }
             public virtual Term Term { get; set; }
             public Guid SiteId { get; set; }
             public virtual Site Site { get; set; }

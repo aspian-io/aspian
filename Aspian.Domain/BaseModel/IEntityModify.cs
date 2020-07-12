@@ -5,7 +5,7 @@ namespace Aspian.Domain.BaseModel
 {
     public interface IEntityModify : IEntity, IEntityMetadata
     {
-        DateTime? ModifiedDate { get; set; }
+        DateTime? ModifiedAt { get; set; }
         string ModifiedById { get; set; }
         User ModifiedBy { get; set; }
     }

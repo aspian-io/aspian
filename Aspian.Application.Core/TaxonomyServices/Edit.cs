@@ -41,7 +41,7 @@ namespace Aspian.Application.Core.TaxonomyServices
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var taxonomy = await _context.TermTaxonomies.FindAsync(request.Id);
+                var taxonomy = await _context.Taxonomies.FindAsync(request.Id);
 
                 if (taxonomy == null)
                     throw new RestException(HttpStatusCode.NotFound, new { taxonomy = "Not found!" });

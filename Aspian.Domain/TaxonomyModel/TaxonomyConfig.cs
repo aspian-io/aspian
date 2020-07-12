@@ -4,23 +4,23 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aspian.Domain.TaxonomyModel
 {
-    public class TermTaxonomyConfig : IEntityTypeConfiguration<TermTaxonomy>
+    public class TaxonomyConfig : IEntityTypeConfiguration<Taxonomy>
     {
-        public void Configure(EntityTypeBuilder<TermTaxonomy> builder)
+        public void Configure(EntityTypeBuilder<Taxonomy> builder)
         {
             var converter = new EnumToStringConverter<TaxonomyEnum>();
             builder
-                .Property(tt => tt.Taxonomy)
+                .Property(tt => tt.Name)
                 .HasConversion(converter);
                 
             builder
                 .HasOne(tt => tt.CreatedBy)
-                .WithMany(u => u.CreatedTermTaxonomies)
+                .WithMany(u => u.CreatedTaxonomies)
                 .HasForeignKey(tt => tt.CreatedById);
 
             builder
                 .HasOne(tt => tt.ModifiedBy)
-                .WithMany(u => u.ModifiedTermTaxonomies)
+                .WithMany(u => u.ModifiedTaxonomies)
                 .HasForeignKey(tt => tt.ModifiedById);
 
             builder

@@ -19,13 +19,11 @@ namespace Aspian.Domain.AttachmentModel
         bool IsMain { get; set; }
 
         #region Navigation Properties
+        ICollection<PostAttachment> PostAttachments { get; set; }
         ICollection<Attachmentmeta> Attachmentmetas { get; set; }
 
         Guid? SiteId { get; set; }
         Site Site { get; set; }
-
-        Guid? AttachmentOwnerPostId { get; set; }
-        Post AttachmentOwnerPost { get; set; }
         #endregion
     }
 

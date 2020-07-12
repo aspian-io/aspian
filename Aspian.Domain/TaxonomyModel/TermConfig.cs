@@ -26,9 +26,9 @@ namespace Aspian.Domain.TaxonomyModel
                 .HasForeignKey(t => t.ModifiedById);
 
             builder
-                .HasOne(t => t.TermTaxonomy)
+                .HasOne(t => t.Taxonomy)
                 .WithOne(tt => tt.Term)
-                .HasForeignKey<Term>(t => t.TermTaxonomyId);
+                .HasForeignKey<Term>(t => t.TaxonomyId);
         }
     }
 }

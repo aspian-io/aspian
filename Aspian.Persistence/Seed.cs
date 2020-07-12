@@ -185,122 +185,122 @@ namespace Aspian.Persistence
             }
 
             // Seeding TermTaxonomies and Related Terms
-            if (!context.TermTaxonomies.Any())
+            if (!context.Taxonomies.Any())
             {
-                var termTaxonomies = new List<TermTaxonomy>
+                var taxonomies = new List<Taxonomy>
                 {
-                    new TermTaxonomy {
+                    new Taxonomy {
                         Id = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56"),
-                        Taxonomy = TaxonomyEnum.category,
+                        Name = TaxonomyEnum.category,
                         Term = new Term {
                             Name = "Category 1",
                             Slug = "category-1",
-                            TermTaxonomyId = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56")
+                            TaxonomyId = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56")
                         },
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE")
                     },
-                    new TermTaxonomy {
+                    new Taxonomy {
                         Id = Guid.Parse("64893B00-5F9A-4B91-0286-08D803D1EA56"),
-                        Taxonomy = TaxonomyEnum.category,
+                        Name = TaxonomyEnum.category,
                         Term = new Term {
                             Name = "Category 2",
                             Slug = "category-2",
-                            TermTaxonomyId = Guid.Parse("64893B00-5F9A-4B91-0286-08D803D1EA56")
+                            TaxonomyId = Guid.Parse("64893B00-5F9A-4B91-0286-08D803D1EA56")
                         },
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE")
                     },
-                    new TermTaxonomy {
+                    new Taxonomy {
                         Id = Guid.Parse("9926607F-D704-4724-0287-08D803D1EA56"),
-                        Taxonomy = TaxonomyEnum.category,
+                        Name = TaxonomyEnum.category,
                         Term = new Term {
                             Name = "Category 3",
                             Slug = "category-3",
-                            TermTaxonomyId = Guid.Parse("9926607F-D704-4724-0287-08D803D1EA56")
+                            TaxonomyId = Guid.Parse("9926607F-D704-4724-0287-08D803D1EA56")
                         },
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE")
                     },
-                    new TermTaxonomy {
+                    new Taxonomy {
                         Id = Guid.Parse("A4A4FB1A-38A4-4B3B-0288-08D803D1EA56"),
-                        Taxonomy = TaxonomyEnum.category,
+                        Name = TaxonomyEnum.category,
                         Term = new Term {
                             Name = "Category 4",
                             Slug = "category-4",
-                            TermTaxonomyId = Guid.Parse("A4A4FB1A-38A4-4B3B-0288-08D803D1EA56")
+                            TaxonomyId = Guid.Parse("A4A4FB1A-38A4-4B3B-0288-08D803D1EA56")
                         },
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE")
                     },
-                    new TermTaxonomy {
+                    new Taxonomy {
                         Id = Guid.Parse("4C35DEFF-E65C-41EF-0289-08D803D1EA56"),
-                        Taxonomy = TaxonomyEnum.tag,
+                        Name = TaxonomyEnum.tag,
                         Term = new Term {
                             Name = "Tag_1",
                             Slug = "tag-1",
-                            TermTaxonomyId = Guid.Parse("4C35DEFF-E65C-41EF-0289-08D803D1EA56")
+                            TaxonomyId = Guid.Parse("4C35DEFF-E65C-41EF-0289-08D803D1EA56")
                         },
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE")
                     },
-                    new TermTaxonomy {
+                    new Taxonomy {
                         Id = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56"),
-                        Taxonomy = TaxonomyEnum.tag,
+                        Name = TaxonomyEnum.tag,
                         Term = new Term {
                             Name = "Tag_2",
                             Slug = "tag-2",
-                            TermTaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
+                            TaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
                         },
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE")
                     },
-                    new TermTaxonomy {
+                    new Taxonomy {
                         Id = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56"),
-                        Taxonomy = TaxonomyEnum.tag,
+                        Name = TaxonomyEnum.tag,
                         Term = new Term {
                             Name = "Tag_3",
                             Slug = "tag-3",
-                            TermTaxonomyId = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56")
+                            TaxonomyId = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56")
                         },
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE")
                     },
                 };
 
-                context.TermTaxonomies.AddRange(termTaxonomies);
+                context.Taxonomies.AddRange(taxonomies);
                 context.SaveChanges();
             }
 
             // Seeding TermPosts
-            if (!context.TermPosts.Any())
+            if (!context.TaxonomyPosts.Any())
             {
-                var termPosts = new List<TermPost>
+                var taxonomyPosts = new List<TaxonomyPost>
                 {
-                    new TermPost {
+                    new TaxonomyPost {
                         PostId = Guid.Parse("751480BA-1717-4FB6-6AA5-08D8034324CD"),
-                        TermTaxonomyId = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56")
+                        TaxonomyId = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56")
                     },
-                    new TermPost {
+                    new TaxonomyPost {
                         PostId = Guid.Parse("5D6BB51B-A118-4E05-6AA6-08D8034324CD"),
-                        TermTaxonomyId = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56")
+                        TaxonomyId = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56")
                     },
-                    new TermPost {
+                    new TaxonomyPost {
                         PostId = Guid.Parse("04F5CCA9-2CCE-47BB-6AA7-08D8034324CD"),
-                        TermTaxonomyId = Guid.Parse("64893B00-5F9A-4B91-0286-08D803D1EA56")
+                        TaxonomyId = Guid.Parse("64893B00-5F9A-4B91-0286-08D803D1EA56")
                     },
-                    new TermPost {
+                    new TaxonomyPost {
                         PostId = Guid.Parse("9BA88FA5-EA8B-4A69-6AA8-08D8034324CD"),
-                        TermTaxonomyId = Guid.Parse("9926607F-D704-4724-0287-08D803D1EA56")
+                        TaxonomyId = Guid.Parse("9926607F-D704-4724-0287-08D803D1EA56")
                     },
-                    new TermPost {
+                    new TaxonomyPost {
                         PostId = Guid.Parse("5F331D14-851E-4137-6AA9-08D8034324CD"),
-                        TermTaxonomyId = Guid.Parse("A4A4FB1A-38A4-4B3B-0288-08D803D1EA56")
+                        TaxonomyId = Guid.Parse("A4A4FB1A-38A4-4B3B-0288-08D803D1EA56")
                     },
-                    new TermPost {
+                    new TaxonomyPost {
                         PostId = Guid.Parse("751480BA-1717-4FB6-6AA5-08D8034324CD"),
-                        TermTaxonomyId = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56")
+                        TaxonomyId = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56")
                     },
-                    new TermPost {
+                    new TaxonomyPost {
                         PostId = Guid.Parse("751480BA-1717-4FB6-6AA5-08D8034324CD"),
-                        TermTaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
+                        TaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
                     }
                 };
 
-                context.TermPosts.AddRange(termPosts);
+                context.TaxonomyPosts.AddRange(taxonomyPosts);
                 context.SaveChanges();
             }
 

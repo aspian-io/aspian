@@ -192,8 +192,8 @@ namespace Aspian.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
@@ -224,7 +224,7 @@ namespace Aspian.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     IsRead = table.Column<bool>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     CreatedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
@@ -255,6 +255,50 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Attachments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
+                    CreatedById = table.Column<string>(nullable: true),
+                    ModifiedById = table.Column<string>(nullable: true),
+                    UserAgent = table.Column<string>(nullable: true),
+                    UserIPAddress = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: false),
+                    FileName = table.Column<string>(nullable: true),
+                    FileExtension = table.Column<string>(nullable: true),
+                    FileSize = table.Column<string>(nullable: true),
+                    MimeType = table.Column<string>(nullable: true),
+                    UploadLocation = table.Column<string>(nullable: false),
+                    RelativePath = table.Column<string>(nullable: true),
+                    IsMain = table.Column<bool>(nullable: false),
+                    SiteId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attachments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Attachments_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Attachments_AspNetUsers_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Attachments_Sites_SiteId",
+                        column: x => x.SiteId,
+                        principalTable: "Sites",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Options",
                 columns: table => new
                 {
@@ -279,8 +323,8 @@ namespace Aspian.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
@@ -295,6 +339,8 @@ namespace Aspian.Persistence.Migrations
                     Order = table.Column<int>(nullable: false),
                     ViewCount = table.Column<int>(nullable: false),
                     Type = table.Column<string>(nullable: false),
+                    IsPinned = table.Column<bool>(nullable: false),
+                    PinOrder = table.Column<int>(nullable: false),
                     ParentId = table.Column<Guid>(nullable: true),
                     SiteId = table.Column<Guid>(nullable: false)
                 },
@@ -328,44 +374,44 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TermTaxonomies",
+                name: "Taxonomies",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
-                    Taxonomy = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     ParentId = table.Column<Guid>(nullable: true),
                     SiteId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TermTaxonomies", x => x.Id);
+                    table.PrimaryKey("PK_Taxonomies", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TermTaxonomies_AspNetUsers_CreatedById",
+                        name: "FK_Taxonomies_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TermTaxonomies_AspNetUsers_ModifiedById",
+                        name: "FK_Taxonomies_AspNetUsers_ModifiedById",
                         column: x => x.ModifiedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TermTaxonomies_TermTaxonomies_ParentId",
+                        name: "FK_Taxonomies_Taxonomies_ParentId",
                         column: x => x.ParentId,
-                        principalTable: "TermTaxonomies",
+                        principalTable: "Taxonomies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TermTaxonomies_Sites_SiteId",
+                        name: "FK_Taxonomies_Sites_SiteId",
                         column: x => x.SiteId,
                         principalTable: "Sites",
                         principalColumn: "Id",
@@ -379,7 +425,7 @@ namespace Aspian.Persistence.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     CreatedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
@@ -404,6 +450,44 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Attachmentmetas",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
+                    CreatedById = table.Column<string>(nullable: true),
+                    ModifiedById = table.Column<string>(nullable: true),
+                    UserAgent = table.Column<string>(nullable: true),
+                    UserIPAddress = table.Column<string>(nullable: true),
+                    MetaKey = table.Column<string>(nullable: true),
+                    MetaValue = table.Column<string>(nullable: true),
+                    AttachmentId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attachmentmetas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Attachmentmetas_Attachments_AttachmentId",
+                        column: x => x.AttachmentId,
+                        principalTable: "Attachments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Attachmentmetas_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Attachmentmetas_AspNetUsers_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Optionmetas",
                 columns: table => new
                 {
@@ -416,7 +500,7 @@ namespace Aspian.Persistence.Migrations
                     DefaultValue = table.Column<string>(nullable: false),
                     DefaultValueDescription = table.Column<string>(nullable: true),
                     AdditionalInfo = table.Column<string>(nullable: true),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
@@ -440,62 +524,12 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Attachments",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
-                    ModifiedById = table.Column<string>(nullable: true),
-                    UserAgent = table.Column<string>(nullable: true),
-                    UserIPAddress = table.Column<string>(nullable: true),
-                    Type = table.Column<string>(nullable: false),
-                    FileName = table.Column<string>(nullable: true),
-                    FileExtension = table.Column<string>(nullable: true),
-                    FileSize = table.Column<string>(nullable: true),
-                    MimeType = table.Column<string>(nullable: true),
-                    Url = table.Column<string>(nullable: true),
-                    IsMain = table.Column<bool>(nullable: false),
-                    SiteId = table.Column<Guid>(nullable: true),
-                    AttachmentOwnerPostId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Attachments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Attachments_Posts_AttachmentOwnerPostId",
-                        column: x => x.AttachmentOwnerPostId,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachments_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachments_AspNetUsers_ModifiedById",
-                        column: x => x.ModifiedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachments_Sites_SiteId",
-                        column: x => x.SiteId,
-                        principalTable: "Sites",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
@@ -542,12 +576,53 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PostAttachments",
+                columns: table => new
+                {
+                    PostId = table.Column<Guid>(nullable: false),
+                    AttachmentId = table.Column<Guid>(nullable: false),
+                    UserAgent = table.Column<string>(nullable: true),
+                    UserIPAddress = table.Column<string>(nullable: true),
+                    IsMain = table.Column<bool>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedById = table.Column<string>(nullable: true),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
+                    ModifiedById = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostAttachments", x => new { x.PostId, x.AttachmentId });
+                    table.ForeignKey(
+                        name: "FK_PostAttachments_Attachments_AttachmentId",
+                        column: x => x.AttachmentId,
+                        principalTable: "Attachments",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PostAttachments_AspNetUsers_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PostAttachments_AspNetUsers_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PostAttachments_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PostHistories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
@@ -591,8 +666,8 @@ namespace Aspian.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
@@ -625,43 +700,42 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TermPosts",
+                name: "TaxonomyPosts",
                 columns: table => new
                 {
                     PostId = table.Column<Guid>(nullable: false),
-                    TermTaxonomyId = table.Column<Guid>(nullable: false),
+                    TaxonomyId = table.Column<Guid>(nullable: false),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     CreatedById = table.Column<string>(nullable: true),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    ModifiedById = table.Column<string>(nullable: true),
-                    Version = table.Column<int>(nullable: false)
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
+                    ModifiedById = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TermPosts", x => new { x.TermTaxonomyId, x.PostId });
+                    table.PrimaryKey("PK_TaxonomyPosts", x => new { x.TaxonomyId, x.PostId });
                     table.ForeignKey(
-                        name: "FK_TermPosts_AspNetUsers_CreatedById",
+                        name: "FK_TaxonomyPosts_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TermPosts_AspNetUsers_ModifiedById",
+                        name: "FK_TaxonomyPosts_AspNetUsers_ModifiedById",
                         column: x => x.ModifiedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TermPosts_Posts_PostId",
+                        name: "FK_TaxonomyPosts_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_TermPosts_TermTaxonomies_TermTaxonomyId",
-                        column: x => x.TermTaxonomyId,
-                        principalTable: "TermTaxonomies",
+                        name: "FK_TaxonomyPosts_Taxonomies_TaxonomyId",
+                        column: x => x.TaxonomyId,
+                        principalTable: "Taxonomies",
                         principalColumn: "Id");
                 });
 
@@ -670,15 +744,15 @@ namespace Aspian.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     Slug = table.Column<string>(nullable: true),
-                    TermTaxonomyId = table.Column<Guid>(nullable: false)
+                    TaxonomyId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -696,49 +770,11 @@ namespace Aspian.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Terms_TermTaxonomies_TermTaxonomyId",
-                        column: x => x.TermTaxonomyId,
-                        principalTable: "TermTaxonomies",
+                        name: "FK_Terms_Taxonomies_TaxonomyId",
+                        column: x => x.TaxonomyId,
+                        principalTable: "Taxonomies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Attachmentmetas",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
-                    ModifiedById = table.Column<string>(nullable: true),
-                    UserAgent = table.Column<string>(nullable: true),
-                    UserIPAddress = table.Column<string>(nullable: true),
-                    MetaKey = table.Column<string>(nullable: true),
-                    MetaValue = table.Column<string>(nullable: true),
-                    AttachmentId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Attachmentmetas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Attachmentmetas_Attachments_AttachmentId",
-                        column: x => x.AttachmentId,
-                        principalTable: "Attachments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Attachmentmetas_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Attachmentmetas_AspNetUsers_ModifiedById",
-                        column: x => x.ModifiedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -746,8 +782,8 @@ namespace Aspian.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
@@ -783,8 +819,8 @@ namespace Aspian.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
@@ -821,8 +857,8 @@ namespace Aspian.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
@@ -934,11 +970,6 @@ namespace Aspian.Persistence.Migrations
                 column: "ModifiedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attachments_AttachmentOwnerPostId",
-                table: "Attachments",
-                column: "AttachmentOwnerPostId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Attachments_CreatedById",
                 table: "Attachments",
                 column: "CreatedById");
@@ -1024,6 +1055,21 @@ namespace Aspian.Persistence.Migrations
                 column: "SiteId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PostAttachments_AttachmentId",
+                table: "PostAttachments",
+                column: "AttachmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostAttachments_CreatedById",
+                table: "PostAttachments",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostAttachments_ModifiedById",
+                table: "PostAttachments",
+                column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PostHistories_CreatedById",
                 table: "PostHistories",
                 column: "CreatedById");
@@ -1074,10 +1120,59 @@ namespace Aspian.Persistence.Migrations
                 column: "SiteId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Posts_Slug",
+                table: "Posts",
+                column: "Slug",
+                unique: true,
+                filter: "[Slug] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_Title",
+                table: "Posts",
+                column: "Title",
+                unique: true,
+                filter: "[Title] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sites_SiteType",
                 table: "Sites",
                 column: "SiteType",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Taxonomies_CreatedById",
+                table: "Taxonomies",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Taxonomies_ModifiedById",
+                table: "Taxonomies",
+                column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Taxonomies_ParentId",
+                table: "Taxonomies",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Taxonomies_SiteId",
+                table: "Taxonomies",
+                column: "SiteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaxonomyPosts_CreatedById",
+                table: "TaxonomyPosts",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaxonomyPosts_ModifiedById",
+                table: "TaxonomyPosts",
+                column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaxonomyPosts_PostId",
+                table: "TaxonomyPosts",
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Termmetas_CreatedById",
@@ -1095,21 +1190,6 @@ namespace Aspian.Persistence.Migrations
                 column: "TermId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TermPosts_CreatedById",
-                table: "TermPosts",
-                column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TermPosts_ModifiedById",
-                table: "TermPosts",
-                column: "ModifiedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TermPosts_PostId",
-                table: "TermPosts",
-                column: "PostId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Terms_CreatedById",
                 table: "Terms",
                 column: "CreatedById");
@@ -1120,30 +1200,24 @@ namespace Aspian.Persistence.Migrations
                 column: "ModifiedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Terms_TermTaxonomyId",
+                name: "IX_Terms_Name",
                 table: "Terms",
-                column: "TermTaxonomyId",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Terms_Slug",
+                table: "Terms",
+                column: "Slug",
+                unique: true,
+                filter: "[Slug] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Terms_TaxonomyId",
+                table: "Terms",
+                column: "TaxonomyId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TermTaxonomies_CreatedById",
-                table: "TermTaxonomies",
-                column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TermTaxonomies_ModifiedById",
-                table: "TermTaxonomies",
-                column: "ModifiedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TermTaxonomies_ParentId",
-                table: "TermTaxonomies",
-                column: "ParentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TermTaxonomies_SiteId",
-                table: "TermTaxonomies",
-                column: "SiteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Usermetas_CreatedById",
@@ -1189,16 +1263,19 @@ namespace Aspian.Persistence.Migrations
                 name: "Optionmetas");
 
             migrationBuilder.DropTable(
+                name: "PostAttachments");
+
+            migrationBuilder.DropTable(
                 name: "PostHistories");
 
             migrationBuilder.DropTable(
                 name: "Postmetas");
 
             migrationBuilder.DropTable(
-                name: "Termmetas");
+                name: "TaxonomyPosts");
 
             migrationBuilder.DropTable(
-                name: "TermPosts");
+                name: "Termmetas");
 
             migrationBuilder.DropTable(
                 name: "Usermetas");
@@ -1210,13 +1287,13 @@ namespace Aspian.Persistence.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Attachments");
-
-            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Options");
+
+            migrationBuilder.DropTable(
+                name: "Attachments");
 
             migrationBuilder.DropTable(
                 name: "Terms");
@@ -1228,7 +1305,7 @@ namespace Aspian.Persistence.Migrations
                 name: "Posts");
 
             migrationBuilder.DropTable(
-                name: "TermTaxonomies");
+                name: "Taxonomies");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

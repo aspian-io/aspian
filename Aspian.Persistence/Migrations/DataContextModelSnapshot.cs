@@ -49,11 +49,11 @@ namespace Aspian.Persistence.Migrations
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
@@ -84,11 +84,11 @@ namespace Aspian.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -123,14 +123,11 @@ namespace Aspian.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AttachmentOwnerPostId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("FileExtension")
                         .HasColumnType("nvarchar(max)");
@@ -147,11 +144,11 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("MimeType")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("RelativePath")
                         .HasColumnType("nvarchar(max)");
@@ -175,8 +172,6 @@ namespace Aspian.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AttachmentOwnerPostId");
-
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("ModifiedById");
@@ -195,11 +190,11 @@ namespace Aspian.Persistence.Migrations
                     b.Property<Guid>("AttachmentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("MetaKey")
                         .HasColumnType("nvarchar(max)");
@@ -207,11 +202,11 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("MetaValue")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAgent")
                         .HasColumnType("nvarchar(max)");
@@ -242,17 +237,17 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
@@ -293,20 +288,20 @@ namespace Aspian.Persistence.Migrations
                     b.Property<Guid>("CommentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("LastContent")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAgent")
                         .HasColumnType("nvarchar(max)");
@@ -334,20 +329,20 @@ namespace Aspian.Persistence.Migrations
                     b.Property<Guid>("CommentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Key")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAgent")
                         .HasColumnType("nvarchar(max)");
@@ -415,11 +410,11 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("KeyDescription")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("OptionId")
                         .HasColumnType("uniqueidentifier");
@@ -461,26 +456,32 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Excerpt")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsPinned")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("PinOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("PostStatus")
                         .IsRequired()
@@ -532,6 +533,46 @@ namespace Aspian.Persistence.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("Aspian.Domain.PostModel.PostAttachment", b =>
+                {
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AttachmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserIPAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PostId", "AttachmentId");
+
+                    b.HasIndex("AttachmentId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("PostAttachments");
+                });
+
             modelBuilder.Entity("Aspian.Domain.PostModel.PostHistory", b =>
                 {
                     b.Property<Guid>("Id")
@@ -544,20 +585,20 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Excerpt")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Order")
                         .HasColumnType("int");
@@ -603,11 +644,11 @@ namespace Aspian.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("MetaKey")
                         .HasColumnType("nvarchar(max)");
@@ -615,11 +656,11 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("MetaValue")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
@@ -674,23 +715,110 @@ namespace Aspian.Persistence.Migrations
                     b.ToTable("Sites");
                 });
 
+            modelBuilder.Entity("Aspian.Domain.TaxonomyModel.Taxonomy", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SiteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserIPAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("SiteId");
+
+                    b.ToTable("Taxonomies");
+                });
+
+            modelBuilder.Entity("Aspian.Domain.TaxonomyModel.TaxonomyPost", b =>
+                {
+                    b.Property<Guid>("TaxonomyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserIPAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TaxonomyId", "PostId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("TaxonomyPosts");
+                });
+
             modelBuilder.Entity("Aspian.Domain.TaxonomyModel.Term", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
@@ -698,7 +826,7 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("Slug")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("TermTaxonomyId")
+                    b.Property<Guid>("TaxonomyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserAgent")
@@ -721,100 +849,10 @@ namespace Aspian.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[Slug] IS NOT NULL");
 
-                    b.HasIndex("TermTaxonomyId")
+                    b.HasIndex("TaxonomyId")
                         .IsUnique();
 
                     b.ToTable("Terms");
-                });
-
-            modelBuilder.Entity("Aspian.Domain.TaxonomyModel.TermPost", b =>
-                {
-                    b.Property<Guid>("TermTaxonomyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserAgent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserIPAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("int");
-
-                    b.HasKey("TermTaxonomyId", "PostId");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("TermPosts");
-                });
-
-            modelBuilder.Entity("Aspian.Domain.TaxonomyModel.TermTaxonomy", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifiedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SiteId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Taxonomy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserAgent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserIPAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.HasIndex("ParentId");
-
-                    b.HasIndex("SiteId");
-
-                    b.ToTable("TermTaxonomies");
                 });
 
             modelBuilder.Entity("Aspian.Domain.TaxonomyModel.Termmeta", b =>
@@ -823,20 +861,20 @@ namespace Aspian.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Key")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("TermId")
                         .HasColumnType("uniqueidentifier");
@@ -941,11 +979,11 @@ namespace Aspian.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("MetaKey")
                         .HasColumnType("nvarchar(max)");
@@ -953,11 +991,11 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("MetaValue")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserAgent")
                         .HasColumnType("nvarchar(max)");
@@ -1141,10 +1179,6 @@ namespace Aspian.Persistence.Migrations
 
             modelBuilder.Entity("Aspian.Domain.AttachmentModel.Attachment", b =>
                 {
-                    b.HasOne("Aspian.Domain.PostModel.Post", "AttachmentOwnerPost")
-                        .WithMany("Attachments")
-                        .HasForeignKey("AttachmentOwnerPostId");
-
                     b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
                         .WithMany("CreatedAttachments")
                         .HasForeignKey("CreatedById");
@@ -1278,6 +1312,29 @@ namespace Aspian.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Aspian.Domain.PostModel.PostAttachment", b =>
+                {
+                    b.HasOne("Aspian.Domain.AttachmentModel.Attachment", "Attachment")
+                        .WithMany("PostAttachments")
+                        .HasForeignKey("AttachmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
+                        .WithMany("CreatedPostAttachments")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
+                        .WithMany("ModifiedPostAttachments")
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("Aspian.Domain.PostModel.Post", "Post")
+                        .WithMany("PostAttachments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Aspian.Domain.PostModel.PostHistory", b =>
                 {
                     b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
@@ -1312,6 +1369,50 @@ namespace Aspian.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Aspian.Domain.TaxonomyModel.Taxonomy", b =>
+                {
+                    b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
+                        .WithMany("CreatedTaxonomies")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
+                        .WithMany("ModifiedTaxonomies")
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("Aspian.Domain.TaxonomyModel.Taxonomy", "Parent")
+                        .WithMany("ChildTaxonomies")
+                        .HasForeignKey("ParentId");
+
+                    b.HasOne("Aspian.Domain.SiteModel.Site", "Site")
+                        .WithMany("Taxonomies")
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Aspian.Domain.TaxonomyModel.TaxonomyPost", b =>
+                {
+                    b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
+                        .WithMany("CreatedTaxonomyPosts")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
+                        .WithMany("ModifiedTaxonomyPosts")
+                        .HasForeignKey("ModifiedById");
+
+                    b.HasOne("Aspian.Domain.PostModel.Post", "Post")
+                        .WithMany("TaxonomyPosts")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Aspian.Domain.TaxonomyModel.Taxonomy", "Taxonomy")
+                        .WithMany("TaxonomyPosts")
+                        .HasForeignKey("TaxonomyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Aspian.Domain.TaxonomyModel.Term", b =>
                 {
                     b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
@@ -1322,53 +1423,9 @@ namespace Aspian.Persistence.Migrations
                         .WithMany("ModifiedTerms")
                         .HasForeignKey("ModifiedById");
 
-                    b.HasOne("Aspian.Domain.TaxonomyModel.TermTaxonomy", "TermTaxonomy")
+                    b.HasOne("Aspian.Domain.TaxonomyModel.Taxonomy", "Taxonomy")
                         .WithOne("Term")
-                        .HasForeignKey("Aspian.Domain.TaxonomyModel.Term", "TermTaxonomyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Aspian.Domain.TaxonomyModel.TermPost", b =>
-                {
-                    b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
-                        .WithMany("CreatedTermPosts")
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
-                        .WithMany("ModifiedTermPosts")
-                        .HasForeignKey("ModifiedById");
-
-                    b.HasOne("Aspian.Domain.PostModel.Post", "Post")
-                        .WithMany("TermPosts")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Aspian.Domain.TaxonomyModel.TermTaxonomy", "TermTaxonomy")
-                        .WithMany("TermPosts")
-                        .HasForeignKey("TermTaxonomyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Aspian.Domain.TaxonomyModel.TermTaxonomy", b =>
-                {
-                    b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
-                        .WithMany("CreatedTermTaxonomies")
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
-                        .WithMany("ModifiedTermTaxonomies")
-                        .HasForeignKey("ModifiedById");
-
-                    b.HasOne("Aspian.Domain.TaxonomyModel.TermTaxonomy", "Parent")
-                        .WithMany("ChildTaxonomies")
-                        .HasForeignKey("ParentId");
-
-                    b.HasOne("Aspian.Domain.SiteModel.Site", "Site")
-                        .WithMany("TermTaxonomies")
-                        .HasForeignKey("SiteId")
+                        .HasForeignKey("Aspian.Domain.TaxonomyModel.Term", "TaxonomyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

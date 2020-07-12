@@ -14,7 +14,7 @@ namespace Aspian.Domain.OptionModel
         public ValueEnum DefaultValue { get; set; }
         public string DefaultValueDescription { get; set; }
         public string AdditionalInfo { get; set; }
-        public DateTime? ModifiedDate { get; set; }
+        public DateTime? ModifiedAt { get; set; }
         public string ModifiedById { get; set; }
         public User ModifiedBy { get; set; }
         public string UserAgent { get; set; }

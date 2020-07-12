@@ -8,7 +8,7 @@ namespace Aspian.Domain.ActivityModel
     {
         public string Name { get; set; }
         public string Value { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedAt { get; set; }
         public string CreatedById { get; set; }
         public User CreatedBy { get; set; }
         public string UserAgent { get; set; }

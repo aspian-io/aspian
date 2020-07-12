@@ -27,9 +27,9 @@ namespace Aspian.Application.Core.TaxonomyServices
 
             public async Task<List<TaxonomyDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var taxonomies = await _context.TermTaxonomies.ToListAsync();
+                var taxonomies = await _context.Taxonomies.ToListAsync();
 
-                return _mapper.Map<List<TermTaxonomy>, List<TaxonomyDto>>(taxonomies);
+                return _mapper.Map<List<Taxonomy>, List<TaxonomyDto>>(taxonomies);
             }
         }
     }

@@ -57,7 +57,7 @@ namespace Aspian.Application.Core.TaxonomyServices
                 request.Term.Slug = string.IsNullOrWhiteSpace(request.Term.Slug) ?
                                     _slugGenerator.GenerateSlug(request.Term.Name) :
                                     _urlEncoder.Encode(request.Term.Slug.Trim().Replace(" ", "-"));
-                var taxonomy = _mapper.Map<Create.Command, TermTaxonomy>(request);
+                var taxonomy = _mapper.Map<Create.Command, Taxonomy>(request);
 
                 if (await _context.Terms.Where(x => x.Name == taxonomy.Term.Name).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { TermName = "Term name is already exists. Please change it and try again." });
@@ -65,7 +65,7 @@ namespace Aspian.Application.Core.TaxonomyServices
                 if (await _context.Terms.Where(x => x.Slug == taxonomy.Term.Slug).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { TermSlug = "Term slug is already exists. Please change it and try again." });
 
-                _context.TermTaxonomies.Add(taxonomy);
+                _context.Taxonomies.Add(taxonomy);
 
                 var success = await _context.SaveChangesAsync() > 0;
 

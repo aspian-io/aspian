@@ -22,16 +22,18 @@ namespace Aspian.Domain.UserModel
         ICollection<Term> ModifiedTerms { get; set; }
         ICollection<Termmeta> CreatedTermmetas { get; set; }
         ICollection<Termmeta> ModifiedTermmetas { get; set; }
-        ICollection<TermTaxonomy> CreatedTermTaxonomies { get; set; }
-        ICollection<TermTaxonomy> ModifiedTermTaxonomies { get; set; }
-        ICollection<TermPost> CreatedTermPosts { get; set; }
-        ICollection<TermPost> ModifiedTermPosts { get; set; }
+        ICollection<Taxonomy> CreatedTaxonomies { get; set; }
+        ICollection<Taxonomy> ModifiedTaxonomies { get; set; }
+        ICollection<TaxonomyPost> CreatedTaxonomyPosts { get; set; }
+        ICollection<TaxonomyPost> ModifiedTaxonomyPosts { get; set; }
         ICollection<Post> CreatedPosts { get; set; }
         ICollection<Post> ModifiedPosts { get; set; }
         ICollection<Postmeta> CreatedPostmetas { get; set; }
         ICollection<Postmeta> ModifiedPostmetas { get; set; }
         ICollection<PostHistory> CreatedPostHistories { get; set; }
         ICollection<PostHistory> ModifiedPostHistories { get; set; }
+        ICollection<PostAttachment> CreatedPostAttachments { get; set; }
+        ICollection<PostAttachment> ModifiedPostAttachments { get; set; }
         ICollection<Attachment> CreatedAttachments { get; set; }
         ICollection<Attachment> ModifiedAttachments { get; set; }
         ICollection<Attachmentmeta> CreatedAttachmentmetas { get; set; }

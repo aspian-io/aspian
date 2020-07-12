@@ -11,8 +11,8 @@ namespace Aspian.Domain.TaxonomyModel
         
         
         #region Navigation Properties
-            Guid TermTaxonomyId { get; set; }
-            TermTaxonomy TermTaxonomy { get; set; }
+            Guid TaxonomyId { get; set; }
+            Taxonomy Taxonomy { get; set; }
             ICollection<Termmeta> Termmetas { get; set; }
         #endregion
     }

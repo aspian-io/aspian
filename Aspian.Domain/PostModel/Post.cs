@@ -20,16 +20,18 @@ namespace Aspian.Domain.PostModel
         public int Order { get; set; }
         public int ViewCount { get; set; }
         public PostTypeEnum Type { get; set; }
+        public bool IsPinned { get; set; }
+        public int PinOrder { get; set; }
 
 
         #region Navigation Properties
-        public virtual ICollection<Attachment> Attachments { get; set; }
+        public virtual ICollection<PostAttachment> PostAttachments { get; set; }
         public Guid? ParentId { get; set; }
         public virtual Post Parent { get; set; }
         public virtual ICollection<Post> ChildPosts { get; set; }
         public Guid SiteId { get; set; }
         public virtual Site Site { get; set; }
-        public virtual ICollection<TermPost> TermPosts { get; set; }
+        public virtual ICollection<TaxonomyPost> TaxonomyPosts { get; set; }
         public virtual ICollection<Postmeta> Postmetas { get; set; }
         public virtual ICollection<PostHistory> PostHistories { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

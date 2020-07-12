@@ -3,29 +3,29 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Aspian.Domain.TaxonomyModel
 {
-    public class TermPostConfig : IEntityTypeConfiguration<TermPost>
+    public class TaxonomyPostConfig : IEntityTypeConfiguration<TaxonomyPost>
     {
-        public void Configure(EntityTypeBuilder<TermPost> builder)
+        public void Configure(EntityTypeBuilder<TaxonomyPost> builder)
         {
-            builder.HasKey(tm => new { tm.TermTaxonomyId, tm.PostId });
+            builder.HasKey(tp => new { tp.TaxonomyId, tp.PostId });
             builder
-                .HasOne(tp => tp.TermTaxonomy)
-                .WithMany(tt => tt.TermPosts)
-                .HasForeignKey(tp => tp.TermTaxonomyId)
+                .HasOne(tp => tp.Taxonomy)
+                .WithMany(t => t.TaxonomyPosts)
+                .HasForeignKey(tp => tp.TaxonomyId)
                 .OnDelete(DeleteBehavior.NoAction);
             builder
                 .HasOne(tp => tp.Post)
-                .WithMany(p => p.TermPosts)
+                .WithMany(p => p.TaxonomyPosts)
                 .HasForeignKey(tp => tp.PostId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasOne(tp => tp.CreatedBy)
-                .WithMany(u => u.CreatedTermPosts)
+                .WithMany(u => u.CreatedTaxonomyPosts)
                 .HasForeignKey(tp => tp.CreatedById);
             builder
                 .HasOne(tp => tp.ModifiedBy)
-                .WithMany(u => u.ModifiedTermPosts)
+                .WithMany(u => u.ModifiedTaxonomyPosts)
                 .HasForeignKey(tp => tp.ModifiedById);
         }
     }
