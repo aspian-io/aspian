@@ -20,7 +20,7 @@ namespace Aspian.Application.Core.TaxonomyServices
     {
         public class Command : Entitymeta, IRequest
         {
-            public TaxonomyEnum Taxonomy { get; set; }
+            public TaxonomyTypeEnum Type { get; set; }
             public string Description { get; set; }
 
 
@@ -33,7 +33,7 @@ namespace Aspian.Application.Core.TaxonomyServices
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Taxonomy).NotEmpty();
+                RuleFor(x => x.Type).NotEmpty();
                 RuleFor(x => x.Term.Name).NotEmpty().MaximumLength(150).WithName("Term name");
             }
         }

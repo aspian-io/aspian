@@ -8,9 +8,9 @@ namespace Aspian.Domain.TaxonomyModel
     {
         public void Configure(EntityTypeBuilder<Taxonomy> builder)
         {
-            var converter = new EnumToStringConverter<TaxonomyEnum>();
+            var converter = new EnumToStringConverter<TaxonomyTypeEnum>();
             builder
-                .Property(tt => tt.Name)
+                .Property(tt => tt.Type)
                 .HasConversion(converter);
                 
             builder

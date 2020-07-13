@@ -7,7 +7,7 @@ namespace Aspian.Domain.TaxonomyModel
 {
     public interface ITaxonomy : IEntitymeta
     {
-        TaxonomyEnum Name { get; set; }
+        TaxonomyTypeEnum Type { get; set; }
         string Description { get; set; }
 
 
@@ -22,7 +22,7 @@ namespace Aspian.Domain.TaxonomyModel
         #endregion
     }
 
-    public enum TaxonomyEnum {
+    public enum TaxonomyTypeEnum {
         nav_menu,
         category,
         tag

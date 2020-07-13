@@ -15,6 +15,8 @@ namespace Aspian.Application.Core.PostServices.DTOs
         public UploadLocationEnum UploadLocation { get; set; }
         public string RelativePath { get; set; }
         public bool IsMain { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string CreatedById { get; set; }
 
         #region Navigation Properties
         public virtual ICollection<AttachmentmetaDto> Attachmentmetas { get; set; }

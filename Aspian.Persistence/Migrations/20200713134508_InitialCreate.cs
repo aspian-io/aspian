@@ -384,7 +384,7 @@ namespace Aspian.Persistence.Migrations
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: false),
+                    Type = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     ParentId = table.Column<Guid>(nullable: true),
                     SiteId = table.Column<Guid>(nullable: false)

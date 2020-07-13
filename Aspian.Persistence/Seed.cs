@@ -191,7 +191,7 @@ namespace Aspian.Persistence
                 {
                     new Taxonomy {
                         Id = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56"),
-                        Name = TaxonomyEnum.category,
+                        Type = TaxonomyTypeEnum.category,
                         Term = new Term {
                             Name = "Category 1",
                             Slug = "category-1",
@@ -201,7 +201,7 @@ namespace Aspian.Persistence
                     },
                     new Taxonomy {
                         Id = Guid.Parse("64893B00-5F9A-4B91-0286-08D803D1EA56"),
-                        Name = TaxonomyEnum.category,
+                        Type = TaxonomyTypeEnum.category,
                         Term = new Term {
                             Name = "Category 2",
                             Slug = "category-2",
@@ -211,7 +211,7 @@ namespace Aspian.Persistence
                     },
                     new Taxonomy {
                         Id = Guid.Parse("9926607F-D704-4724-0287-08D803D1EA56"),
-                        Name = TaxonomyEnum.category,
+                        Type = TaxonomyTypeEnum.category,
                         Term = new Term {
                             Name = "Category 3",
                             Slug = "category-3",
@@ -221,7 +221,7 @@ namespace Aspian.Persistence
                     },
                     new Taxonomy {
                         Id = Guid.Parse("A4A4FB1A-38A4-4B3B-0288-08D803D1EA56"),
-                        Name = TaxonomyEnum.category,
+                        Type = TaxonomyTypeEnum.category,
                         Term = new Term {
                             Name = "Category 4",
                             Slug = "category-4",
@@ -231,7 +231,7 @@ namespace Aspian.Persistence
                     },
                     new Taxonomy {
                         Id = Guid.Parse("4C35DEFF-E65C-41EF-0289-08D803D1EA56"),
-                        Name = TaxonomyEnum.tag,
+                        Type = TaxonomyTypeEnum.tag,
                         Term = new Term {
                             Name = "Tag_1",
                             Slug = "tag-1",
@@ -241,7 +241,7 @@ namespace Aspian.Persistence
                     },
                     new Taxonomy {
                         Id = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56"),
-                        Name = TaxonomyEnum.tag,
+                        Type = TaxonomyTypeEnum.tag,
                         Term = new Term {
                             Name = "Tag_2",
                             Slug = "tag-2",
@@ -251,7 +251,7 @@ namespace Aspian.Persistence
                     },
                     new Taxonomy {
                         Id = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56"),
-                        Name = TaxonomyEnum.tag,
+                        Type = TaxonomyTypeEnum.tag,
                         Term = new Term {
                             Name = "Tag_3",
                             Slug = "tag-3",

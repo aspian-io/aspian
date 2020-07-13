@@ -11,6 +11,7 @@ using Aspian.Domain.TaxonomyModel;
 using Aspian.Persistence;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aspian.Application.Core.PostServices
 {
@@ -29,12 +30,14 @@ namespace Aspian.Application.Core.PostServices
             public int Order { get; set; }
             public int ViewCount { get; set; }
             public PostTypeEnum Type { get; set; }
+            public bool IsPinned { get; set; }
+            public int PinOrder { get; set; }
 
 
-            public virtual ICollection<AttachmentDto> Attachments { get; set; }
+            public virtual ICollection<PostAttachmentDto> PostAttachments { get; set; }
             public Guid? ParentId { get; set; }
             public virtual ICollection<TaxonomyPostDto> TaxonomyPosts { get; set; }
-            public virtual ICollection<Postmeta> Postmetas { get; set; }
+            public virtual ICollection<PostmetaDto> Postmetas { get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -49,7 +52,25 @@ namespace Aspian.Application.Core.PostServices
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                
+                var post = await _context.Posts.FindAsync(request.Id);
+                if (post == null)
+                    throw new RestException(HttpStatusCode.NotFound, new { post = "not found" });
+
+                if (request.Title != post.Title)
+                {
+                    var isTitleExist = await _context.Posts.SingleOrDefaultAsync(x => x.Title == request.Title) != null;
+                    if (isTitleExist)
+                        throw new RestException(HttpStatusCode.BadRequest, new { title = "duplicate title is no allowed" });
+                }
+
+                if (request.Slug != post.Slug)
+                {
+                    var isSlugExist = await _context.Posts.SingleOrDefaultAsync(x => x.Slug == request.Slug) != null;
+                    if (isSlugExist)
+                        throw new RestException(HttpStatusCode.BadRequest, new { slug = "duplicate slug is no allowed" });
+                }
+
+                _mapper.Map(request, post);
 
                 var success = await _context.SaveChangesAsync() > 0;
 

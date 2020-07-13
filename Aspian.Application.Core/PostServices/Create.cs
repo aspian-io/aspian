@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.PostModel;
+using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Persistence;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aspian.Application.Core.PostServices
 {
@@ -28,9 +33,11 @@ namespace Aspian.Application.Core.PostServices
             public int Order { get; set; }
             public int ViewCount { get; set; }
             public PostTypeEnum Type { get; set; }
+            public bool IsPinned { get; set; }
+            public int PinOrder { get; set; }
 
 
-            public virtual ICollection<Attachment> Attachments { get; set; }
+            public virtual ICollection<PostAttachment> PostAttachments { get; set; }
             public Guid? ParentId { get; set; }
             public virtual ICollection<TaxonomyPost> TaxonomyPosts { get; set; }
             public virtual ICollection<Postmeta> Postmetas { get; set; }
@@ -52,10 +59,8 @@ namespace Aspian.Application.Core.PostServices
             private readonly DataContext _context;
             private readonly IMapper _mapper;
             private readonly ISlugGenerator _slugGenerator;
-            private readonly UrlEncoder _urlEncoder;
             public Handler(DataContext context, IMapper mapper, ISlugGenerator slugGenerator, UrlEncoder urlEncoder)
             {
-                _urlEncoder = urlEncoder;
                 _slugGenerator = slugGenerator;
                 _mapper = mapper;
                 _context = context;
@@ -63,7 +68,20 @@ namespace Aspian.Application.Core.PostServices
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
+                var isTitleExist = await _context.Posts.SingleOrDefaultAsync(x => x.Title == request.Title) != null;
+                if (isTitleExist)
+                    throw new RestException(HttpStatusCode.BadRequest, new {title = "duplicate title is no allowed"});
 
+                var site = await _context.Sites.SingleOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
+
+                request.Slug = string.IsNullOrWhiteSpace(request.Slug) ?
+                                _slugGenerator.GenerateSlug(request.Title) :
+                                _slugGenerator.GenerateSlug(request.Slug);
+
+
+                var post = _mapper.Map<Post>(request);
+                post.Site = site;
+                _context.Posts.Add(post);
 
 
                 var success = await _context.SaveChangesAsync() > 0;

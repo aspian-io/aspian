@@ -20,6 +20,10 @@ namespace Aspian.Application.Core.PostServices.DTOs
         public int Order { get; set; }
         public int ViewCount { get; set; }
         public PostTypeEnum Type { get; set; }
+        public bool IsPinned { get; set; }
+        public int PinOrder { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string CreatedById { get; set; }
 
 
         #region Navigation Properties
