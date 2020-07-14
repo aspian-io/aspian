@@ -29,7 +29,7 @@ namespace Aspian.Application.Core.TaxonomyServices
             {
                 var taxonomies = await _context.Taxonomies.ToListAsync();
 
-                return _mapper.Map<List<Taxonomy>, List<TaxonomyDto>>(taxonomies);
+                return _mapper.Map<List<TaxonomyDto>>(taxonomies);
             }
         }
     }

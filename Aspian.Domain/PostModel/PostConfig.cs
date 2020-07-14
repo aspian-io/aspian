@@ -40,6 +40,7 @@ namespace Aspian.Domain.PostModel
                 .HasMany(p => p.ChildPosts)
                 .WithOne(p => p.Parent)
                 .HasForeignKey(p => p.ParentId);
+
         }
     }
 }

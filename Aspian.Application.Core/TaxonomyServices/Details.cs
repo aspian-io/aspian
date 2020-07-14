@@ -36,7 +36,7 @@ namespace Aspian.Application.Core.TaxonomyServices
                 if (taxonomy == null)
                     throw new RestException(HttpStatusCode.NotFound, new { taxonomy = "Not found!" });
 
-                return _mapper.Map<Taxonomy, TaxonomyDto>(taxonomy);
+                return _mapper.Map<TaxonomyDto>(taxonomy);
             }
         }
     }

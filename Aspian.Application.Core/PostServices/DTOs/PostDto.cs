@@ -28,7 +28,7 @@ namespace Aspian.Application.Core.PostServices.DTOs
 
         #region Navigation Properties
         public virtual UserDto CreatedBy { get; set; }
-        public virtual ICollection<AttachmentDto> Attachments { get; set; }
+        public virtual ICollection<PostAttachmentDto> PostAttachments { get; set; }
         public Guid? ParentId { get; set; }
         public virtual PostDto Parent { get; set; }
         public virtual ICollection<PostDto> ChildPosts { get; set; }

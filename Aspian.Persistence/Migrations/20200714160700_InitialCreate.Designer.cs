@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200713134508_InitialCreate")]
+    [Migration("20200714160700_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
