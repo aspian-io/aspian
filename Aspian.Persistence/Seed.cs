@@ -334,6 +334,21 @@ namespace Aspian.Persistence
                         }
                     },
                     new Option {
+                        Section = SectionEnum.Comment,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                        Optionmetas = new List<Optionmeta> {
+                            new Optionmeta {
+                                PublicKeyName = "Comment Blog",
+                                Key = KeyEnum.Comment_Blog,
+                                KeyDescription = "Approved/NotApproved Blog Comments",
+                                Value = ValueEnum.Comment_Approved,
+                                ValueDescription = "Approved",
+                                DefaultValue = ValueEnum.Comment_Approved,
+                                DefaultValueDescription = "Approved"
+                            }
+                        }
+                    },
+                    new Option {
                         Section = SectionEnum.Attachment,
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
                         Optionmetas = new List<Optionmeta> {

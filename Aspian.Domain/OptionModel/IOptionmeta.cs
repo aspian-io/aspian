@@ -53,18 +53,14 @@ namespace Aspian.Domain.OptionModel
 
         Attachment__Compressed_Zip,
         Attachment__Compressed_Rar,
-        Attachment__Compressed_7z
+        Attachment__Compressed_7z,
+
+        Comment_Blog,
     }
 
     public enum ValueEnum
     {
-        /// <summary>
-        /// Disable Avtivity Logging
-        /// </summary>
         Activity__LoggingActivities_Disable,
-        /// <summary>
-        /// Enable Avtivity Logging
-        /// </summary>
         Activity__LoggingActivities_Enable,
         Activity__PruningDate_EveryDay,
         Activity__PruningDate_EveryWeek,
@@ -75,7 +71,10 @@ namespace Aspian.Domain.OptionModel
         Activity__PruningDate_EveryYear,
 
         Attachments__Allowed,
-        Attachments__NotAllowed
+        Attachments__NotAllowed,
+
+        Comment_Approved,
+        Comment_NotApproved
 
     }
 }
