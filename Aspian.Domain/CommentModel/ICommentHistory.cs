@@ -3,7 +3,7 @@ using Aspian.Domain.BaseModel;
 
 namespace Aspian.Domain.CommentModel
 {
-    public interface ICommentHistory : IEntitymeta
+    public interface ICommentHistory : IEntityBase, IEntityCreate, IEntityInfo
     {
         string LastContent { get; set; }
 

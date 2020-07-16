@@ -12,10 +12,6 @@ namespace Aspian.Domain.PostModel
                 .WithMany(u => u.CreatedPostHistories)
                 .HasForeignKey(ph => ph.CreatedById);
 
-            builder
-                .HasOne(ph => ph.ModifiedBy)
-                .WithMany(u => u.ModifiedPostHistories)
-                .HasForeignKey(ph => ph.ModifiedById);
         }
     }
 }

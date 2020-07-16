@@ -31,7 +31,6 @@ namespace Aspian.Domain.UserModel
         ICollection<Postmeta> CreatedPostmetas { get; set; }
         ICollection<Postmeta> ModifiedPostmetas { get; set; }
         ICollection<PostHistory> CreatedPostHistories { get; set; }
-        ICollection<PostHistory> ModifiedPostHistories { get; set; }
         ICollection<PostAttachment> CreatedPostAttachments { get; set; }
         ICollection<PostAttachment> ModifiedPostAttachments { get; set; }
         ICollection<Attachment> CreatedAttachments { get; set; }

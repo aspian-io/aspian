@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Aspian.Persistence.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class PostAndCommentHistoriesChanged : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -621,21 +621,19 @@ namespace Aspian.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    ModifiedAt = table.Column<DateTime>(nullable: true),
-                    CreatedById = table.Column<string>(nullable: true),
-                    ModifiedById = table.Column<string>(nullable: true),
-                    UserAgent = table.Column<string>(nullable: true),
-                    UserIPAddress = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Subtitle = table.Column<string>(nullable: true),
                     Excerpt = table.Column<string>(nullable: true),
                     Content = table.Column<string>(nullable: true),
                     Slug = table.Column<string>(nullable: true),
-                    Parent = table.Column<Guid>(nullable: true),
+                    ParentId = table.Column<Guid>(nullable: true),
                     PostStatus = table.Column<int>(nullable: false),
                     CommentAllowed = table.Column<bool>(nullable: false),
                     Order = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    CreatedById = table.Column<string>(nullable: true),
+                    UserAgent = table.Column<string>(nullable: true),
+                    UserIPAddress = table.Column<string>(nullable: true),
                     PostId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
@@ -644,12 +642,6 @@ namespace Aspian.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_PostHistories_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PostHistories_AspNetUsers_ModifiedById",
-                        column: x => x.ModifiedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -782,14 +774,13 @@ namespace Aspian.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    LastContent = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     CreatedById = table.Column<string>(nullable: true),
-                    ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
-                    LastContent = table.Column<string>(nullable: true),
-                    CommentId = table.Column<Guid>(nullable: false)
+                    CommentId = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -807,8 +798,8 @@ namespace Aspian.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CommentHistories_AspNetUsers_ModifiedById",
-                        column: x => x.ModifiedById,
+                        name: "FK_CommentHistories_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -995,9 +986,9 @@ namespace Aspian.Persistence.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommentHistories_ModifiedById",
+                name: "IX_CommentHistories_UserId",
                 table: "CommentHistories",
-                column: "ModifiedById");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Commentmeta_CommentId",
@@ -1073,11 +1064,6 @@ namespace Aspian.Persistence.Migrations
                 name: "IX_PostHistories_CreatedById",
                 table: "PostHistories",
                 column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PostHistories_ModifiedById",
-                table: "PostHistories",
-                column: "ModifiedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostHistories_PostId",

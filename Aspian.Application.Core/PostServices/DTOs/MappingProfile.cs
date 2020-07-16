@@ -67,7 +67,9 @@ namespace Aspian.Application.Core.PostServices.DTOs
             CreateMap<Term, TermDto>();
             CreateMap<Termmeta, TermmetaDto>();
 
-
+            CreateMap<Post, PostHistory>()
+                .ForMember(d => d.Id, o => o.UseDestinationValue())
+                .ForMember(d => d.CreatedAt, o => o.UseDestinationValue());
 
         }
     }

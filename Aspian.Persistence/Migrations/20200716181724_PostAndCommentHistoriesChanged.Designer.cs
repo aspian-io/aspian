@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200714160700_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200716181724_PostAndCommentHistoriesChanged")]
+    partial class PostAndCommentHistoriesChanged
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -299,17 +299,14 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("LastContent")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("UserAgent")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserIPAddress")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -317,7 +314,7 @@ namespace Aspian.Persistence.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("ModifiedById");
+                    b.HasIndex("UserId");
 
                     b.ToTable("CommentHistories");
                 });
@@ -596,16 +593,10 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("Excerpt")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("Parent")
+                    b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PostId")
@@ -632,8 +623,6 @@ namespace Aspian.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
 
                     b.HasIndex("PostId");
 
@@ -1249,9 +1238,9 @@ namespace Aspian.Persistence.Migrations
                         .WithMany("CreatedCommentHistories")
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
+                    b.HasOne("Aspian.Domain.UserModel.User", null)
                         .WithMany("ModifiedCommentHistories")
-                        .HasForeignKey("ModifiedById");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Aspian.Domain.CommentModel.Commentmeta", b =>
@@ -1342,10 +1331,6 @@ namespace Aspian.Persistence.Migrations
                     b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
                         .WithMany("CreatedPostHistories")
                         .HasForeignKey("CreatedById");
-
-                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
-                        .WithMany("ModifiedPostHistories")
-                        .HasForeignKey("ModifiedById");
 
                     b.HasOne("Aspian.Domain.PostModel.Post", "Post")
                         .WithMany("PostHistories")

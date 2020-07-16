@@ -37,7 +37,6 @@ namespace Aspian.Domain.UserModel
         public virtual ICollection<Attachmentmeta> CreatedAttachmentmetas { get; set; }
         public virtual ICollection<Attachmentmeta> ModifiedAttachmentmetas { get; set; }
         public virtual ICollection<PostHistory> CreatedPostHistories { get; set; }
-        public virtual ICollection<PostHistory> ModifiedPostHistories { get; set; }
         public virtual ICollection<Comment> CreatedComments { get; set; }
         public virtual ICollection<Comment> ModifiedComments { get; set; }
         public virtual ICollection<Commentmeta> CreatedCommentmetas { get; set; }

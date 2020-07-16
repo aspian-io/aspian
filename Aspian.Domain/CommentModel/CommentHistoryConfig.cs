@@ -12,10 +12,6 @@ namespace Aspian.Domain.CommentModel
                 .WithMany(u => u.CreatedCommentHistories)
                 .HasForeignKey(ch => ch.CreatedById);
 
-            builder
-                .HasOne(ch => ch.ModifiedBy)
-                .WithMany(u => u.ModifiedCommentHistories)
-                .HasForeignKey(ch => ch.ModifiedById);
         }
     }
 }
