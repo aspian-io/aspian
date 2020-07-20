@@ -25,6 +25,7 @@ using Microsoft.IdentityModel.Tokens;
 using Infrastructure.Option;
 using Aspian.Domain.UserModel.Policy;
 using Infrastructure.Utility;
+using Infrastructure.Logger;
 
 namespace Aspian.Web
 {
@@ -92,7 +93,8 @@ namespace Aspian.Web
             // Providing our JWT Generator services 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddScoped<IUserAccessor, UserAccessor>();
-            services.AddSingleton<ISlugGenerator, SlugGenerator>();
+            services.AddScoped<IActivityLogger, ActivityLogger>();
+            services.AddScoped<ISlugGenerator, SlugGenerator>();
 
             services.AddScoped<IUploadAccessor, UploadAccessor>();
             services.AddScoped<IOptionAccessor, OptionAccessor>();

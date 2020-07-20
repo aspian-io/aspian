@@ -21,32 +21,11 @@ namespace Aspian.Persistence.Migrations
 
             modelBuilder.Entity("Aspian.Domain.ActivityModel.Activity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Object")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Severity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Activities");
-                });
-
-            modelBuilder.Entity("Aspian.Domain.ActivityModel.ActivityOccurrence", b =>
-                {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ActivityId")
+                    b.Property<int>("Code")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -55,8 +34,16 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ObjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("SiteId")
                         .HasColumnType("uniqueidentifier");
@@ -69,52 +56,11 @@ namespace Aspian.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivityId");
-
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("SiteId");
 
-                    b.ToTable("ActivityOccurrences");
-                });
-
-            modelBuilder.Entity("Aspian.Domain.ActivityModel.ActivityOccurrencemeta", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OccurenceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("OccurrenceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserAgent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserIPAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("OccurrenceId");
-
-                    b.ToTable("ActivityOccurrencemetas");
+                    b.ToTable("Activities");
                 });
 
             modelBuilder.Entity("Aspian.Domain.AttachmentModel.Attachment", b =>
@@ -1136,34 +1082,17 @@ namespace Aspian.Persistence.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Aspian.Domain.ActivityModel.ActivityOccurrence", b =>
+            modelBuilder.Entity("Aspian.Domain.ActivityModel.Activity", b =>
                 {
-                    b.HasOne("Aspian.Domain.ActivityModel.Activity", "Activity")
-                        .WithMany("ActivityOccurrences")
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
-                        .WithMany("ActivityOccurrences")
+                        .WithMany("Activities")
                         .HasForeignKey("CreatedById");
 
                     b.HasOne("Aspian.Domain.SiteModel.Site", "Site")
-                        .WithMany("Occurrences")
+                        .WithMany("Activities")
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Aspian.Domain.ActivityModel.ActivityOccurrencemeta", b =>
-                {
-                    b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
-                        .WithMany("ActivityOccurrencemetas")
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Aspian.Domain.ActivityModel.ActivityOccurrence", "Occurrence")
-                        .WithMany("Occurrencemetas")
-                        .HasForeignKey("OccurrenceId");
                 });
 
             modelBuilder.Entity("Aspian.Domain.AttachmentModel.Attachment", b =>

@@ -3,25 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Aspian.Persistence.Migrations
 {
-    public partial class PostAndCommentHistoriesChanged : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Activities",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Severity = table.Column<int>(nullable: false),
-                    Object = table.Column<string>(nullable: true),
-                    Message = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Activities", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -219,35 +204,31 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ActivityOccurrences",
+                name: "Activities",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    IsRead = table.Column<bool>(nullable: false),
+                    Code = table.Column<int>(nullable: false),
+                    Severity = table.Column<string>(nullable: false),
+                    ObjectName = table.Column<string>(nullable: false),
+                    Message = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     CreatedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
-                    SiteId = table.Column<Guid>(nullable: false),
-                    ActivityId = table.Column<int>(nullable: false)
+                    SiteId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ActivityOccurrences", x => x.Id);
+                    table.PrimaryKey("PK_Activities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ActivityOccurrences_Activities_ActivityId",
-                        column: x => x.ActivityId,
-                        principalTable: "Activities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ActivityOccurrences_AspNetUsers_CreatedById",
+                        name: "FK_Activities_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ActivityOccurrences_Sites_SiteId",
+                        name: "FK_Activities_Sites_SiteId",
                         column: x => x.SiteId,
                         principalTable: "Sites",
                         principalColumn: "Id",
@@ -416,37 +397,6 @@ namespace Aspian.Persistence.Migrations
                         principalTable: "Sites",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ActivityOccurrencemetas",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    CreatedById = table.Column<string>(nullable: true),
-                    UserAgent = table.Column<string>(nullable: true),
-                    UserIPAddress = table.Column<string>(nullable: true),
-                    OccurenceId = table.Column<Guid>(nullable: false),
-                    OccurrenceId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ActivityOccurrencemetas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ActivityOccurrencemetas_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ActivityOccurrencemetas_ActivityOccurrences_OccurrenceId",
-                        column: x => x.OccurrenceId,
-                        principalTable: "ActivityOccurrences",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -882,28 +832,13 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ActivityOccurrencemetas_CreatedById",
-                table: "ActivityOccurrencemetas",
+                name: "IX_Activities_CreatedById",
+                table: "Activities",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ActivityOccurrencemetas_OccurrenceId",
-                table: "ActivityOccurrencemetas",
-                column: "OccurrenceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ActivityOccurrences_ActivityId",
-                table: "ActivityOccurrences",
-                column: "ActivityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ActivityOccurrences_CreatedById",
-                table: "ActivityOccurrences",
-                column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ActivityOccurrences_SiteId",
-                table: "ActivityOccurrences",
+                name: "IX_Activities_SiteId",
+                table: "Activities",
                 column: "SiteId");
 
             migrationBuilder.CreateIndex(
@@ -1219,7 +1154,7 @@ namespace Aspian.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ActivityOccurrencemetas");
+                name: "Activities");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -1267,9 +1202,6 @@ namespace Aspian.Persistence.Migrations
                 name: "Usermetas");
 
             migrationBuilder.DropTable(
-                name: "ActivityOccurrences");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -1283,9 +1215,6 @@ namespace Aspian.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Terms");
-
-            migrationBuilder.DropTable(
-                name: "Activities");
 
             migrationBuilder.DropTable(
                 name: "Posts");

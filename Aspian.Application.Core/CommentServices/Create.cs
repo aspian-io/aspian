@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Aspian.Application.Core.Interfaces;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.OptionModel;
 using Aspian.Domain.SiteModel;
@@ -38,19 +39,21 @@ namespace Aspian.Application.Core.CommentServices
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
-            public Handler(DataContext context, IMapper mapper)
+            private readonly IOptionAccessor _optionAccessor;
+            public Handler(DataContext context, IMapper mapper, IOptionAccessor optionAccessor)
             {
+                _optionAccessor = optionAccessor;
                 _mapper = mapper;
                 _context = context;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var option = await _context.Options.SingleOrDefaultAsync(x => x.Section == SectionEnum.Comment);
+                var option = await _optionAccessor.GetOptionByKeyAsync(KeyEnum.Comment_Blog);
 
                 var comment = _mapper.Map<Comment>(request);
                 comment.Site = await _context.Sites.SingleOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
-                comment.Approved = option.Optionmetas.SingleOrDefault(x => x.Key == KeyEnum.Comment_Blog).Value == ValueEnum.Comment_Approved;
+                comment.Approved = option.Value == ValueEnum.Comment_Approved;
 
                 _context.Comments.Add(comment);
 

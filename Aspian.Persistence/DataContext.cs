@@ -29,8 +29,6 @@ namespace Aspian.Persistence
         }
 
         public DbSet<Activity> Activities { get; set; }
-        public DbSet<ActivityOccurrence> ActivityOccurrences { get; set; }
-        public DbSet<ActivityOccurrencemeta> ActivityOccurrencemetas { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<CommentHistory> CommentHistories { get; set; }
         public DbSet<Option> Options { get; set; }
@@ -55,10 +53,9 @@ namespace Aspian.Persistence
 
             // Model configurations
             builder.ApplyConfiguration(new SiteConfig());
+            builder.ApplyConfiguration(new ActivityConfig());
             builder.ApplyConfiguration(new UserConfig());
             builder.ApplyConfiguration(new UsermetaConfig());
-            builder.ApplyConfiguration(new ActivityOccurrenceConfig());
-            builder.ApplyConfiguration(new ActivityOccurrencemetaConfig());
             builder.ApplyConfiguration(new CommentConfig());
             builder.ApplyConfiguration(new CommentmetaConfig());
             builder.ApplyConfiguration(new CommentHistoryConfig());

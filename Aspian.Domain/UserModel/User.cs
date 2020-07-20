@@ -43,8 +43,7 @@ namespace Aspian.Domain.UserModel
         public virtual ICollection<Commentmeta> ModifiedCommentmetas { get; set; }
         public virtual ICollection<CommentHistory> CreatedCommentHistories { get; set; }
         public virtual ICollection<CommentHistory> ModifiedCommentHistories { get; set; }
-        public virtual ICollection<ActivityOccurrence> ActivityOccurrences { get; set; }
-        public virtual ICollection<ActivityOccurrencemeta> ActivityOccurrencemetas { get; set; }
+        public virtual ICollection<Activity> Activities { get; set; }
         #endregion
     }
 }

@@ -330,6 +330,15 @@ namespace Aspian.Persistence
                                 ValueDescription = "Every month",
                                 DefaultValue = ValueEnum.Activity__PruningDate_EveryMonth,
                                 DefaultValueDescription = "Every month"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = "Pruning",
+                                Key = KeyEnum.Activity__Pruning,
+                                KeyDescription = "Pruning Activity logs",
+                                Value = ValueEnum.Activity__PruningActivities_Enable,
+                                ValueDescription = "",
+                                DefaultValue = ValueEnum.Activity__PruningActivities_Enable,
+                                DefaultValueDescription = "Every month"
                             }
                         }
                     },

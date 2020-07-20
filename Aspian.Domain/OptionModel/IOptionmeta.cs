@@ -23,6 +23,7 @@ namespace Aspian.Domain.OptionModel
     public enum KeyEnum
     {
         Activity__LoggingActivities,
+        Activity__Pruning,
         Activity__PruningDate,
 
         Attachment__Photo_Png,
@@ -62,12 +63,11 @@ namespace Aspian.Domain.OptionModel
     {
         Activity__LoggingActivities_Disable,
         Activity__LoggingActivities_Enable,
-        Activity__PruningDate_EveryDay,
+        Activity__PruningActivities_Disable,
+        Activity__PruningActivities_Enable,
         Activity__PruningDate_EveryWeek,
-        Activity__PruningDate_EveryTwoWeeks,
         Activity__PruningDate_EveryMonth,
-        Activity__PruningDate_EveryThreeMonth,
-        Activity__PruningDate_EverySixMonth,
+        Activity__PruningDate_EverySixMonths,
         Activity__PruningDate_EveryYear,
 
         Attachments__Allowed,

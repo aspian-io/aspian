@@ -22,7 +22,7 @@ namespace Aspian.Domain.SiteModel
 
         #region Navigation Properties
         ICollection<Option> Options { get; set; }
-        ICollection<ActivityOccurrence> Occurrences { get; set; }
+        ICollection<Activity> Activities { get; set; }
         ICollection<Comment> Comments { get; set; }
         ICollection<Post> Posts { get; set; }
         ICollection<Attachment> Attachments { get; set; }
