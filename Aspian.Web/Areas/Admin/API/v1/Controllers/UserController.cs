@@ -1,7 +1,8 @@
 using System.Threading.Tasks;
-using Aspian.Application.Core.UserServices;
+using Aspian.Application.Core.UserServices.AdminServices;
 using Aspian.Application.Core.UserServices.DTOs;
 using Aspian.Domain.UserModel;
+using Aspian.Domain.UserModel.Policy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,12 +24,14 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
             return await Mediator.Send(command);
         }
 
+        [Authorize(Policy = AspianCorePolicy.AdminUserCurrentPolicy)]
         [HttpGet]
         public async Task<ActionResult<UserDto>> CurrentUser()
         {
             return await Mediator.Send(new CurrentUser.Query());
         }
 
+        [Authorize(Policy = AspianCorePolicy.AdminUserProfilePolicy)]
         [HttpGet("{username}")]
         public async Task<ActionResult<UserProfileDto>> Profile(string username)
         {

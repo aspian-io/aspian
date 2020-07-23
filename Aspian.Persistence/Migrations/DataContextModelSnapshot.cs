@@ -99,7 +99,7 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("RelativePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SiteId")
+                    b.Property<Guid>("SiteId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Type")
@@ -1107,7 +1107,9 @@ namespace Aspian.Persistence.Migrations
 
                     b.HasOne("Aspian.Domain.SiteModel.Site", "Site")
                         .WithMany("Attachments")
-                        .HasForeignKey("SiteId");
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Aspian.Domain.AttachmentModel.Attachmentmeta", b =>

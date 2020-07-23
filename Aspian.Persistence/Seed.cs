@@ -51,7 +51,7 @@ namespace Aspian.Persistence
 
                     // Add Admin policy as a claim to bob claims
                     if (user.UserName == "bob")
-                        await userManager.AddClaimAsync(user, new Claim(AspianClaimType.Role, AspianClaimValue.Admin));
+                        await userManager.AddClaimAsync(user, new Claim(AspianClaimType.Claim, AspianCoreClaimValue.Admin));
                 }
             }
 

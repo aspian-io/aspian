@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Aspian.Application.Core.ActivityServices;
+using Aspian.Application.Core.ActivityServices.AdminServices;
 using Aspian.Application.Core.ActivityServices.DTOs;
 using Aspian.Domain.UserModel.Policy;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +10,7 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
 {
     public class ActivitiesController : BaseAPIController
     {
-        [Authorize(Policy = AspianPolicy.AdminOnly)]
+        [Authorize(Policy = AspianCorePolicy.AdminActivityListPolicy)]
         [HttpGet]
         public async Task<ActionResult<List<ActivityDto>>> List()
         {

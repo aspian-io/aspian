@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using Aspian.Application.Core.Interfaces;
-using Aspian.Application.Core.AttachmentServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using System.Linq;
 using Aspian.Domain.OptionModel;
 using Microsoft.Extensions.Options;
 using FluentFTP;
+using Aspian.Application.Core.AttachmentServices.AdminServices;
 
 namespace Infrastructure.Upload
 {

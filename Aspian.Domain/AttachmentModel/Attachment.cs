@@ -22,7 +22,7 @@ namespace Aspian.Domain.AttachmentModel
         public virtual ICollection<PostAttachment> PostAttachments { get; set; }
         public virtual ICollection<Attachmentmeta> Attachmentmetas { get; set; }
 
-        public Guid? SiteId { get; set; }
+        public Guid SiteId { get; set; }
         public virtual Site Site { get; set; }
 
         #endregion

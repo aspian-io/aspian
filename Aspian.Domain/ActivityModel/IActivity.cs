@@ -63,12 +63,15 @@ namespace Aspian.Domain.ActivityModel
 
         AttachmentAdd = 6001,
         AttachmentDownload = 6002,
-        AttachmentGetImage = 6003,
-        AttachmentSetMainPhoto = 6004,
-        AttachmentDelete = 6005,
+        AttachmentList = 6003,
+        AttachmentGetImage = 6004,
+        AttachmentSetMainPhoto = 6005,
+        AttachmentDelete = 6006,
 
         UserRegister = 7001,
         UserLogin = 7002,
-        UserProfile = 7003
+        UserProfile = 7003,
+        UserCurrent = 7004
+
     }
 }

@@ -1,6 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
-using Aspian.Application.Core.AttachmentServices;
+using Aspian.Application.Core.AttachmentServices.AdminServices;
 using Aspian.Domain.AttachmentModel;
 using Microsoft.AspNetCore.Http;
 

@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 using Aspian.Application.Core.Interfaces;
-using Aspian.Application.Core.TaxonomyServices;
+using Aspian.Application.Core.TaxonomyServices.AdminServices;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
 using Aspian.Web.Middleware.API;
@@ -10,12 +10,9 @@ using FluentValidation.AspNetCore;
 using Infrastructure.Upload;
 using Infrastructure.Security;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -87,7 +84,45 @@ namespace Aspian.Web
             services.AddAuthorization(options =>
             {
                 // AdminOnly Policy
-                options.AddPolicy(AspianPolicy.AdminOnly, policy => policy.RequireClaim(AspianClaimType.Role, AspianClaimValue.AdminOnly()));
+                options.AddPolicy(AspianCorePolicy.AdminOnlyPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin));
+                // Admin Activity Policy
+                options.AddPolicy(AspianCorePolicy.AdminActivityListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminActivityListClaim));
+                // Admin Attachment Policies
+                options.AddPolicy(AspianCorePolicy.AdminAttachmentAddPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminAttachmentAddClaim));
+                options.AddPolicy(AspianCorePolicy.AdminAttachmentDeletePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminAttachmentDeleteClaim));
+                options.AddPolicy(AspianCorePolicy.AdminAttachmentDownloadPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminAttachmentDownloadClaim));
+                options.AddPolicy(AspianCorePolicy.AdminAttachmentGetImagePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminAttachmentGetImageClaim));
+                options.AddPolicy(AspianCorePolicy.AdminAttachmentListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminAttachmentListClaim));
+                // Admin Comment Policies
+                options.AddPolicy(AspianCorePolicy.AdminCommentApprovePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminCommentApproveClaim));
+                options.AddPolicy(AspianCorePolicy.AdminCommentCreatePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminCommentCreateClaim));
+                options.AddPolicy(AspianCorePolicy.AdminCommentDeletePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminCommentDeleteClaim));
+                options.AddPolicy(AspianCorePolicy.AdminCommentDetailsPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminCommentDetailsClaim));
+                options.AddPolicy(AspianCorePolicy.AdminCommentEditPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminCommentEditClaim));
+                options.AddPolicy(AspianCorePolicy.AdminCommentListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminCommentListClaim));
+                options.AddPolicy(AspianCorePolicy.AdminCommentUnapprovePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminCommentUnapproveClaim));
+                // Admin Option Policies
+                options.AddPolicy(AspianCorePolicy.AdminOptionEditPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminOptionEditClaim));
+                options.AddPolicy(AspianCorePolicy.AdminOptionListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminOptionListClaim));
+                options.AddPolicy(AspianCorePolicy.AdminOptionRestoreDefaultPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminOptionRestoreDefaultClaim));
+                // Admin Post policies
+                options.AddPolicy(AspianCorePolicy.AdminPostCreatePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminPostCreateClaim));
+                options.AddPolicy(AspianCorePolicy.AdminPostDeletePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminPostDeleteClaim));
+                options.AddPolicy(AspianCorePolicy.AdminPostDetailsPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminPostDetailsClaim));
+                options.AddPolicy(AspianCorePolicy.AdminPostEditPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminPostEditClaim));
+                options.AddPolicy(AspianCorePolicy.AdminPostListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminPostListClaim));
+                // Admin Site Policies
+                options.AddPolicy(AspianCorePolicy.AdminSiteDetailsPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminSiteDetailsClaim));
+                options.AddPolicy(AspianCorePolicy.AdminSiteListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminSiteListClaim));
+                // Admin Taxonomy Policies
+                options.AddPolicy(AspianCorePolicy.AdminTaxonomyCreatePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminTaxonomyCreateClaim));
+                options.AddPolicy(AspianCorePolicy.AdminTaxonomyDeletePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminTaxonomyDeleteClaim));
+                options.AddPolicy(AspianCorePolicy.AdminTaxonomyDetailsPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminTaxonomyDetailsClaim));
+                options.AddPolicy(AspianCorePolicy.AdminTaxonomyEditPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminTaxonomyEditClaim));
+                options.AddPolicy(AspianCorePolicy.AdminTaxonomyListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminTaxonomyListClaim));
+                // Admin User Policies
+                options.AddPolicy(AspianCorePolicy.AdminUserCurrentPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminUserCurrentClaim));
+                options.AddPolicy(AspianCorePolicy.AdminUserProfilePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminUserProfileClaim));
             });
 
             // Providing our JWT Generator services 
