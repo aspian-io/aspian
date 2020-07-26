@@ -28,7 +28,7 @@ namespace Aspian.Domain.UserModel.Policy
         public const string AdminCommentEditClaim = "AdminCommentEdit";
         public const string AdminCommentListClaim = "AdminCommentList";
         public const string AdminCommentUnapproveClaim = "AdminCommentUnapprove";
-        
+
         // Option Claims
         // Admin services
         public const string AdminOptionEditClaim = "AdminOptionEdit";
@@ -59,6 +59,7 @@ namespace Aspian.Domain.UserModel.Policy
         // User Claims
         // Admin services
         public const string AdminUserCurrentClaim = "AdminUserCurrent";
-        public const string AdminUserProfileClaim = "AdminUserProfile";
+        public const string AdminUserLockoutClaim = "AdminUserLockoutClaim";
+        public const string AdminUserUnlockClaim = "AdminUserUnlockClaim";
     }
 }

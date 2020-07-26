@@ -122,7 +122,8 @@ namespace Aspian.Web
                 options.AddPolicy(AspianCorePolicy.AdminTaxonomyListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminTaxonomyListClaim));
                 // Admin User Policies
                 options.AddPolicy(AspianCorePolicy.AdminUserCurrentPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminUserCurrentClaim));
-                options.AddPolicy(AspianCorePolicy.AdminUserProfilePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminUserProfileClaim));
+                options.AddPolicy(AspianCorePolicy.AdminUserLockoutPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminUserLockoutClaim));
+                options.AddPolicy(AspianCorePolicy.AdminUserUnlockPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminUserUnlockClaim));
             });
 
             // Providing our JWT Generator services 

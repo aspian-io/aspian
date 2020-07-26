@@ -71,7 +71,11 @@ namespace Aspian.Domain.ActivityModel
         UserRegister = 7001,
         UserLogin = 7002,
         UserProfile = 7003,
-        UserCurrent = 7004
+        UserCurrent = 7004,
+        UserEditProfile = 7005,
+        UserChangePassword = 7006,
+        UserLockout = 7007,
+        UserUnlock = 7008
 
     }
 }

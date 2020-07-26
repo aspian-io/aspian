@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Interfaces;
-using Aspian.Application.Core.SiteServices.DTOs;
+using Aspian.Application.Core.SiteServices.AdminServices.DTOs;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Persistence;

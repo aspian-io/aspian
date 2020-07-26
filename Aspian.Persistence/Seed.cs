@@ -28,21 +28,24 @@ namespace Aspian.Persistence
                         DisplayName = "Bob",
                         UserName = "bob",
                         Email = "bob@test.com",
-                        Role = "Admin"
+                        Role = "Admin",
+                        CreatedAt = DateTime.UtcNow
                     },
                     new User
                     {
                         DisplayName = "Tom",
                         UserName = "tom",
                         Email = "tom@test.com",
-                        Role = "Member"
+                        Role = "Member",
+                        CreatedAt = DateTime.UtcNow
                     },
                     new User
                     {
                         DisplayName = "Jane",
                         UserName = "jane",
                         Email = "jane@test.com",
-                        Role = "Member"
+                        Role = "Member",
+                        CreatedAt = DateTime.UtcNow
                     }
                 };
                 foreach (var user in users)

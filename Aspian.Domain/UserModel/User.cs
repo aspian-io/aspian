@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.AttachmentModel;
@@ -13,6 +14,13 @@ namespace Aspian.Domain.UserModel
         public string DisplayName { get; set; }
         public string Bio { get; set; }
         public string Role { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? ModifiedAt { get; set; }
+        public string ModifiedById { get; set; }
+        public User ModifiedBy { get; set; }
+        public string UserAgent { get; set; }
+        public string UserIPAddress { get; set; }
+        public DateTime? LastLoginDate { get; set; }
 
 
         #region Navigation Properties

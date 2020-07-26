@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aspian.Application.Core.PostServices.AdminServices;
-using Aspian.Application.Core.PostServices.DTOs;
+using Aspian.Application.Core.PostServices.AdminServices.DTOs;
 using Aspian.Domain.PostModel;
 using Aspian.Domain.UserModel.Policy;
 using MediatR;

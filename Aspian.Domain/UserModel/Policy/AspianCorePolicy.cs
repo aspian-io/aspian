@@ -55,6 +55,7 @@ namespace Aspian.Domain.UserModel.Policy
         // User Policies
         // Admin services
         public const string AdminUserCurrentPolicy = "AdminUserCurrentPolicy";
-        public const string AdminUserProfilePolicy = "AdminUserProfilePolicy";
+        public const string AdminUserLockoutPolicy = "AdminUserLockoutPolicy";
+        public const string AdminUserUnlockPolicy = "AdminUserUnlockPolicy";
     }
 }

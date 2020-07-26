@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Aspian.Application.Core.CommentServices.DTOs;
+using Aspian.Application.Core.CommentServices.AdminServices.DTOs;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.SiteModel;
@@ -39,7 +39,7 @@ namespace Aspian.Application.Core.CommentServices.AdminServices
                     ActivityCodeEnum.CommentList,
                     ActivitySeverityEnum.Information,
                     ActivityObjectEnum.Comment,
-                    $"A list of all comments has requested and recieved by user");
+                    $"A list of all comments has been requested and recieved by user");
 
                 return _mapper.Map<List<CommentDto>>(comments);
             }

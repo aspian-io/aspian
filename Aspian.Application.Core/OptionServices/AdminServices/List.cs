@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Interfaces;
-using Aspian.Application.Core.OptionServices.DTOs;
+using Aspian.Application.Core.OptionServices.AdminServices.DTOs;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.OptionModel;
 using Aspian.Domain.SiteModel;
@@ -40,7 +40,7 @@ namespace Aspian.Application.Core.OptionServices.AdminServices
                     ActivityCodeEnum.OptionList,
                     ActivitySeverityEnum.Medium,
                     ActivityObjectEnum.Option,
-                    $"A list of all options has requested and recieved by user");
+                    $"A list of all options has been requested and recieved by user");
 
                 return _mapper.Map<List<OptionDto>>(options);
             }

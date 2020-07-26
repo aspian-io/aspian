@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Aspian.Application.Core.AttachmentServices.DTOs;
+using Aspian.Application.Core.AttachmentServices.AdminServices.DTOs;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.SiteModel;

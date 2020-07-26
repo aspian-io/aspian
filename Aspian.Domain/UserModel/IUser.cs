@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.AttachmentModel;
@@ -8,11 +9,13 @@ using Aspian.Domain.TaxonomyModel;
 
 namespace Aspian.Domain.UserModel
 {
-    public interface IUser : IEntity
+    public interface IUser : IEntity, IEntityModify, IEntityInfo
     {
         string DisplayName { get; set; }
         string Bio { get; set; }
         string Role { get; set; }
+        public DateTime CreatedAt { get; set; }
+        DateTime? LastLoginDate { get; set; }
 
 
         #region Navigation Properties

@@ -2,7 +2,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Aspian.Application.Core.AttachmentServices.DTOs;
+using Aspian.Application.Core.AttachmentServices.AdminServices.DTOs;
 using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Domain.ActivityModel;

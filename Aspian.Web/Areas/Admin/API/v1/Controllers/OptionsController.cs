@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspian.Application.Core.OptionServices.AdminServices;
-using Aspian.Application.Core.OptionServices.DTOs;
+using Aspian.Application.Core.OptionServices.AdminServices.DTOs;
 using Aspian.Domain.UserModel.Policy;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

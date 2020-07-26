@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Interfaces;
-using Aspian.Application.Core.PostServices.DTOs;
+using Aspian.Application.Core.PostServices.AdminServices.DTOs;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.PostModel;
 using Aspian.Domain.SiteModel;
@@ -39,7 +39,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                     ActivityCodeEnum.PostList,
                     ActivitySeverityEnum.Information,
                     ActivityObjectEnum.Post,
-                    "A list of all posts has requested and recieved by user");
+                    "A list of all posts has been requested and recieved by user");
 
                 return _mapper.Map<List<PostDto>>(posts);
             }

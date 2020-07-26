@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aspian.Application.Core.ActivityServices.AdminServices;
-using Aspian.Application.Core.ActivityServices.DTOs;
+using Aspian.Application.Core.ActivityServices.AdminServices.DTOs;
 using Aspian.Domain.UserModel.Policy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

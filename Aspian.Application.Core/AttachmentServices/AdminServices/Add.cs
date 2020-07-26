@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Interfaces;
-using Aspian.Application.Core.AttachmentServices.DTOs;
+using Aspian.Application.Core.AttachmentServices.AdminServices.DTOs;
 using Aspian.Domain.AttachmentModel;
 using Aspian.Persistence;
 using AutoMapper;

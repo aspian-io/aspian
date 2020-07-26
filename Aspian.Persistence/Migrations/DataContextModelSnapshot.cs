@@ -849,6 +849,9 @@ namespace Aspian.Persistence.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 
@@ -859,11 +862,20 @@ namespace Aspian.Persistence.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("LastLoginDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("nvarchar(256)")
@@ -891,11 +903,19 @@ namespace Aspian.Persistence.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserIPAddress")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ModifiedById");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -1361,6 +1381,13 @@ namespace Aspian.Persistence.Migrations
                         .HasForeignKey("TermId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Aspian.Domain.UserModel.User", b =>
+                {
+                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
                 });
 
             modelBuilder.Entity("Aspian.Domain.UserModel.Usermeta", b =>

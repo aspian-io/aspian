@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Aspian.Application.Core.ActivityServices.DTOs;
+using Aspian.Application.Core.ActivityServices.AdminServices.DTOs;
 using Aspian.Persistence;
 using AutoMapper;
 using MediatR;

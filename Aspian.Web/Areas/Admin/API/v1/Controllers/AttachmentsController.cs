@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Aspian.Application.Core.AttachmentServices.AdminServices;
 using Aspian.Application.Core.AttachmentServices.UserServices;
-using Aspian.Application.Core.AttachmentServices.DTOs;
+using Aspian.Application.Core.AttachmentServices.AdminServices.DTOs;
 using Aspian.Domain.UserModel.Policy;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aspian.Web.Areas.Admin.API.v1.Controllers

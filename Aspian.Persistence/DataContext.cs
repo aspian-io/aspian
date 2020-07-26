@@ -118,7 +118,7 @@ namespace Aspian.Persistence
                     if (currentUserName != null)
                         ((IEntityModify)entity.Entity).ModifiedById = base.Users.SingleOrDefault(user => user.UserName == currentUserName).Id;
                 }
-                if (entity.State == EntityState.Added && entity.Entity is IEntityCreate || entity.State == EntityState.Modified && entity.Entity is IEntityModify)
+                if (entity.State == EntityState.Added && entity.Entity is IEntityInfo || entity.State == EntityState.Modified && entity.Entity is IEntityInfo)
                 {
                     if (_httpContextAccessor.HttpContext != null)
                     {

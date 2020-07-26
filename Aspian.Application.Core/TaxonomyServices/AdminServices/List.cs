@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Interfaces;
-using Aspian.Application.Core.TaxonomyServices.DTOs;
+using Aspian.Application.Core.TaxonomyServices.AdminServices.DTOs;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
@@ -40,7 +40,7 @@ namespace Aspian.Application.Core.TaxonomyServices.AdminServices
                     ActivityCodeEnum.TaxonomyList,
                     ActivitySeverityEnum.Information,
                     ActivityObjectEnum.Taxonomy,
-                    "A list of all taxonomies has requested and recieved by user");
+                    "A list of all taxonomies has been requested and recieved by user");
 
                 return _mapper.Map<List<TaxonomyDto>>(taxonomies);
             }
