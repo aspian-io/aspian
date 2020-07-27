@@ -4,14 +4,16 @@ using Aspian.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200727161959_SiteModelModified")]
+    partial class SiteModelModified
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -638,7 +640,7 @@ namespace Aspian.Persistence.Migrations
                     b.Property<long?>("DownloadHostCapacity")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("DownloadHostExpiresAt")
+                    b.Property<DateTime?>("DownloadHostDeativatesAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("HasDownloadHost")
@@ -656,7 +658,7 @@ namespace Aspian.Persistence.Migrations
                     b.Property<long>("MainHostCapacity")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("MainHostExpiresAt")
+                    b.Property<DateTime?>("MainHostDeativatesAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ModifiedAt")
@@ -668,7 +670,7 @@ namespace Aspian.Persistence.Migrations
                     b.Property<DateTime?>("ModuleActivatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("ModuleExpiresAt")
+                    b.Property<DateTime?>("ModuleDeativatesAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Path")

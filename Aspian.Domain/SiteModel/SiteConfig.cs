@@ -12,10 +12,15 @@ namespace Aspian.Domain.SiteModel
             builder
                 .Property(s => s.SiteType)
                 .HasConversion(converter);
-            
+
             builder
                 .HasIndex(s => s.SiteType)
                 .IsUnique();
+
+            builder
+                .HasOne(s => s.ModifiedBy)
+                .WithMany(u => u.ModifiedSites)
+                .HasForeignKey(s => s.ModifiedById);
         }
     }
 }

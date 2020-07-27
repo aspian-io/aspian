@@ -5,6 +5,7 @@ using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.BaseModel;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.PostModel;
+using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
 
 namespace Aspian.Domain.UserModel
@@ -21,6 +22,7 @@ namespace Aspian.Domain.UserModel
         #region Navigation Properties
         ICollection<Usermeta> CreatedUsermetas { get; set; }
         ICollection<Usermeta> ModifiedUsermetas { get; set; }
+        ICollection<Site> ModifiedSites { get; set; }
         ICollection<Term> CreatedTerms { get; set; }
         ICollection<Term> ModifiedTerms { get; set; }
         ICollection<Termmeta> CreatedTermmetas { get; set; }

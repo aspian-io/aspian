@@ -4,14 +4,16 @@ using Aspian.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200727085704_SiteModelMetaDataFieldsAdded")]
+    partial class SiteModelMetaDataFieldsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -629,34 +631,10 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("Domain")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DownloadHostActivatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("DownloadHostAvailableSpace")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DownloadHostCapacity")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DownloadHostExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("HasDownloadHost")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsActivated")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("MainHostActivatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("MainHostAvailableSpace")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("MainHostCapacity")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("MainHostExpiresAt")
+                    b.Property<DateTime?>("LastUpdated")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ModifiedAt")
@@ -665,14 +643,11 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime?>("ModuleActivatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModuleExpiresAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Path")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Registered")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SiteType")
                         .IsRequired()

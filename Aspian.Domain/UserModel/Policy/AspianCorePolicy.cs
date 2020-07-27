@@ -3,6 +3,7 @@ namespace Aspian.Domain.UserModel.Policy
     public class AspianCorePolicy
     {
         public const string AdminOnlyPolicy = "AdminOnlyPolicy";
+        public const string DeveloperOnlyPolicy = "DeveloperOnlyPolicy";
         // Activity Policies
         // Admin services
         public const string AdminActivityListPolicy = "AdminActivityListPolicy";
@@ -43,6 +44,7 @@ namespace Aspian.Domain.UserModel.Policy
         // Admin Services
         public const string AdminSiteDetailsPolicy = "AdminSiteDetailsPolicy";
         public const string AdminSiteListPolicy = "AdminSiteListPolicy";
+        public const string AdminSiteEditPolicy = "AdminSiteEditPolicy";
 
         // Taxonomy Policies
         // Admin services

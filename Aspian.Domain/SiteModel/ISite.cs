@@ -10,14 +10,12 @@ using Aspian.Domain.TaxonomyModel;
 
 namespace Aspian.Domain.SiteModel
 {
-    public interface ISite : IEntityBase
+    public interface ISite : IEntityBase, IEntityModify, IEntityInfo
     {
         string Domain { get; set; }
         string Path { get; set; }
-        DateTime Registered { get; set; }
-        DateTime? LastUpdated { get; set; }
         SiteTypeEnum SiteType { get; set; }
-        bool Activated { get; set; }
+        bool IsActivated { get; set; }
 
 
         #region Navigation Properties

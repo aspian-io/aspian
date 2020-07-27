@@ -4,6 +4,7 @@ using Aspian.Domain.ActivityModel;
 using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.PostModel;
+using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
 using Microsoft.AspNetCore.Identity;
 
@@ -26,6 +27,7 @@ namespace Aspian.Domain.UserModel
         #region Navigation Properties
         public virtual ICollection<Usermeta> CreatedUsermetas { get; set; }
         public virtual ICollection<Usermeta> ModifiedUsermetas { get; set; }
+        public virtual ICollection<Site> ModifiedSites { get; set; }
         public virtual ICollection<Term> CreatedTerms { get; set; }
         public virtual ICollection<Term> ModifiedTerms { get; set; }
         public virtual ICollection<Termmeta> CreatedTermmetas { get; set; }

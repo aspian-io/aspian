@@ -85,6 +85,8 @@ namespace Aspian.Web
             {
                 // AdminOnly Policy
                 options.AddPolicy(AspianCorePolicy.AdminOnlyPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin));
+                // Developer Policy
+                options.AddPolicy(AspianCorePolicy.DeveloperOnlyPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Developer));
                 // Admin Activity Policy
                 options.AddPolicy(AspianCorePolicy.AdminActivityListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminActivityListClaim));
                 // Admin Attachment Policies
@@ -114,6 +116,7 @@ namespace Aspian.Web
                 // Admin Site Policies
                 options.AddPolicy(AspianCorePolicy.AdminSiteDetailsPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminSiteDetailsClaim));
                 options.AddPolicy(AspianCorePolicy.AdminSiteListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminSiteListClaim));
+                options.AddPolicy(AspianCorePolicy.AdminSiteEditPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminSiteListClaim));
                 // Admin Taxonomy Policies
                 options.AddPolicy(AspianCorePolicy.AdminTaxonomyCreatePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminTaxonomyCreateClaim));
                 options.AddPolicy(AspianCorePolicy.AdminTaxonomyDeletePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminTaxonomyDeleteClaim));

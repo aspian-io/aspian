@@ -18,12 +18,6 @@ namespace Aspian.Application.Core.SiteServices.AdminServices
         public class Query : IRequest<SiteDto>
         {
             public Guid Id { get; set; }
-            public string Domain { get; set; }
-            public string Path { get; set; }
-            public DateTime Registered { get; set; }
-            public DateTime? LastUpdated { get; set; }
-            public SiteTypeEnum SiteType { get; set; }
-            public bool Activated { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, SiteDto>
@@ -52,7 +46,7 @@ namespace Aspian.Application.Core.SiteServices.AdminServices
                     ActivityObjectEnum.Site,
                     $"Details of the site \"{site.SiteType.ToString()}\" has been read.");
 
-                return _mapper.Map<Site, SiteDto>(site);
+                return _mapper.Map<SiteDto>(site);
             }
         }
     }

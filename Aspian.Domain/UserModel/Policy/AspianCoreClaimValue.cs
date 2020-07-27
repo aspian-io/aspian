@@ -5,6 +5,7 @@ namespace Aspian.Domain.UserModel.Policy
     public class AspianCoreClaimValue
     {
         public const string Admin = "Admin";
+        public const string Developer = "Developer";
         public const string Member = "Member";
 
         // Activity Claims
@@ -47,6 +48,7 @@ namespace Aspian.Domain.UserModel.Policy
         // Admin Services
         public const string AdminSiteDetailsClaim = "AdminSiteDetails";
         public const string AdminSiteListClaim = "AdminSiteList";
+        public const string AdminSiteEditClaim = "AdminSiteEdit";
 
         // Taxonomy Claims
         // Admin services

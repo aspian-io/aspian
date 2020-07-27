@@ -25,6 +25,14 @@ namespace Aspian.Persistence
                 {
                     new User
                     {
+                        DisplayName = "Aspian",
+                        UserName = "aspian",
+                        Email = "aspian@test.com",
+                        Role = "Developer",
+                        CreatedAt = DateTime.UtcNow
+                    },
+                    new User
+                    {
                         DisplayName = "Bob",
                         UserName = "bob",
                         Email = "bob@test.com",
@@ -55,6 +63,9 @@ namespace Aspian.Persistence
                     // Add Admin policy as a claim to bob claims
                     if (user.UserName == "bob")
                         await userManager.AddClaimAsync(user, new Claim(AspianClaimType.Claim, AspianCoreClaimValue.Admin));
+                    // Add Developer policy as a claim to aspian claims
+                    if (user.UserName == "aspian")
+                        await userManager.AddClaimAsync(user, new Claim(AspianClaimType.Claim, AspianCoreClaimValue.Developer));
                 }
             }
 
@@ -67,33 +78,33 @@ namespace Aspian.Persistence
                         Id = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
                         Domain = "localhost",
                         Path = "/",
-                        Registered = DateTime.UtcNow,
                         SiteType = SiteTypeEnum.Blog,
-                        Activated = true
+                        IsActivated = true,
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Site {
                         Id = Guid.Parse("134D3087-EFE9-4AB6-F13C-08D80310CDEE"),
                         Domain = "localhost",
                         Path = "/store",
-                        Registered = DateTime.UtcNow,
                         SiteType = SiteTypeEnum.Store,
-                        Activated = true
+                        IsActivated = true,
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Site {
                         Id = Guid.Parse("5AE37FF3-C221-43D3-F13D-08D80310CDEE"),
                         Domain = "localhost",
                         Path = "/lms",
-                        Registered = DateTime.UtcNow,
                         SiteType = SiteTypeEnum.LMS,
-                        Activated = true
+                        IsActivated = true,
+                        CreatedAt = DateTime.UtcNow
                     },
                     new Site {
                         Id = Guid.Parse("B56877AE-FB1E-479C-F13E-08D80310CDEE"),
                         Domain = "localhost",
                         Path = "/ehealth",
-                        Registered = DateTime.UtcNow,
                         SiteType = SiteTypeEnum.eHealth,
-                        Activated = true
+                        IsActivated = true,
+                        CreatedAt = DateTime.UtcNow
                     }
                 };
 
