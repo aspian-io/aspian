@@ -46,6 +46,14 @@ namespace Aspian.Web
                 options.UseSqlServer(Configuration.GetConnectionString("AspianConnection"));
             });
 
+            services.AddCors(OptionAccessor=> 
+            {
+                OptionAccessor.AddPolicy("CorsPolicy", policy => 
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                });
+            });
+
             // Providing full mvc ASP.NET Core framework
             services.AddControllersWithViews(opt =>
                    {
@@ -193,6 +201,8 @@ namespace Aspian.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {
