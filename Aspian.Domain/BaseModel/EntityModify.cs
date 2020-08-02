@@ -7,6 +7,6 @@ namespace Aspian.Domain.BaseModel
     {
         public DateTime? ModifiedAt { get; set; }
         public string ModifiedById { get; set; }
-        public User ModifiedBy { get; set; }
+        public virtual User ModifiedBy { get; set; }
     }
 }

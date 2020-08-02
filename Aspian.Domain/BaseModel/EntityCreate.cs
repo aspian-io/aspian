@@ -7,7 +7,7 @@ namespace Aspian.Domain.BaseModel
     {
         public DateTime CreatedAt { get; set; }
         public string CreatedById { get; set; }
-        public User CreatedBy { get; set; }
+        public virtual User CreatedBy { get; set; }
         
     }
 }

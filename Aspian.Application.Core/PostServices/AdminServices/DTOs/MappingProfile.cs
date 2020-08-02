@@ -2,6 +2,7 @@ using System.Linq;
 using Aspian.Application.Core.PostServices.AdminServices;
 using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.PostModel;
+using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Domain.UserModel;
 using AutoMapper;
@@ -57,7 +58,11 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
                 .ForMember(d => d.CreatedById, o => o.UseDestinationValue());
 
 
-            CreateMap<Post, PostDto>();
+            CreateMap<Post, PostDto>()
+                .ForMember(d => d.Comments, o => o.MapFrom(s => s.Comments.Count))
+                .ForMember(d => d.PostHistories, o => o.MapFrom(s => s.PostHistories.Count))
+                .ForMember(d => d.PostHistories, o => o.MapFrom(s => s.PostHistories.Count))
+                .ForMember(d => d.ChildPosts, o => o.MapFrom(s => s.ChildPosts.Count));
             CreateMap<Postmeta, PostmetaDto>();
             CreateMap<User, UserDto>();
             CreateMap<PostAttachment, PostAttachmentDto>();
@@ -67,6 +72,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
             CreateMap<Taxonomy, TaxonomyDto>();
             CreateMap<Term, TermDto>();
             CreateMap<Termmeta, TermmetaDto>();
+            CreateMap<Site, SiteDto>();
 
             CreateMap<Post, PostHistory>()
                 .ForMember(d => d.Id, o => o.UseDestinationValue())
