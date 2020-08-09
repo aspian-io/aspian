@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Interfaces;
-using Aspian.Application.Core.UserServices.UserServices.DTOs;
+using Aspian.Application.Core.UserServices.AdminServices.DTOs;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.SiteModel;
@@ -12,7 +12,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Aspian.Application.Core.UserServices.UserServices
+namespace Aspian.Application.Core.UserServices.AdminServices
 {
     public class UserProfile
     {

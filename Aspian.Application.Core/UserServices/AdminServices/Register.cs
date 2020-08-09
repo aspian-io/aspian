@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
-using Aspian.Application.Core.UserServices.UserServices.DTOs;
+using Aspian.Application.Core.UserServices.AdminServices.DTOs;
 using Aspian.Application.Core.Validators;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.SiteModel;
@@ -18,7 +18,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Aspian.Application.Core.UserServices.UserServices
+namespace Aspian.Application.Core.UserServices.AdminServices
 {
     public class Register
     {

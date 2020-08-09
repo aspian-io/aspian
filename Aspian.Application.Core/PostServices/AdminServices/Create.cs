@@ -91,7 +91,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices
 
                 if (success) 
                 {
-                    var postTruncatedContent = post.Title.Substring(0, 30) + "...";
+                    var postTruncatedContent = post.Title.Length > 30 ? post.Title.Substring(0, 30) + "..." : post.Title;
                     var postAuthorUsername = post.CreatedBy.UserName;
                     await _logger.LogActivity(
                         site.Id,

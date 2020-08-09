@@ -17,7 +17,10 @@ namespace Aspian.Application.Core.UserServices.AdminServices.DTOs
             CreateMap<User, CurrentUserDto>();
             CreateMap<Attachment, PhotoDto>();
 
-            CreateMap<User, UserDto>()
+            CreateMap<User, UserDto>();
+            CreateMap<User, UserProfileDto>();
+            
+            CreateMap<User, UserListDto>()
                 .ForMember(d => d.Taxonomies, o => o.MapFrom(s => s.CreatedTaxonomies.Count))
                 .ForMember(d => d.Posts, o => o.MapFrom(s => s.CreatedPosts.Count))
                 .ForMember(d => d.Attachments, o => o.MapFrom(s => s.CreatedAttachments.Count))

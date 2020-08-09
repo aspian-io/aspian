@@ -45,6 +45,7 @@ namespace Aspian.Persistence
         public DbSet<Taxonomy> Taxonomies { get; set; }
         public DbSet<TaxonomyPost> TaxonomyPosts { get; set; }
         public DbSet<Usermeta> Usermetas { get; set; }
+        public DbSet<UserToken> Tokens { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -73,6 +74,7 @@ namespace Aspian.Persistence
             builder.ApplyConfiguration(new TaxonomyPostConfig());
             builder.ApplyConfiguration(new UserConfig());
             builder.ApplyConfiguration(new UsermetaConfig());
+            builder.ApplyConfiguration(new UserTokenConfig());
         }
 
 

@@ -11,9 +11,9 @@ namespace Aspian.Application.Core.UserServices.AdminServices
 {
     public class List
     {
-        public class Query : IRequest<List<UserDto>> { }
+        public class Query : IRequest<List<UserListDto>> { }
 
-        public class Handler : IRequestHandler<Query, List<UserDto>>
+        public class Handler : IRequestHandler<Query, List<UserListDto>>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
@@ -23,11 +23,11 @@ namespace Aspian.Application.Core.UserServices.AdminServices
                 _context = context;
             }
 
-            public async Task<List<UserDto>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<List<UserListDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var users = await _context.Users.ToListAsync();
 
-                return _mapper.Map<List<UserDto>>(users);
+                return _mapper.Map<List<UserListDto>>(users);
             }
         }
     }

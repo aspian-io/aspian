@@ -1,5 +1,3 @@
-using Aspian.Application.Core.UserServices.UserServices.DTOs;
-
 namespace Aspian.Application.Core.UserServices.AdminServices.DTOs
 {
     public class CurrentUserDto

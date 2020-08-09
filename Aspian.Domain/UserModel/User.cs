@@ -28,6 +28,7 @@ namespace Aspian.Domain.UserModel
         public virtual ICollection<Usermeta> CreatedUsermetas { get; set; }
         public virtual ICollection<Usermeta> ModifiedUsermetas { get; set; }
         public virtual ICollection<Site> ModifiedSites { get; set; }
+        public virtual ICollection<UserToken> Tokens { get; set; }
         public virtual ICollection<Term> CreatedTerms { get; set; }
         public virtual ICollection<Term> ModifiedTerms { get; set; }
         public virtual ICollection<Termmeta> CreatedTermmetas { get; set; }

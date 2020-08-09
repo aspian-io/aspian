@@ -1,8 +1,6 @@
 using System.Threading.Tasks;
 using Aspian.Application.Core.UserServices.AdminServices;
-using AdminDTOs = Aspian.Application.Core.UserServices.AdminServices.DTOs;
-using Aspian.Application.Core.UserServices.UserServices;
-using UserDTOs = Aspian.Application.Core.UserServices.UserServices.DTOs;
+using Aspian.Application.Core.UserServices.AdminServices.DTOs;
 using Aspian.Domain.UserModel.Policy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,33 +13,40 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
     {
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<UserDTOs::UserDto>> Login(Login.Query query)
+        public async Task<ActionResult<UserDto>> Login(Login.Query query)
         {
             return await Mediator.Send(query);
         }
 
         [AllowAnonymous]
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<UserDto>> RefreshToken()
+        {
+            return await Mediator.Send(new RefreshToken.Command());
+        }
+
+        [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<UserDTOs::UserDto>> Register(Register.Command command)
+        public async Task<ActionResult<UserDto>> Register(Register.Command command)
         {
             return await Mediator.Send(command);
         }
 
         [HttpGet("{username}")]
-        public async Task<ActionResult<UserDTOs::UserProfileDto>> Profile(string username)
+        public async Task<ActionResult<UserProfileDto>> Profile(string username)
         {
             return await Mediator.Send(new UserProfile.Query { UserName = username });
         }
 
         [Authorize(Policy = AspianCorePolicy.AdminUserCurrentPolicy)]
         [HttpGet]
-        public async Task<ActionResult<AdminDTOs::CurrentUserDto>> CurrentUser()
+        public async Task<ActionResult<CurrentUserDto>> CurrentUser()
         {
             return await Mediator.Send(new CurrentUser.Query());
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<List<AdminDTOs::UserDto>>> List()
+        public async Task<ActionResult<List<UserListDto>>> List()
         {
             return await Mediator.Send(new List.Query());
         }

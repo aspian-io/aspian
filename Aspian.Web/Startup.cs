@@ -23,6 +23,10 @@ using Infrastructure.Option;
 using Aspian.Domain.UserModel.Policy;
 using Infrastructure.Utility;
 using Infrastructure.Logger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace Aspian.Web
 {
@@ -46,9 +50,9 @@ namespace Aspian.Web
                 options.UseSqlServer(Configuration.GetConnectionString("AspianConnection"));
             });
 
-            services.AddCors(OptionAccessor=> 
+            services.AddCors(OptionAccessor =>
             {
-                OptionAccessor.AddPolicy("CorsPolicy", policy => 
+                OptionAccessor.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
                 });
@@ -85,8 +89,11 @@ namespace Aspian.Web
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = key,
                         ValidateAudience = false,
-                        ValidateIssuer = false
+                        ValidateIssuer = false,
+                        // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                        ClockSkew = TimeSpan.Zero
                     };
+
                 });
 
             services.AddAuthorization(options =>
@@ -153,9 +160,11 @@ namespace Aspian.Web
             services.AddAutoMapper(typeof(List.Handler).Assembly);
         }
 
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseWhen(ctx => ctx.Request.Path.StartsWithSegments("/api", StringComparison.InvariantCultureIgnoreCase),

@@ -4,14 +4,16 @@ using Aspian.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200807185344_UserTokenTableModified")]
+    partial class UserTokenTableModified
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -984,17 +986,8 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReplacedByToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RevokedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("Jti")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserAgent")
                         .HasColumnType("nvarchar(max)");
@@ -1002,9 +995,14 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("UserIPAddress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tokens");
                 });
@@ -1481,8 +1479,12 @@ namespace Aspian.Persistence.Migrations
             modelBuilder.Entity("Aspian.Domain.UserModel.UserToken", b =>
                 {
                     b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
-                        .WithMany("Tokens")
+                        .WithMany("CreatedTokens")
                         .HasForeignKey("CreatedById");
+
+                    b.HasOne("Aspian.Domain.UserModel.User", null)
+                        .WithMany("Tokens")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Aspian.Domain.UserModel.Usermeta", b =>
