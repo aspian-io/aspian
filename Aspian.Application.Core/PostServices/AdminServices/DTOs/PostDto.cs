@@ -13,8 +13,9 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
         public string Title { get; set; }
         public string Subtitle { get; set; }
         public string Excerpt { get; set; }
+        public string Content { get; set; }
         public string Slug { get; set; }
-        public PostStatusEnum PostStatus { get; set; }
+        public string PostStatus { get; set; }
         public bool CommentAllowed { get; set; }
         public int Order { get; set; }
         public int ViewCount { get; set; }
@@ -23,7 +24,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
         public int PinOrder { get; set; }
         public int PostHistories { get; set; }
         public int Comments { get; set; }
-        public virtual int ChildPosts { get; set; }
+        public int ChildPosts { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
         public string UserAgent { get; set; }
