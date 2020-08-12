@@ -1,69 +1,68 @@
 import React, { useState } from 'react';
+import { Route } from 'react-router-dom';
+import { Layout, ConfigProvider, Breadcrumb } from 'antd';
+import 'antd/dist/antd.css';
 
-import { Layout, Menu } from 'antd';
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-} from '@ant-design/icons';
-import './components/header/style.less';
-
-const { Header, Sider, Content } = Layout;
+import Dashboard from './components/aspian-core/dashboard/Dashboard';
+import AspianHeader from './components/aspian-core/layout/header/Header';
+import AspianSider from './components/aspian-core/layout/sider/Sider';
+import AspianFooter from './components/aspian-core/layout/footer/Footer';
+import PostList from  './components/aspian-core/post/postList/PostList';
 
 const App = () => {
+  const { Content } = Layout;
   const [collapsed, setCollapsed] = useState(false);
 
-  const toggle = (e) => {
+  const toggle = () => {
     setCollapsed(!collapsed);
+    if (collapsed) {
+      document.getElementById('contentLayout').style.marginLeft = '200px';
+    } else {
+      document.getElementById('contentLayout').style.marginLeft = '0';
+    }
+  };
+
+  const onLayoutBreakpoint = (broken) => {
+    if (broken) {
+      document.getElementById('contentLayout').style.marginLeft = '0';
+      document.getElementById('appLayout').style.overflow = 'hidden';
+      document.getElementById('contentLayout').style.minWidth = `100%`;
+      setCollapsed(true);
+    } else {
+      document.getElementById('contentLayout').style.marginLeft = '200px';
+      document.getElementById('appLayout').style.overflow = 'initial';
+      document.getElementById('contentLayout').style.minWidth = `initial`;
+      setCollapsed(false);
+    }
   };
 
   return (
-    <Provider store={store}>
-      <Layout>
-        <Sider
-          collapsedWidth="64"
-          trigger={null}
-          collapsible
+    // <ConfigProvider direction='rtl' locale={faIR}>
+    <ConfigProvider>
+      <Layout className="layout" id="appLayout">
+        <AspianSider
           collapsed={collapsed}
-        >
-          <div className="logo" />
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-            <Menu.Item key="1" icon={<UserOutlined />}>
-              nav 1
-            </Menu.Item>
-            <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-              nav 2
-            </Menu.Item>
-            <Menu.Item key="3" icon={<UploadOutlined />}>
-              nav 3
-            </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }}>
-            {React.createElement(
-              collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-              {
-                className: 'trigger',
-                onClick: toggle,
-              }
-            )}
-          </Header>
+          onLayoutBreakpoint={onLayoutBreakpoint}
+        />
+        <Layout id="contentLayout">
+          <AspianHeader collapsed={collapsed} toggle={toggle} />
           <Content
-            className="site-layout-background"
-            style={{
-              margin: '24px 16px',
-              padding: 24,
-              minHeight: 280,
-            }}
+            className="content"
+            style={{ margin: '24px 16px 0', overflow: 'initial' }}
           >
-            Content
+            <Breadcrumb className="breadcrumb">
+              <Breadcrumb.Item>User</Breadcrumb.Item>
+              <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            </Breadcrumb>
+            <div className="content-wrapper">
+              <Route exact path='/' component={Dashboard} />
+              <Route exact path='/posts' component={PostList} />
+            </div>
           </Content>
+          <AspianFooter />
         </Layout>
       </Layout>
-    </Provider>
+    </ConfigProvider>
   );
 };
 

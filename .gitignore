@@ -272,6 +272,30 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# dependencies
+/client/node_modules
+/client/.pnp
+/client/.pnp.js
+
+# testing
+/client/coverage
+
+# production
+/client/build
+
+# misc
+/client/.DS_Store
+/client/.env.local
+/client/.env.development.local
+/client/.env.test.local
+/client/.env.production.local
+
+/client/npm-debug.log*
+/client/yarn-debug.log*
+/client/yarn-error.log*
+
+
+
 # Visual Studio 6 build log
 *.plg
 

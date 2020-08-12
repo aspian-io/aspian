@@ -1,68 +1,45 @@
 {
-  "name": "aspian-cms-react",
-  "version": "1.0.0",
-  "description": "ASPIAN CMS front-end with React.",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "webpack-dev-server --open --config=config/webpack.dev.js",
-    "server": "dotnet watch -p ../API run",
-    "dev": "concurrently \"npm run server\" \"npm start\"",
-    "build-ltr": "webpack --config=config/webpack.prod.js",
-    "build-rtl": "webpack --config=config/webpack.prod.rtl.js",
-    "build": "npm run build-ltr & npm run build-rtl"
-  },
-  "author": "Omid Rouhani",
-  "license": "MIT",
-  "devDependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/polyfill": "^7.8.7",
-    "@babel/preset-env": "^7.9.6",
-    "@babel/preset-react": "^7.9.4",
-    "autoprefixer": "^9.7.6",
-    "babel-loader": "^8.1.0",
-    "babel-plugin-import": "^1.13.0",
-    "clean-webpack-plugin": "^3.0.0",
-    "concurrently": "^5.2.0",
-    "core-js": "^3.6.5",
-    "css-loader": "^3.5.3",
-    "cssnano": "^4.1.10",
-    "file-loader": "^6.0.0",
-    "html-loader": "^1.1.0",
-    "html-webpack-plugin": "^4.3.0",
-    "image-webpack-loader": "^6.0.0",
-    "less-loader": "^6.1.0",
-    "mini-css-extract-plugin": "^0.9.0",
-    "node-sass": "^4.14.1",
-    "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "postcss-loader": "^3.0.0",
-    "postcss-preset-env": "^6.7.0",
-    "sass-loader": "^8.0.2",
-    "style-loader": "^1.2.1",
-    "terser-webpack-plugin": "^3.0.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.0"
-  },
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "antd": "^4.2.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "antd": "^4.5.4",
     "axios": "^0.19.2",
-    "moment": "^2.25.3",
+    "moment": "^2.27.0",
+    "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-moment": "^0.9.7",
-    "react-router-dom": "^5.2.0"
+    "react-redux": "^7.2.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.3",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0"
   },
-  "browserslist": [
-    "last 10 versions",
-    "> 0.5%",
-    "Chrome >= 45",
-    "Firefox >= 38",
-    "Edge >= 12",
-    "Explorer >= 8",
-    "iOS >= 9",
-    "Safari >= 9",
-    "Android >= 4.4",
-    "Opera >= 30"
-  ],
-  "proxy": "http://localhost:5000"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:5001"
 }
