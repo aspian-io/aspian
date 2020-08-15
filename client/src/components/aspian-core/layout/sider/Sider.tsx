@@ -2,9 +2,15 @@ import React from 'react';
 import { Layout } from 'antd';
 import AspianMenu from './menu/Menu';
 
+interface IProps {
+  collapsed: boolean;
+  onLayoutBreakpoint: (broken:boolean) => void;
+  pathname: string;
+}
+
 const { Sider } = Layout;
 
-const AspianSider = ({ collapsed, onLayoutBreakpoint }) => {
+const AspianSider: React.FC<IProps> = ({ collapsed, onLayoutBreakpoint, pathname }) => {
 
   return (
     <Sider
@@ -16,7 +22,7 @@ const AspianSider = ({ collapsed, onLayoutBreakpoint }) => {
       collapsed={collapsed}
       onBreakpoint= {onLayoutBreakpoint}
     >
-      <AspianMenu />
+      <AspianMenu pathname={pathname} />
     </Sider>
   );
 };

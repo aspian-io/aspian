@@ -1,0 +1,109 @@
+{
+  "appName": "آسپیان",
+  "sider": {
+    "menu": {
+      "items": {
+        "dashboard": {
+          "name": "پیشخوان",
+          "items": {}
+        },
+        "posts": {
+          "name": "نوشته‌ها",
+          "items": {
+            "all-posts": "همه نوشته‌ها",
+            "add-new": "افزودن نوشته",
+            "categories": "دسته‌ها",
+            "tags": "برچسب‌ها"
+          }
+        },
+        "media": {
+          "name": "رسانه",
+          "items": {
+            "library": "کتابخانه",
+            "add-new": "افزودن رسانه"
+          }
+        },
+        "pages": {
+          "name": "برگه‌ها",
+          "items": {
+            "all-pages": "همه برگه‌ها",
+            "add-new": "افزودن برگه"
+          }
+        },
+        "comments": {
+          "name": "دیدگاه‌ها",
+          "items": {}
+        },
+        "appearance": {
+          "name": "نمایش",
+          "items": {
+            "customize": "شخصی سازی",
+            "menus": "منوها"
+          }
+        },
+        "users": {
+          "name": "کاربران",
+          "items": {
+            "all-users": "همه کاربران",
+            "add-new": "افزودن کاربر",
+            "your-profile": "شناسنامه شما"
+          }
+        },
+        "settings": {
+          "name": "تنظیمات",
+          "items": {
+            "general": "همگانی",
+            "writing": "نوشتن",
+            "reading": "خواندن",
+            "discussion": "گفتگوها",
+            "media": "رسانه",
+            "permalinks": "پیوندهای یکتا"
+          }
+        },
+        "reports": {
+          "name": "گزارشات",
+          "items": {
+            "users-activities": "فعالیت کاربران"
+          }
+        }
+      }
+    }
+  },
+  "footer": {
+    "made-with": "تولید شده با ",
+    "by": " توسط ",
+    "my-name": "امید روحانی",
+    "aspian": "آسپیان",
+    "copyright": "کپی‌رایت "
+  },
+
+  "post-list": {
+    "table": {
+      "thead": {
+        "title": "عنوان",
+        "category": "دسته",
+        "status": "وضعیت",
+        "attachments": "رسانه‌ها",
+        "comment-allowed": "ارسال نظرات",
+        "view-count": "تعداد بازدیدها",
+        "pinned": "سنجاق شده",
+        "histories": "تاریخچه",
+        "comments": "نظرات",
+        "child-posts": "پست‌های وابسته",
+        "created-at": "تاریخ ایجاد",
+        "created-by": "ایجاد توسط",
+        "modified-at": "تاریخ ویرایش",
+        "modified-by": "ویرایش‌ توسط",
+        "user-agent": "اطلاعات سیستمی کاربر",
+        "ip-address": "نشانی آی پی",
+        "actions": "عملیات"
+      },
+
+      "tooltip": {
+        "edit-post": "ویرایش نوشته",
+        "delete-post": "حذف نوشته",
+        "post-history": "تاریخچه نوشته"
+      }
+    }
+  }
+}

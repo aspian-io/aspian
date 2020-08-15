@@ -1,0 +1,16 @@
+/*********** change the value to rtl for rtl mode ***********/
+$layout-direction: rtl;
+
+/*************** include this for ltr styles ****************/
+@mixin ltr {
+  @if $layout-direction == ltr {
+    @content;
+  }
+}
+
+/*************** include this for rtl styles ****************/
+@mixin rtl {
+  @if $layout-direction == rtl {
+    @content;
+  }
+}

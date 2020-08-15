@@ -1,0 +1,109 @@
+{
+  "appName": "ASPIAN",
+  "sider": {
+    "menu": {
+      "items": {
+        "dashboard": {
+          "name": "Dashboard",
+          "items": {}
+        },
+        "posts": {
+          "name": "Posts",
+          "items": {
+            "all-posts": "All Posts",
+            "add-new": "Add New",
+            "categories": "Categories",
+            "tags": "Tags"
+          }
+        },
+        "media": {
+          "name": "Media",
+          "items": {
+            "library": "Library",
+            "add-new": "Add New"
+          }
+        },
+        "pages": {
+          "name": "Pages",
+          "items": {
+            "all-pages": "All Pages",
+            "add-new": "Add New"
+          }
+        },
+        "comments": {
+          "name": "Comments",
+          "items": {}
+        },
+        "appearance": {
+          "name": "Appearance",
+          "items": {
+            "customize": "Customize",
+            "menus": "Menus"
+          }
+        },
+        "users": {
+          "name": "Users",
+          "items": {
+            "all-users": "All Users",
+            "add-new": "Add New",
+            "your-profile": "Your Profile"
+          }
+        },
+        "settings": {
+          "name": "Settings",
+          "items": {
+            "general": "General",
+            "writing": "Writing",
+            "reading": "Reading",
+            "discussion": "Discussion",
+            "media": "Media",
+            "permalinks": "Permalinks"
+          }
+        },
+        "reports": {
+          "name": "Reports",
+          "items": {
+            "users-activities": "Users Activities"
+          }
+        }
+      }
+    }
+  },
+  "footer": {
+    "made-with": "Made with ",
+    "by": " by ",
+    "my-name": "Omid Rouhani",
+    "aspian": "ASPIAN",
+    "copyright": "Copyright "
+  },
+
+  "post-list": {
+    "table": {
+      "thead": {
+        "title": "Title",
+        "category": "Category",
+        "status": "Status",
+        "attachments": "Attachments",
+        "comment-allowed": "Comment Allowed",
+        "view-count": "View Count",
+        "pinned": "Pinned",
+        "histories": "Histories",
+        "comments": "Comments",
+        "child-posts": "Child Posts",
+        "created-at": "Created At",
+        "created-by": "Created By",
+        "modified-at": "Modified At",
+        "modified-by": "Modified By",
+        "user-agent": "User Agent",
+        "ip-address": "IP Address",
+        "actions": "Actions"
+      },
+
+      "tooltip": {
+        "edit-post": "Edit Post",
+        "delete-post": "Delete Post",
+        "post-history": "Post History"
+      }
+    }
+  }
+}
