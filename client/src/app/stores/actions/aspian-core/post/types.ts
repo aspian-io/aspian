@@ -4,7 +4,7 @@ import { IPost } from "../../../../models/aspian-core/post";
  ****** Action Type Enum *****
  *****************************/
 export enum PostActionTypesEnum {
-    getPosts
+    GET_POSTS = 'GET_POSTS'
 }
 
 /*****************************
@@ -18,6 +18,6 @@ export type PostAction = IGetPostsAction;
 
 // Get All Posts
 export interface IGetPostsAction {
-    type: PostActionTypesEnum.getPosts;
+    type: PostActionTypesEnum.GET_POSTS;
     payload: IPost[]
 }

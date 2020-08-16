@@ -5,20 +5,23 @@ import {
 } from '../../../actions/aspian-core/post/types';
 
 export interface IPostState {
-    posts: IPost[],
-    loadingInitial: boolean
+  readonly posts: IPost[];
+  readonly loadingInitial: boolean;
 }
 
 const initialState: IPostState = {
-    posts: [],
-    loadingInitial: true
-}
+  posts: [],
+  loadingInitial: true,
+};
 
-export const postReducer = (state: IPostState = initialState, action: PostAction) => {
+export const postReducer = (
+  state: IPostState = initialState,
+  action: PostAction
+) => {
   const { type, payload } = action;
   switch (type) {
-    case PostActionTypesEnum.getPosts:
-      return {posts: payload, loadingInitial: false};
+    case PostActionTypesEnum.GET_POSTS:
+      return { posts: payload, loadingInitial: false };
     default:
       return state;
   }

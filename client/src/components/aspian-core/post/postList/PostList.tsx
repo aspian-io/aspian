@@ -15,7 +15,6 @@ import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { IPostState } from '../../../../app/stores/reducers/aspian-core/post/posts';
 import { WithTranslation, Trans, withTranslation } from 'react-i18next';
-import i18next from 'i18next';
 
 interface IProps extends WithTranslation {
   postsState: IPostState;
@@ -23,7 +22,7 @@ interface IProps extends WithTranslation {
 }
 
 const PostList: FC<IProps> = ({ postsState, getPosts, t }) => {
-  t = i18next.getFixedT(null, 'translations');
+  
   const [selectedRowKeys, setSelectedRowKeys] = useState<ReactText[]>([]);
 
   const onSelectChange = (selectedRowKeys: ReactText[]) => {

@@ -6,7 +6,7 @@ export const getPosts = () => async (dispatch: Dispatch) => {
   const posts = await agent.Posts.list();
 
   dispatch<IGetPostsAction>({
-    type: PostActionTypesEnum.getPosts,
+    type: PostActionTypesEnum.GET_POSTS,
     payload: posts,
   });
 };

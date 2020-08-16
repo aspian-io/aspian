@@ -69,6 +69,14 @@
       }
     }
   },
+
+  "breadcrumb": {
+    "items": {
+      "dashboard": "Dashboard",
+      "all-posts": "All Posts"
+    }
+  },
+
   "footer": {
     "made-with": "Made with ",
     "by": " by ",

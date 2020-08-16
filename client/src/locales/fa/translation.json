@@ -69,6 +69,14 @@
       }
     }
   },
+
+  "breadcrumb": {
+    "items": {
+      "dashboard": "پیشخوان",
+      "all-posts": "همه نوشته‌ها"
+    }
+  },
+
   "footer": {
     "made-with": "تولید شده با ",
     "by": " توسط ",
