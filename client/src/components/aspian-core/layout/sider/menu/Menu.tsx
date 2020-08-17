@@ -12,15 +12,16 @@ import {
   ControlOutlined,
   FundViewOutlined
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
-import { history } from '../../../../..';
+
+type Props = WithTranslation & RouteComponentProps;
 
 const { SubMenu } = Menu;
-const AspianMenu: FC<WithTranslation> = ({t}) => {
+const AspianMenu: FC<Props> = ({t, location}) => {
   
   return (
-    <Menu theme="dark" mode="inline" selectedKeys={[history.location.pathname]}>
+    <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]}>
       <Menu.Item className="sider__menu-logo" disabled>
         <span className="anticon">
           <img
@@ -112,4 +113,4 @@ const AspianMenu: FC<WithTranslation> = ({t}) => {
   );
 };
 
-export default withTranslation()(AspianMenu);
+export default withRouter(withTranslation()(AspianMenu));

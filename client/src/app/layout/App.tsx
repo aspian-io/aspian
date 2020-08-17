@@ -26,31 +26,40 @@ import ServerError from '../../components/aspian-core/layout/result/ServerError'
 import NetworkProblem from '../../components/aspian-core/layout/result/NetworkProblem';
 
 import { onLayoutBreakpoint } from '../stores/actions/aspian-core/layout/sider';
+import {
+  DirectionActionTypeEnum,
+  LanguageActionTypeEnum,
+} from '../stores/actions/aspian-core/locale/types';
 
 interface IProps {
-  lang: string;
+  lang: LanguageActionTypeEnum;
   onLayoutBreakpoint: (broken: boolean, isRtl: boolean) => void;
+  dir: DirectionActionTypeEnum;
 }
 
-const App: FC<IProps> = ({ lang, onLayoutBreakpoint }) => {
+const App: FC<IProps> = ({ lang, dir, onLayoutBreakpoint }) => {
   const { Content } = Layout;
 
   useEffect(() => {
     if (window.innerWidth >= 992)
-      onLayoutBreakpoint(false, lang === 'en' ? false : true);
-  }, [onLayoutBreakpoint, lang]);
+      onLayoutBreakpoint(
+        false,
+        dir === DirectionActionTypeEnum.LTR ? false : true
+      );
+      i18n.changeLanguage(lang);
+  }, [onLayoutBreakpoint, dir, lang]);
 
-  if (lang === 'fa') {
+  if (lang === LanguageActionTypeEnum.fa) {
     document.body.style.fontFamily = 'Vazir';
   }
-  i18n.changeLanguage(lang ?? 'en');
+  
 
   return (
-    <ConfigProvider
-      direction={lang === 'fa' ? 'rtl' : 'ltr'}
-      locale={lang === 'fa' ? faIR : enUS}
-    >
-      <I18nextProvider i18n={i18n}>
+    <I18nextProvider i18n={i18n}>
+      <ConfigProvider
+        direction={dir === DirectionActionTypeEnum.LTR ? 'ltr' : 'rtl'}
+        locale={lang === LanguageActionTypeEnum.en ? enUS : faIR}
+      >
         <Layout className="layout" id="appLayout">
           <Switch>
             <Route exact path="/login" component={Login} />
@@ -88,17 +97,19 @@ const App: FC<IProps> = ({ lang, onLayoutBreakpoint }) => {
             />
           </Switch>
         </Layout>
-      </I18nextProvider>
-    </ConfigProvider>
+      </ConfigProvider>
+    </I18nextProvider>
   );
 };
 
 const mapStateToProps = ({
-  headerState,
-  siderState,
-}: IStoreState): { lang: string } => {
-  const { lang } = headerState;
-  return { lang };
+  localeState,
+}: IStoreState): {
+  lang: LanguageActionTypeEnum;
+  dir: DirectionActionTypeEnum;
+} => {
+  const { lang, dir } = localeState;
+  return { lang, dir };
 };
 
 export default connect(mapStateToProps, { onLayoutBreakpoint })(App);

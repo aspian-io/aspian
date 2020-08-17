@@ -86,6 +86,24 @@
   },
 
   "post-list": {
+    "title": "All Posts Table",
+    "text": "You can see all posts here and change them.",
+    "button": {
+      "delete": {
+        "name": "Delete",
+        "popConfirm": {
+          "title": "Are you sure you want to delete the selected posts permanently?",
+          "okText": "Confirm",
+          "cancelText": "Cancel"
+        }
+      }
+    },
+    "row-selection-menu": {
+      "items": {
+        "select-odd-row": "Select Odd Row",
+        "select-even-row": "Select Even Row"
+      }
+    },
     "table": {
       "thead": {
         "title": "Title",

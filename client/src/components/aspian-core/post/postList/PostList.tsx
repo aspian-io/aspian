@@ -1,5 +1,22 @@
-import React, { useState, ReactText, FC, useEffect } from 'react';
-import { Table, Button, Space, Tooltip } from 'antd';
+import React, {
+  useState,
+  ReactText,
+  FC,
+  useEffect,
+  Fragment,
+  MouseEvent,
+} from 'react';
+import {
+  Table,
+  Button,
+  Space,
+  Tooltip,
+  Row,
+  Col,
+  Typography,
+  Popconfirm,
+  message,
+} from 'antd';
 import { TableRowSelection } from 'antd/lib/table/interface';
 import { ColumnType } from 'antd/lib/table';
 import { EditFilled, DeleteFilled, ClockCircleFilled } from '@ant-design/icons';
@@ -15,14 +32,22 @@ import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { IPostState } from '../../../../app/stores/reducers/aspian-core/post/posts';
 import { WithTranslation, Trans, withTranslation } from 'react-i18next';
+import Title from 'antd/lib/typography/Title';
+import Paragraph from 'antd/lib/typography/Paragraph';
+import Text from 'antd/lib/typography/Text';
+import {
+  LanguageActionTypeEnum,
+  DirectionActionTypeEnum,
+} from '../../../../app/stores/actions/aspian-core/locale/types';
 
 interface IProps extends WithTranslation {
   postsState: IPostState;
   getPosts: Function;
+  lang: LanguageActionTypeEnum;
+  dir: DirectionActionTypeEnum;
 }
 
-const PostList: FC<IProps> = ({ postsState, getPosts, t }) => {
-  
+const PostList: FC<IProps> = ({ postsState, getPosts, t, lang, dir }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<ReactText[]>([]);
 
   const onSelectChange = (selectedRowKeys: ReactText[]) => {
@@ -38,7 +63,11 @@ const PostList: FC<IProps> = ({ postsState, getPosts, t }) => {
       Table.SELECTION_INVERT,
       {
         key: 'odd',
-        text: 'Select Odd Row',
+        text: (
+          <Trans>
+            {t('post-list.row-selection-menu.items.select-odd-row')}
+          </Trans>
+        ),
         onSelect: (changableRowKeys: ReactText[]) => {
           let newSelectedRowKeys = [];
           newSelectedRowKeys = changableRowKeys.filter((key, index) => {
@@ -52,7 +81,11 @@ const PostList: FC<IProps> = ({ postsState, getPosts, t }) => {
       },
       {
         key: 'even',
-        text: 'Select Even Row',
+        text: (
+          <Trans>
+            {t('post-list.row-selection-menu.items.select-even-row')}
+          </Trans>
+        ),
         onSelect: (changableRowKeys: ReactText[]) => {
           let newSelectedRowKeys = [];
           newSelectedRowKeys = changableRowKeys.filter((key, index) => {
@@ -67,12 +100,14 @@ const PostList: FC<IProps> = ({ postsState, getPosts, t }) => {
     ],
   };
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
   const columns: ColumnType<object>[] = [
     {
       title: <Trans>{t('post-list.table.thead.title')}</Trans>,
       width: 200,
       dataIndex: 'title',
-      //fixed: window.innerWidth > 576 ? 'left' : undefined,
+      fixed: windowWidth > 576 ? 'left' : undefined,
       ellipsis: true,
     },
     {
@@ -162,7 +197,7 @@ const PostList: FC<IProps> = ({ postsState, getPosts, t }) => {
     {
       title: <Trans>{t('post-list.table.thead.actions')}</Trans>,
       key: 'operation',
-      //fixed: window.innerWidth > 576 ? 'right' : undefined,
+      fixed: windowWidth > 576 ? 'right' : undefined,
       width: 150,
       align: 'center',
       render: () => (
@@ -199,6 +234,9 @@ const PostList: FC<IProps> = ({ postsState, getPosts, t }) => {
 
   useEffect(() => {
     getPosts();
+    window.addEventListener('resize', (event) => {
+      setWindowWidth(window.innerWidth);
+    });
   }, [getPosts]);
 
   postsState.posts.forEach((post, i) => {
@@ -237,22 +275,92 @@ const PostList: FC<IProps> = ({ postsState, getPosts, t }) => {
     });
   });
 
+  function confirm(e: MouseEvent | undefined): void {
+    console.log(e);
+    message.success('Click on Yes');
+  }
+
+  function cancel(e: MouseEvent | undefined): void {
+    console.log(e);
+    message.error('Click on No');
+  }
+
   return (
-    <Table
-      loading={postsState.loadingInitial}
-      rowSelection={rowSelection}
-      columns={columns}
-      dataSource={data}
-      size="small"
-      scroll={{ x: window.innerWidth - 100, y: window.innerHeight - 100 }}
-    />
+    <Fragment>
+      <Row align="bottom">
+        <Col span={12}>
+          <Typography>
+            <Title level={4}>
+              <Trans>{t('post-list.title')}</Trans>
+            </Title>
+            <Paragraph ellipsis>
+              <Text type="secondary">
+                <Trans>{t('post-list.text')}</Trans>
+              </Text>
+            </Paragraph>
+          </Typography>
+        </Col>
+        <Col
+          span={12}
+          style={{
+            textAlign: dir === DirectionActionTypeEnum.LTR ? 'right' : 'left',
+          }}
+        >
+          <Popconfirm
+            title={
+              <Trans>{t('post-list.button.delete.popConfirm.title')}</Trans>
+            }
+            onConfirm={confirm}
+            onCancel={cancel}
+            okText={
+              <Trans>{t('post-list.button.delete.popConfirm.okText')}</Trans>
+            }
+            cancelText={
+              <Trans>
+                {t('post-list.button.delete.popConfirm.cancelText')}
+              </Trans>
+            }
+            placement={lang === LanguageActionTypeEnum.en ? 'left' : 'right'}
+            okButtonProps={{ danger: true }}
+          >
+            <Button
+              type="primary"
+              danger
+              icon={<DeleteFilled />}
+              size="small"
+              style={{ marginBottom: '1rem' }}
+            >
+              <Trans>{t('post-list.button.delete.name')}</Trans>
+            </Button>
+          </Popconfirm>
+        </Col>
+      </Row>
+      <Row>
+        <Table
+          loading={postsState.loadingInitial}
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={data}
+          size="small"
+          scroll={{ x: window.innerWidth - 100, y: window.innerHeight - 100 }}
+        />
+      </Row>
+    </Fragment>
   );
 };
 
 const mapStateToProps = ({
   postsState,
-}: IStoreState): { postsState: IPostState } => {
-  return { postsState };
+  localeState,
+}: IStoreState): {
+  postsState: IPostState;
+  lang: LanguageActionTypeEnum;
+  dir: DirectionActionTypeEnum;
+} => {
+  const { lang, dir } = localeState;
+  return { postsState, lang, dir };
 };
 
-export default withTranslation()(connect(mapStateToProps, { getPosts })(PostList));
+export default withTranslation()(
+  connect(mapStateToProps, { getPosts })(PostList)
+);

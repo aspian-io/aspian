@@ -4,12 +4,12 @@ import AspianMenu from './menu/Menu';
 import { IStoreState } from '../../../../app/stores/reducers';
 import { connect } from 'react-redux';
 import {onLayoutBreakpoint} from '../../../../app/stores/actions/aspian-core/layout/sider';
-import { withRouter } from 'react-router-dom';
+import { LanguageActionTypeEnum } from '../../../../app/stores/actions/aspian-core/locale/types';
 
 interface IProps {
   collapsed: boolean;
   onLayoutBreakpoint: (broken: boolean, isRtl: boolean) => void;
-  lang: string
+  lang: LanguageActionTypeEnum
 }
 
 const { Sider } = Layout;
@@ -23,17 +23,17 @@ const AspianSider: React.FC<IProps> = ({collapsed, onLayoutBreakpoint, lang}) =>
       trigger={null}
       collapsible
       collapsed={collapsed}
-      onBreakpoint= {(broken) => onLayoutBreakpoint(broken, lang === 'en' ? false : true)}
+      onBreakpoint= {(broken) => onLayoutBreakpoint(broken, lang === LanguageActionTypeEnum.en ? false : true)}
     >
       <AspianMenu />
     </Sider>
   );
 };
 
-const mapStateToProps = ({siderState, headerState}: IStoreState): {collapsed: boolean, lang: string} => {
+const mapStateToProps = ({siderState, localeState}: IStoreState): {collapsed: boolean, lang: LanguageActionTypeEnum} => {
   const  {collapsed} = siderState;
-  const  {lang} = headerState;
+  const  {lang} = localeState;
   return {collapsed, lang};
 }
 
-export default withRouter(connect(mapStateToProps, {onLayoutBreakpoint})(AspianSider));
+export default connect(mapStateToProps, {onLayoutBreakpoint})(AspianSider);

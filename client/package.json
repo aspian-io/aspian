@@ -19,6 +19,7 @@
     "i18next": "^19.6.3",
     "i18next-browser-languagedetector": "^6.0.0",
     "i18next-xhr-backend": "^3.2.2",
+    "jalali-moment": "^3.3.8",
     "moment": "^2.27.0",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",

@@ -4,22 +4,20 @@ import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { IStoreState } from '../../../../app/stores/reducers';
 import { connect } from 'react-redux';
 import { toggle } from '../../../../app/stores/actions/aspian-core/layout/sider';
-import { handleChangeLang } from '../../../../app/stores/actions/aspian-core/layout/header';
+import { handleChangeLanguage } from '../../../../app/stores/actions/aspian-core/locale/locale';
+import { LanguageActionTypeEnum, DirectionActionTypeEnum } from '../../../../app/stores/actions/aspian-core/locale/types';
 
 interface IProps {
   collapsed: boolean;
   toggle: Function;
-  handleChangeLang: (value: string) => void;
-  lang: string;
+  handleChangeLanguage: (lang: LanguageActionTypeEnum) => void;
+  lang: LanguageActionTypeEnum;
+  dir: DirectionActionTypeEnum;
 }
 
 const { Header } = Layout;
 
-const AspianHeader: React.FC<IProps> = ({ collapsed, toggle, handleChangeLang, lang }) => {
-  // const handleChange = (value: LanguageEnum) => {
-  //   localStorage.setItem("aspianCmsLang", value);
-  // }
-  //const lang = localStorage.getItem("aspianCmsLang");
+const AspianHeader: React.FC<IProps> = ({ collapsed, toggle, handleChangeLanguage, lang, dir }) => {
   return (
     <Header className="header">
       <Row>
@@ -32,10 +30,10 @@ const AspianHeader: React.FC<IProps> = ({ collapsed, toggle, handleChangeLang, l
             }
           )}
         </Col>
-        <Col span={12} style={{textAlign: lang === "en" || null ? "right" : "left"}}>
-            <Select defaultValue={lang ?? "en"} style={{margin: '0 1rem'}} onChange={handleChangeLang} size="small">
-              <Select.Option value="en">En</Select.Option>
-              <Select.Option value="fa">فا</Select.Option>
+        <Col span={12} style={{textAlign: dir === DirectionActionTypeEnum.LTR ? "right" : "left"}}>
+            <Select defaultValue={lang} style={{margin: '0 1rem'}} onChange={handleChangeLanguage} size="small">
+              <Select.Option value={LanguageActionTypeEnum.en}>En</Select.Option>
+              <Select.Option value={LanguageActionTypeEnum.fa}>فا</Select.Option>
             </Select>
         </Col>
       </Row>
@@ -45,11 +43,11 @@ const AspianHeader: React.FC<IProps> = ({ collapsed, toggle, handleChangeLang, l
 
 const mapStateToProps = ({
   siderState,
-  headerState
-}: IStoreState): { collapsed: boolean, lang: string } => {
+  localeState
+}: IStoreState): { collapsed: boolean, lang: LanguageActionTypeEnum, dir: DirectionActionTypeEnum } => {
   const { collapsed } = siderState;
-  const { lang } = headerState;
-  return { collapsed, lang };
+  const { lang, dir } = localeState;
+  return { collapsed, lang, dir };
 };
 
-export default connect(mapStateToProps, { toggle, handleChangeLang })(AspianHeader);
+export default connect(mapStateToProps, { toggle, handleChangeLanguage })(AspianHeader);
