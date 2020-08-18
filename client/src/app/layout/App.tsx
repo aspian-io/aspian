@@ -60,7 +60,7 @@ const App: FC<IProps> = ({ lang, dir, onLayoutBreakpoint }) => {
         direction={dir === DirectionActionTypeEnum.LTR ? 'ltr' : 'rtl'}
         locale={lang === LanguageActionTypeEnum.en ? enUS : faIR}
       >
-        <Layout className="layout" id="appLayout">
+        <Layout className="aspian__layout" id="appLayout">
           <Switch>
             <Route exact path="/login" component={Login} />
             <Route
@@ -68,7 +68,7 @@ const App: FC<IProps> = ({ lang, dir, onLayoutBreakpoint }) => {
               render={() => (
                 <Fragment>
                   <AspianSider />
-                  <Layout id="contentLayout">
+                  <Layout className="aspian__layout--content" id="contentLayout">
                     <AspianHeader />
                     <Content className="content">
                       <AspianBreadcrumb />

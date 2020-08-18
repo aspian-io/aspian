@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 //import { history } from '../../layout/App';
-import { IPost } from '../../models/aspian-core/post';
+import { IPost, IPostsEnvelope } from '../../models/aspian-core/post';
 import { IUser, IUserFormValues } from '../../models/aspian-core/user';
 import { history } from '../../..';
 
@@ -55,7 +55,8 @@ const requests = {
 };
 
 const Posts = {
-  list: (): Promise<IPost[]> => requests.get('/v1/posts'),
+  list: (limit?: number, page?: number): Promise<IPostsEnvelope> =>
+    requests.get(`/v1/posts?limit=${limit}&offset=${page ? page * limit! : 0}`),
   details: (id: string): Promise<IPost> =>
     requests.get(`/v1/posts/details/${id}`),
   create: (post: IPost) => requests.post('/v1/posts/create', post),

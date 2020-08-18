@@ -32,7 +32,6 @@ export const onLayoutBreakpoint = (broken: boolean, isRtl: boolean) => (
   if (broken) {
     document.getElementById('contentLayout')!.style.marginLeft = '0';
     document.getElementById('contentLayout')!.style.marginRight = '0';
-    document.getElementById('contentLayout')!.style.marginLeft = '0';
     document.getElementById('appLayout')!.style.overflow = 'hidden';
     document.getElementById('contentLayout')!.style.minWidth = `100%`;
 

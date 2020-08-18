@@ -1,3 +1,8 @@
+export interface IPostsEnvelope {
+  posts: IPost[];
+  postCount: number;
+}
+
 export interface IPost {
   id: string;
   title: string;

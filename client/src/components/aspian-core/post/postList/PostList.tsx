@@ -27,7 +27,10 @@ import {
   TaxonomyTypeEnum,
 } from '../../../../app/models/aspian-core/post';
 import { IStoreState } from '../../../../app/stores/reducers';
-import { getPosts } from '../../../../app/stores/actions/aspian-core/post/posts';
+import {
+  getPostsEnvelope,
+  setLoading,
+} from '../../../../app/stores/actions/aspian-core/post/posts';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { IPostState } from '../../../../app/stores/reducers/aspian-core/post/posts';
@@ -40,14 +43,24 @@ import {
   DirectionActionTypeEnum,
 } from '../../../../app/stores/actions/aspian-core/locale/types';
 
+
+
 interface IProps extends WithTranslation {
   postsState: IPostState;
-  getPosts: Function;
+  getPostsEnvelope: Function;
   lang: LanguageActionTypeEnum;
   dir: DirectionActionTypeEnum;
+  setLoading: Function;
 }
 
-const PostList: FC<IProps> = ({ postsState, getPosts, t, lang, dir }) => {
+const PostList: FC<IProps> = ({
+  postsState,
+  getPostsEnvelope,
+  t,
+  lang,
+  dir,
+  setLoading,
+}) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<ReactText[]>([]);
 
   const onSelectChange = (selectedRowKeys: ReactText[]) => {
@@ -233,13 +246,14 @@ const PostList: FC<IProps> = ({ postsState, getPosts, t, lang, dir }) => {
   let data: object[] = [];
 
   useEffect(() => {
-    getPosts();
+    getPostsEnvelope();
+
     window.addEventListener('resize', (event) => {
       setWindowWidth(window.innerWidth);
     });
-  }, [getPosts]);
+  }, [getPostsEnvelope]);
 
-  postsState.posts.forEach((post, i) => {
+  postsState.postsEnvelope.posts.forEach((post, i) => {
     data.push({
       key: i,
       title: post.title,
@@ -337,12 +351,24 @@ const PostList: FC<IProps> = ({ postsState, getPosts, t, lang, dir }) => {
       </Row>
       <Row>
         <Table
+          tableLayout="fixed"
           loading={postsState.loadingInitial}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={data}
           size="small"
           scroll={{ x: window.innerWidth - 100, y: window.innerHeight - 100 }}
+          pagination={{
+            hideOnSinglePage: true,
+            size: 'small',
+            showSizeChanger: true,
+            showQuickJumper: true,
+            total: postsState.postsEnvelope.postCount,
+            defaultPageSize: 2,
+            responsive: true,
+            onChange: (page, pageSize) =>
+              setLoading(true) && getPostsEnvelope(pageSize, page - 1),
+          }}
         />
       </Row>
     </Fragment>
@@ -362,5 +388,5 @@ const mapStateToProps = ({
 };
 
 export default withTranslation()(
-  connect(mapStateToProps, { getPosts })(PostList)
+  connect(mapStateToProps, { getPostsEnvelope, setLoading })(PostList)
 );

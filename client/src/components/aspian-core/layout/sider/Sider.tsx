@@ -19,7 +19,7 @@ const AspianSider: React.FC<IProps> = ({collapsed, onLayoutBreakpoint, lang}) =>
     <Sider
       className='sider'
       breakpoint="lg"
-      collapsedWidth="0"
+      collapsedWidth= "0"
       trigger={null}
       collapsible
       collapsed={collapsed}

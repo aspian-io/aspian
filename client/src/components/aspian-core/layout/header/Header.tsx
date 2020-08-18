@@ -22,8 +22,15 @@ const AspianHeader: React.FC<IProps> = ({ collapsed, toggle, handleChangeLanguag
     <Header className="header">
       <Row>
         <Col span={12}>
-          {React.createElement(
+          {dir === DirectionActionTypeEnum.LTR && React.createElement(
             collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+            {
+              className: 'header--trigger',
+              onClick: () => toggle(collapsed),
+            }
+          )}
+          {dir === DirectionActionTypeEnum.RTL && React.createElement(
+            collapsed ? MenuFoldOutlined : MenuUnfoldOutlined,
             {
               className: 'header--trigger',
               onClick: () => toggle(collapsed),
