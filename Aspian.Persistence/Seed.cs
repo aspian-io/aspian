@@ -191,6 +191,159 @@ namespace Aspian.Persistence
                         CommentAllowed = true,
                         ViewCount = 16,
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                    },
+
+
+                    new Post {
+                        Id = Guid.Parse("1A4B97DC-F290-4609-550B-08D83C519335"),
+                        Title = "Post Title 6",
+                        Subtitle = "Post Subtitle 6",
+
+                        Excerpt = "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+
+                        Content = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia quam ducimus maiores magnam explicabo vitae, suscipit veniam! Laboriosam, eaque tempora consequatur quo quaerat impedit dolorem laudantium, ipsum nemo libero sed.",
+
+                        Slug = "post-title-6",
+                        PostStatus = PostStatusEnum.Publish,
+                        CommentAllowed = true,
+                        ViewCount = 23,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                    },
+                    new Post {
+                        Id = Guid.Parse("8B0EF990-B085-4777-AB53-08D83C526375"),
+                        Title = "Post Title 7",
+                        Subtitle = "Post Subtitle 7",
+
+                        Excerpt = "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+
+                        Content = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia quam ducimus maiores magnam explicabo vitae, suscipit veniam! Laboriosam, eaque tempora consequatur quo quaerat impedit dolorem laudantium, ipsum nemo libero sed.",
+
+                        Slug = "post-title-7",
+                        PostStatus = PostStatusEnum.Publish,
+                        CommentAllowed = true,
+                        ViewCount = 2,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                    },
+                    new Post {
+                        Id = Guid.Parse("86F05885-B021-4744-AB54-08D83C526375"),
+                        Title = "Post Title 8",
+                        Subtitle = "Post Subtitle 8",
+
+                        Excerpt = "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+
+                        Content = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia quam ducimus maiores magnam explicabo vitae, suscipit veniam! Laboriosam, eaque tempora consequatur quo quaerat impedit dolorem laudantium, ipsum nemo libero sed.",
+
+                        Slug = "post-title-8",
+                        PostStatus = PostStatusEnum.Publish,
+                        CommentAllowed = true,
+                        ViewCount = 12,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                    },
+                    new Post {
+                        Id = Guid.Parse("E6BB384F-06ED-4C43-6C61-08D83C52AD84"),
+                        Title = "Post Title 9",
+                        Subtitle = "Post Subtitle 9",
+
+                        Excerpt = "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+
+                        Content = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia quam ducimus maiores magnam explicabo vitae, suscipit veniam! Laboriosam, eaque tempora consequatur quo quaerat impedit dolorem laudantium, ipsum nemo libero sed.",
+
+                        Slug = "post-title-9",
+                        PostStatus = PostStatusEnum.Publish,
+                        CommentAllowed = true,
+                        ViewCount = 14,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                    },
+                    new Post {
+                        Id = Guid.Parse("BD62C1E3-AB88-4535-D5BF-08D83C62A226"),
+                        Title = "Post Title 10",
+                        Subtitle = "Post Subtitle 10",
+
+                        Excerpt = "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+
+                        Content = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia quam ducimus maiores magnam explicabo vitae, suscipit veniam! Laboriosam, eaque tempora consequatur quo quaerat impedit dolorem laudantium, ipsum nemo libero sed.",
+
+                        Slug = "post-title-10",
+                        PostStatus = PostStatusEnum.Publish,
+                        CommentAllowed = true,
+                        ViewCount = 16,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                    },
+
+                     new Post {
+                         Id = Guid.Parse("2DC047FB-B926-43A5-7CCB-08D83C8E920C"),
+                        Title = "Post Title 11",
+                        Subtitle = "Post Subtitle 11",
+
+                        Excerpt = "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+
+                        Content = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia quam ducimus maiores magnam explicabo vitae, suscipit veniam! Laboriosam, eaque tempora consequatur quo quaerat impedit dolorem laudantium, ipsum nemo libero sed.",
+
+                        Slug = "post-title-11",
+                        PostStatus = PostStatusEnum.Publish,
+                        CommentAllowed = true,
+                        ViewCount = 23,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                    },
+                    new Post {
+                        Id = Guid.Parse("79C21691-F0D4-4BE9-7CCC-08D83C8E920C"),
+                        Title = "Post Title 12",
+                        Subtitle = "Post Subtitle 12",
+
+                        Excerpt = "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+
+                        Content = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia quam ducimus maiores magnam explicabo vitae, suscipit veniam! Laboriosam, eaque tempora consequatur quo quaerat impedit dolorem laudantium, ipsum nemo libero sed.",
+
+                        Slug = "post-title-12",
+                        PostStatus = PostStatusEnum.Publish,
+                        CommentAllowed = true,
+                        ViewCount = 2,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                    },
+                    new Post {
+                        Id = Guid.Parse("9508B805-9BB2-4F66-7CCD-08D83C8E920C"),
+                        Title = "Post Title 13",
+                        Subtitle = "Post Subtitle 13",
+
+                        Excerpt = "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+
+                        Content = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia quam ducimus maiores magnam explicabo vitae, suscipit veniam! Laboriosam, eaque tempora consequatur quo quaerat impedit dolorem laudantium, ipsum nemo libero sed.",
+
+                        Slug = "post-title-13",
+                        PostStatus = PostStatusEnum.Publish,
+                        CommentAllowed = true,
+                        ViewCount = 12,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                    },
+                    new Post {
+                        Id = Guid.Parse("2241FEBC-8930-4FF6-7CCE-08D83C8E920C"),
+                        Title = "Post Title 14",
+                        Subtitle = "Post Subtitle 14",
+
+                        Excerpt = "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+
+                        Content = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia quam ducimus maiores magnam explicabo vitae, suscipit veniam! Laboriosam, eaque tempora consequatur quo quaerat impedit dolorem laudantium, ipsum nemo libero sed.",
+
+                        Slug = "post-title-14",
+                        PostStatus = PostStatusEnum.Publish,
+                        CommentAllowed = true,
+                        ViewCount = 14,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                    },
+                    new Post {
+                        Id = Guid.Parse("1B4FFA07-087F-4F8E-EE19-08D83C90D42B"),
+                        Title = "Post Title 15",
+                        Subtitle = "Post Subtitle 15",
+
+                        Excerpt = "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+
+                        Content = "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia quam ducimus maiores magnam explicabo vitae, suscipit veniam! Laboriosam, eaque tempora consequatur quo quaerat impedit dolorem laudantium, ipsum nemo libero sed.",
+
+                        Slug = "post-title-15",
+                        PostStatus = PostStatusEnum.Publish,
+                        CommentAllowed = true,
+                        ViewCount = 16,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
                     }
                 };
 
@@ -279,7 +432,7 @@ namespace Aspian.Persistence
                 context.SaveChanges();
             }
 
-            // Seeding TermPosts
+            // Seeding TaxonomyPosts
             if (!context.TaxonomyPosts.Any())
             {
                 var taxonomyPosts = new List<TaxonomyPost>
@@ -311,7 +464,113 @@ namespace Aspian.Persistence
                     new TaxonomyPost {
                         PostId = Guid.Parse("751480BA-1717-4FB6-6AA5-08D8034324CD"),
                         TaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
-                    }
+                    },
+
+
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("1B4FFA07-087F-4F8E-EE19-08D83C90D42B"),
+                        TaxonomyId = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("1B4FFA07-087F-4F8E-EE19-08D83C90D42B"),
+                        TaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("1B4FFA07-087F-4F8E-EE19-08D83C90D42B"),
+                        TaxonomyId = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("2241FEBC-8930-4FF6-7CCE-08D83C8E920C"),
+                        TaxonomyId = Guid.Parse("64893B00-5F9A-4B91-0286-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("2241FEBC-8930-4FF6-7CCE-08D83C8E920C"),
+                        TaxonomyId = Guid.Parse("4C35DEFF-E65C-41EF-0289-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("9508B805-9BB2-4F66-7CCD-08D83C8E920C"),
+                        TaxonomyId = Guid.Parse("9926607F-D704-4724-0287-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("9508B805-9BB2-4F66-7CCD-08D83C8E920C"),
+                        TaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("9508B805-9BB2-4F66-7CCD-08D83C8E920C"),
+                        TaxonomyId = Guid.Parse("4C35DEFF-E65C-41EF-0289-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("79C21691-F0D4-4BE9-7CCC-08D83C8E920C"),
+                        TaxonomyId = Guid.Parse("A4A4FB1A-38A4-4B3B-0288-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("79C21691-F0D4-4BE9-7CCC-08D83C8E920C"),
+                        TaxonomyId = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("2DC047FB-B926-43A5-7CCB-08D83C8E920C"),
+                        TaxonomyId = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("2DC047FB-B926-43A5-7CCB-08D83C8E920C"),
+                        TaxonomyId = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("2DC047FB-B926-43A5-7CCB-08D83C8E920C"),
+                        TaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("BD62C1E3-AB88-4535-D5BF-08D83C62A226"),
+                        TaxonomyId = Guid.Parse("9926607F-D704-4724-0287-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("BD62C1E3-AB88-4535-D5BF-08D83C62A226"),
+                        TaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("E6BB384F-06ED-4C43-6C61-08D83C52AD84"),
+                        TaxonomyId = Guid.Parse("64893B00-5F9A-4B91-0286-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("E6BB384F-06ED-4C43-6C61-08D83C52AD84"),
+                        TaxonomyId = Guid.Parse("4C35DEFF-E65C-41EF-0289-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("E6BB384F-06ED-4C43-6C61-08D83C52AD84"),
+                        TaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("86F05885-B021-4744-AB54-08D83C526375"),
+                        TaxonomyId = Guid.Parse("D3BFEBD2-71B1-48DF-0285-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("86F05885-B021-4744-AB54-08D83C526375"),
+                        TaxonomyId = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("8B0EF990-B085-4777-AB53-08D83C526375"),
+                        TaxonomyId = Guid.Parse("A4A4FB1A-38A4-4B3B-0288-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("8B0EF990-B085-4777-AB53-08D83C526375"),
+                        TaxonomyId = Guid.Parse("4C35DEFF-E65C-41EF-0289-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("8B0EF990-B085-4777-AB53-08D83C526375"),
+                        TaxonomyId = Guid.Parse("7EBB45E6-A80B-484E-028A-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("1A4B97DC-F290-4609-550B-08D83C519335"),
+                        TaxonomyId = Guid.Parse("64893B00-5F9A-4B91-0286-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("1A4B97DC-F290-4609-550B-08D83C519335"),
+                        TaxonomyId = Guid.Parse("4C35DEFF-E65C-41EF-0289-08D803D1EA56")
+                    },
+                    new TaxonomyPost {
+                        PostId = Guid.Parse("1A4B97DC-F290-4609-550B-08D83C519335"),
+                        TaxonomyId = Guid.Parse("6C1EC7B9-F7C4-43F2-028B-08D803D1EA56")
+                    },
                 };
 
                 context.TaxonomyPosts.AddRange(taxonomyPosts);

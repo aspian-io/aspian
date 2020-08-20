@@ -35,6 +35,7 @@ axios.interceptors.response.use(undefined, (error) => {
   if (status === 500) {
     history.push('/serve-rerror');
   }
+  throw error;
 });
 
 const responseBody = (response: AxiosResponse) => response.data;
@@ -55,8 +56,8 @@ const requests = {
 };
 
 const Posts = {
-  list: (limit?: number, page?: number): Promise<IPostsEnvelope> =>
-    requests.get(`/v1/posts?limit=${limit}&offset=${page ? page * limit! : 0}`),
+  list: (limit?: number, page?: number, filterKey?: string, filterValue?: string, field?: string, order?: string): Promise<IPostsEnvelope> =>
+    requests.get(`/v1/posts?limit=${limit}&offset=${page ? page * limit! : 0}&field=${field}&order=${order}&filterKey=${filterKey}&filterValue=${filterValue}`),
   details: (id: string): Promise<IPost> =>
     requests.get(`/v1/posts/details/${id}`),
   create: (post: IPost) => requests.post('/v1/posts/create', post),

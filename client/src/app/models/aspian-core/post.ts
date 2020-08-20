@@ -46,7 +46,7 @@ export enum PostTypeEnum {
   Pages,
 }
 
-interface User {
+export interface User {
   id: string;
   displayName: string;
   userName: string;

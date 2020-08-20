@@ -6,17 +6,16 @@ import { PostActionTypesEnum, IGetPostsAction, ILoadingPostsAction } from './typ
 export const setLoading = (isLoading: boolean = true) => async (dispatch: Dispatch) => {
   dispatch<ILoadingPostsAction>({
     type: PostActionTypesEnum.LOADING_POST,
-    loadingInitial: isLoading
+    payload: isLoading
   });
 }
 
-export const getPostsEnvelope = (limit: number = 2, page: number) => async (dispatch: Dispatch) => {
-  const postsEnvelope = await agent.Posts.list(limit, page);
+export const getPostsEnvelope = (limit: number = 3, offset: number = 0, filterKey?: string, filterValue?: string, field?: string, order?: string) => async (dispatch: Dispatch) => {
+  const postsEnvelope = await agent.Posts.list(limit, offset, filterKey, filterValue, field, order);
   
   dispatch<IGetPostsAction>({
-    
     type: PostActionTypesEnum.GET_POSTS,
-    postsEnvelope: postsEnvelope,
+    payload: postsEnvelope,
   });
 };
 

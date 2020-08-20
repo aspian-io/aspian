@@ -16,15 +16,21 @@ import {
   Typography,
   Popconfirm,
   message,
+  Input,
 } from 'antd';
-import { TableRowSelection } from 'antd/lib/table/interface';
-import { ColumnType } from 'antd/lib/table';
-import { EditFilled, DeleteFilled, ClockCircleFilled } from '@ant-design/icons';
+import { TableRowSelection, ColumnsType } from 'antd/lib/table/interface';
+import {
+  EditFilled,
+  DeleteFilled,
+  ClockCircleFilled,
+  SearchOutlined,
+} from '@ant-design/icons';
 import '../../../../scss/aspian-core/pages/posts/all-posts/_all-posts.scss';
 import { connect } from 'react-redux';
 import {
   ITaxonomyPost,
   TaxonomyTypeEnum,
+  PostStatusEnum,
 } from '../../../../app/models/aspian-core/post';
 import { IStoreState } from '../../../../app/stores/reducers';
 import {
@@ -42,8 +48,8 @@ import {
   LanguageActionTypeEnum,
   DirectionActionTypeEnum,
 } from '../../../../app/stores/actions/aspian-core/locale/types';
-
-
+import { SorterResult, ColumnType } from 'antd/es/table/interface';
+import Highlighter from 'react-highlight-words';
 
 interface IProps extends WithTranslation {
   postsState: IPostState;
@@ -51,6 +57,26 @@ interface IProps extends WithTranslation {
   lang: LanguageActionTypeEnum;
   dir: DirectionActionTypeEnum;
   setLoading: Function;
+}
+
+interface IPostAntdTable {
+  key: number;
+  title: string;
+  postCategory: string[];
+  postStatus: PostStatusEnum;
+  postAttachments: number;
+  commentAllowed: JSX.Element;
+  viewCount: number;
+  pinned: JSX.Element;
+  postHistories: number;
+  comments: number;
+  childPosts: number;
+  createdAt: string;
+  createdBy: string;
+  modifiedAt: string;
+  modifiedBy: string;
+  userAgent: string;
+  userIPAddress: string;
 }
 
 const PostList: FC<IProps> = ({
@@ -62,12 +88,21 @@ const PostList: FC<IProps> = ({
   setLoading,
 }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<ReactText[]>([]);
+  const [searchText, setSearchText] = useState<React.ReactText>('');
+  const [searchedColumn, setSearchedColumn] = useState<
+    string | number | React.ReactText[] | undefined
+  >('');
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  const DFAULT_PAGE_SIZE = 10;
+
+  // On select a row event
   const onSelectChange = (selectedRowKeys: ReactText[]) => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
     setSelectedRowKeys(selectedRowKeys);
   };
 
+  // Row selection functionality implementation
   const rowSelection: TableRowSelection<object> = {
     selectedRowKeys,
     onChange: onSelectChange,
@@ -113,99 +148,202 @@ const PostList: FC<IProps> = ({
     ],
   };
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  let searchInput: Input;
+  // Custom filter functionality implementation
+  const getColumnSearchProps = (dataIndex: string): ColumnType<any> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={(node) => {
+            searchInput = node!;
+          }}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    // onFilter: (value, record) =>
+    //   record[dataIndex]
+    //     ? record[dataIndex]
+    //         .toString()
+    //         .toLowerCase()
+    //         .includes(value.toString().toLowerCase())
+    //     : '',
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.select(), 100);
+      }
+    },
+    render: (text: React.ReactText) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText.toString()]}
+          autoEscape
+          textToHighlight={text ? text.toString().replace(new RegExp(',+$'), '') : ''}
+        />
+      ) : (
+        text
+      ),
+  });
 
-  const columns: ColumnType<object>[] = [
+  const handleSearch = (
+    selectedKeys: React.ReactText[],
+    confirm: () => void,
+    dataIndex: string | number | React.ReactText[] | undefined
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters: (() => void) | undefined) => {
+    clearFilters!();
+    setSearchText('');
+    setLoading(true) && getPostsEnvelope(DFAULT_PAGE_SIZE, 0);
+  };
+
+  const columns: ColumnsType<IPostAntdTable> = [
     {
       title: <Trans>{t('post-list.table.thead.title')}</Trans>,
       width: 200,
       dataIndex: 'title',
       fixed: windowWidth > 576 ? 'left' : undefined,
       ellipsis: true,
+      sorter: true,
+      ...getColumnSearchProps('title'),
     },
     {
       title: <Trans>{t('post-list.table.thead.category')}</Trans>,
       width: 200,
       dataIndex: 'postCategory',
       ellipsis: true,
+      sorter: true,
+      ...getColumnSearchProps('postCategory'),
     },
     {
       title: <Trans>{t('post-list.table.thead.status')}</Trans>,
       width: 100,
       dataIndex: 'postStatus',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.attachments')}</Trans>,
       width: 130,
       dataIndex: 'postAttachments',
       align: 'center',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.comment-allowed')}</Trans>,
       width: 200,
       dataIndex: 'commentAllowed',
       align: 'center',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.view-count')}</Trans>,
       width: 200,
       dataIndex: 'viewCount',
       align: 'center',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.pinned')}</Trans>,
       width: 100,
       dataIndex: 'pinned',
       align: 'center',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.histories')}</Trans>,
       width: 100,
       dataIndex: 'postHistories',
       align: 'center',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.comments')}</Trans>,
       width: 120,
       dataIndex: 'comments',
       align: 'center',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.child-posts')}</Trans>,
       width: 150,
       dataIndex: 'childPosts',
       align: 'center',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.created-at')}</Trans>,
       width: 200,
       dataIndex: 'createdAt',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.created-by')}</Trans>,
       width: 150,
       dataIndex: 'createdBy',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.modified-at')}</Trans>,
       width: 150,
       dataIndex: 'modifiedAt',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.modified-by')}</Trans>,
       width: 150,
       dataIndex: 'modifiedBy',
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.user-agent')}</Trans>,
       width: 150,
       dataIndex: 'userAgent',
       ellipsis: true,
+      sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.ip-address')}</Trans>,
       width: 150,
       dataIndex: 'userIPAddress',
+      sorter: true,
+      ...getColumnSearchProps('postCategory'),
     },
     {
       title: <Trans>{t('post-list.table.thead.actions')}</Trans>,
@@ -243,10 +381,10 @@ const PostList: FC<IProps> = ({
     },
   ];
 
-  let data: object[] = [];
+  let data: IPostAntdTable[] = [];
 
   useEffect(() => {
-    getPostsEnvelope();
+    getPostsEnvelope(DFAULT_PAGE_SIZE, 0);
 
     window.addEventListener('resize', (event) => {
       setWindowWidth(window.innerWidth);
@@ -260,7 +398,7 @@ const PostList: FC<IProps> = ({
       postCategory: post.taxonomyPosts.map((taxonomyPost: ITaxonomyPost) =>
         taxonomyPost.taxonomy.type === TaxonomyTypeEnum.category
           ? `${taxonomyPost.taxonomy.term.name} \n`
-          : null
+          : ''
       ),
       postStatus: post.postStatus,
       postAttachments: 4,
@@ -283,7 +421,7 @@ const PostList: FC<IProps> = ({
       modifiedAt: post.modifiedAt
         ? moment(post.modifiedAt).format('YYYY-MM-DD HH:m:s')
         : '',
-      modifiedBy: post.modifiedBy,
+      modifiedBy: post.modifiedBy?.userName,
       userAgent: post.userAgent,
       userIPAddress: post.userIPAddress,
     });
@@ -350,8 +488,7 @@ const PostList: FC<IProps> = ({
         </Col>
       </Row>
       <Row>
-        <Table
-          tableLayout="fixed"
+        <Table<IPostAntdTable>
           loading={postsState.loadingInitial}
           rowSelection={rowSelection}
           columns={columns}
@@ -359,15 +496,43 @@ const PostList: FC<IProps> = ({
           size="small"
           scroll={{ x: window.innerWidth - 100, y: window.innerHeight - 100 }}
           pagination={{
-            hideOnSinglePage: true,
             size: 'small',
             showSizeChanger: true,
             showQuickJumper: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`,
             total: postsState.postsEnvelope.postCount,
-            defaultPageSize: 2,
             responsive: true,
-            onChange: (page, pageSize) =>
-              setLoading(true) && getPostsEnvelope(pageSize, page - 1),
+          }}
+          onChange={(pagination, filters, sorter) => {
+            
+            const sort = sorter as SorterResult<IPostAntdTable>;
+
+            if (searchInput?.props.value) {
+              for (const [key, value] of Object.entries(filters)) {
+                if (value) {
+                  setLoading(true) &&
+                    getPostsEnvelope(
+                      pagination.pageSize,
+                      pagination.current ? pagination.current! - 1 : undefined,
+                      key,
+                      value,
+                      sort.field,
+                      sort.order
+                    );
+                }
+              }
+            } else {
+              setLoading(true) &&
+                getPostsEnvelope(
+                  pagination.pageSize,
+                  pagination.current ? pagination.current! - 1 : undefined,
+                  null,
+                  null,
+                  sort.field,
+                  sort.order
+                );
+            }
           }}
         />
       </Row>

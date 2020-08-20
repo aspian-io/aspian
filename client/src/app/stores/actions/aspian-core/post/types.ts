@@ -12,16 +12,8 @@ export enum PostActionTypesEnum {
 /*****************************
  ***** Action Type Alias *****
  *****************************/
-export type PostAction =
-  | {
-      type: PostActionTypesEnum.GET_POSTS;
-      postsEnvelope: IPostsEnvelope;
-      loadingInitial: boolean;
-    }
-  | {
-      type: PostActionTypesEnum.LOADING_POST;
-      loadingInitial: boolean;
-    };
+
+export type PostAction = ILoadingPostsAction | IGetPostsAction;
 
 /*****************************
  ***** Action Interfaces *****
@@ -30,11 +22,11 @@ export type PostAction =
 // Loading Posts State
 export interface ILoadingPostsAction {
   type: PostActionTypesEnum.LOADING_POST;
-  loadingInitial: boolean;
+  payload: boolean;
 }
 
 // Get All Posts
 export interface IGetPostsAction {
   type: PostActionTypesEnum.GET_POSTS;
-  postsEnvelope: IPostsEnvelope;
+  payload: IPostsEnvelope;
 }
