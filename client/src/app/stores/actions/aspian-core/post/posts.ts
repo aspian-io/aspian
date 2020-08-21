@@ -12,6 +12,10 @@ export const setLoading = (isLoading: boolean = true) => async (dispatch: Dispat
 
 export const getPostsEnvelope = (limit: number = 3, offset: number = 0, filterKey?: string, filterValue?: string, field?: string, order?: string) => async (dispatch: Dispatch) => {
   const postsEnvelope = await agent.Posts.list(limit, offset, filterKey, filterValue, field, order);
+  console.log("FilterKey log from action: ", filterKey);
+  console.log("FilterValue log from action: ", filterValue);
+  console.log("Sort field log from action: ", field);
+  console.log("Sort order log from action: ", order);
   
   dispatch<IGetPostsAction>({
     type: PostActionTypesEnum.GET_POSTS,

@@ -211,11 +211,14 @@ const PostList: FC<IProps> = ({
           highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
           searchWords={[searchText.toString()]}
           autoEscape
-          textToHighlight={text ? text.toString().replace(new RegExp(',+$'), '') : ''}
+          textToHighlight={
+            text ? text.toString().replace(new RegExp(',+$'), '') : ''
+          }
         />
       ) : (
         text
       ),
+
   });
 
   const handleSearch = (
@@ -257,6 +260,41 @@ const PostList: FC<IProps> = ({
       width: 100,
       dataIndex: 'postStatus',
       sorter: true,
+      filterMultiple: false,
+      filters: [
+        {
+          text: 'Publish',
+          value: PostStatusEnum.Publish,
+        },
+        {
+          text: 'Pending',
+          value: PostStatusEnum.Pending,
+        },
+        {
+          text: 'Draft',
+          value: PostStatusEnum.Draft,
+        },
+        {
+          text: 'Auto Draft',
+          value: PostStatusEnum.AutoDraft,
+        },
+        {
+          text: 'Future',
+          value: PostStatusEnum.Future,
+        },
+        {
+          text: 'Inherit',
+          value: PostStatusEnum.Inherit,
+        },
+        {
+          text: 'Private',
+          value: PostStatusEnum.Private,
+        },
+        {
+          text: 'Trash',
+          value: PostStatusEnum.Trash,
+        },
+      ],
     },
     {
       title: <Trans>{t('post-list.table.thead.attachments')}</Trans>,
@@ -271,6 +309,17 @@ const PostList: FC<IProps> = ({
       dataIndex: 'commentAllowed',
       align: 'center',
       sorter: true,
+      filterMultiple: false,
+      filters: [
+        {
+          text: 'Allowed',
+          value: true,
+        },
+        {
+          text: 'Not Allowed',
+          value: false,
+        },
+      ],
     },
     {
       title: <Trans>{t('post-list.table.thead.view-count')}</Trans>,
@@ -285,6 +334,17 @@ const PostList: FC<IProps> = ({
       dataIndex: 'pinned',
       align: 'center',
       sorter: true,
+      filterMultiple: false,
+      filters: [
+        {
+          text: 'Pinned',
+          value: true,
+        },
+        {
+          text: 'Not Pinned',
+          value: false,
+        },
+      ],
     },
     {
       title: <Trans>{t('post-list.table.thead.histories')}</Trans>,
@@ -505,34 +565,25 @@ const PostList: FC<IProps> = ({
             responsive: true,
           }}
           onChange={(pagination, filters, sorter) => {
-            
             const sort = sorter as SorterResult<IPostAntdTable>;
-
-            if (searchInput?.props.value) {
+            let filterKey;
+            let filterValue;
+            
               for (const [key, value] of Object.entries(filters)) {
                 if (value) {
-                  setLoading(true) &&
-                    getPostsEnvelope(
-                      pagination.pageSize,
-                      pagination.current ? pagination.current! - 1 : undefined,
-                      key,
-                      value,
-                      sort.field,
-                      sort.order
-                    );
+                  filterKey = key;
+                  filterValue = value[0];
                 }
               }
-            } else {
               setLoading(true) &&
                 getPostsEnvelope(
                   pagination.pageSize,
                   pagination.current ? pagination.current! - 1 : undefined,
-                  null,
-                  null,
+                  filterKey,
+                  filterValue,
                   sort.field,
                   sort.order
                 );
-            }
           }}
         />
       </Row>
