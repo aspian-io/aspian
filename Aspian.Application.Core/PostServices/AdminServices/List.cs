@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -36,6 +37,14 @@ namespace Aspian.Application.Core.PostServices.AdminServices
             // Params for filter
             public string FilterKey { get; set; }
             public string FilterValue { get; set; }
+
+            // Params for DateRange filter
+            public DateTime? StartDate { get; set; }
+            public DateTime? EndDate { get; set; }
+
+            // Params for slider filter
+            public int? StartNumber { get; set; }
+            public int? EndNumber { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, PostsEnvelope>
@@ -58,7 +67,9 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                     _context, 
                     request.Limit, request.Offset, 
                     request.Field, request.Order, 
-                    request.FilterKey, request.FilterValue
+                    request.FilterKey, request.FilterValue,
+                    request.StartDate, request.EndDate,
+                    request.StartNumber, request.EndNumber
                     );
 
                 await _logger.LogActivity(

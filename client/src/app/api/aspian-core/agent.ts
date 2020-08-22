@@ -56,8 +56,8 @@ const requests = {
 };
 
 const Posts = {
-  list: (limit?: number, page?: number, filterKey?: string, filterValue?: string, field?: string, order?: string): Promise<IPostsEnvelope> =>
-    requests.get(`/v1/posts?limit=${limit}&offset=${page ? page * limit! : 0}&field=${field}&order=${order}&filterKey=${filterKey}&filterValue=${filterValue}`),
+  list: (limit?: number, page?: number, filterKey: string = '', filterValue: string = '', field: string = '', order: string = '', startDate: string = '', endDate: string = '', startNumber: number | '' = '', endNumber: number | '' = ''): Promise<IPostsEnvelope> =>
+    requests.get(`/v1/posts?limit=${limit}&offset=${page ? page * limit! : 0}&field=${field}&order=${order}&filterKey=${filterKey}&filterValue=${filterValue}&startDate=${startDate}&endDate=${endDate}&startNumber=${startNumber}&endNumber=${endNumber}`),
   details: (id: string): Promise<IPost> =>
     requests.get(`/v1/posts/details/${id}`),
   create: (post: IPost) => requests.post('/v1/posts/create', post),

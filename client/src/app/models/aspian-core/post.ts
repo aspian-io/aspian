@@ -25,7 +25,7 @@ export interface IPost {
   modifiedBy: User;
   userAgent: string;
   userIPAddress: string;
-  postAttachments: number;
+  postAttachments: [];
   taxonomyPosts: ITaxonomyPost[];
 }
 

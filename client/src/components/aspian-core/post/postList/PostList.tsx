@@ -17,13 +17,18 @@ import {
   Popconfirm,
   message,
   Input,
+  DatePicker,
+  Slider,
 } from 'antd';
 import { TableRowSelection, ColumnsType } from 'antd/lib/table/interface';
+import { RangeValue, EventValue } from 'rc-picker/lib/interface';
 import {
   EditFilled,
   DeleteFilled,
   ClockCircleFilled,
   SearchOutlined,
+  CalendarFilled,
+  SlidersFilled,
 } from '@ant-design/icons';
 import '../../../../scss/aspian-core/pages/posts/all-posts/_all-posts.scss';
 import { connect } from 'react-redux';
@@ -38,7 +43,7 @@ import {
   setLoading,
 } from '../../../../app/stores/actions/aspian-core/post/posts';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { IPostState } from '../../../../app/stores/reducers/aspian-core/post/posts';
 import { WithTranslation, Trans, withTranslation } from 'react-i18next';
 import Title from 'antd/lib/typography/Title';
@@ -79,6 +84,8 @@ interface IPostAntdTable {
   userIPAddress: string;
 }
 
+const { RangePicker } = DatePicker;
+
 const PostList: FC<IProps> = ({
   postsState,
   getPostsEnvelope,
@@ -87,14 +94,60 @@ const PostList: FC<IProps> = ({
   dir,
   setLoading,
 }) => {
+  // Constants
+  /// Default page size
+  const DFAULT_PAGE_SIZE = 10;
+  /// Columns dataIndexes
+  const TITLE = 'title';
+  const CATEGORY = 'postCategory';
+  const STATUS = 'postStatus';
+  const ATTACHMENTS = 'postAttachments';
+  const COMMENT_ALLOWED = 'commentAllowed';
+  const VIEW_COUNT = 'viewCount';
+  const PINNED = 'pinned';
+  const HISTORIES = 'postHistories';
+  const COMMENTS = 'comments';
+  const CHILD_POSTS = 'childPosts';
+  const CREATED_AT = 'createdAt';
+  const CREATED_BY = 'createdBy';
+  const MODIFIED_AT = 'modifiedAt';
+  const MODIFIED_BY = 'modifiedBy';
+  const USER_AGENT = 'userAgent';
+  const IP_ADDRESS = 'userIPAddress';
+  const ACTIONS = 'actions';
+  // Colomn arrays with different types of filters
+  /// Columns with search filter
+  const SEARCH_FILTERED_COLUMNS: string[] = [
+    TITLE,
+    CATEGORY,
+    STATUS,
+    COMMENT_ALLOWED,
+    PINNED,
+    IP_ADDRESS,
+    CREATED_BY,
+    MODIFIED_BY
+  ];
+  /// Columns with DateRange filter
+  const DATERANGE_FILTERED_COLUMNS: string[] = [CREATED_AT, MODIFIED_AT];
+  /// Columns with slider filter
+  const SLIDER_FILTERED_COLUMNS: string[] = [
+    ATTACHMENTS,
+    VIEW_COUNT,
+    HISTORIES,
+    COMMENTS,
+    CHILD_POSTS,
+  ];
+
+  // UseStates
   const [selectedRowKeys, setSelectedRowKeys] = useState<ReactText[]>([]);
   const [searchText, setSearchText] = useState<React.ReactText>('');
+  const [dateRange, setDateRange] = useState<
+    [EventValue<Moment>, EventValue<Moment>]
+  >([null, null]);
   const [searchedColumn, setSearchedColumn] = useState<
     string | number | React.ReactText[] | undefined
   >('');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  const DFAULT_PAGE_SIZE = 10;
 
   // On select a row event
   const onSelectChange = (selectedRowKeys: ReactText[]) => {
@@ -148,9 +201,117 @@ const PostList: FC<IProps> = ({
     ],
   };
 
+  // Custom slider filter functionality implementation
+  const getColumnSearchPropsForSliderFilter = (
+    dataIndex: string
+  ): ColumnType<any> => ({
+    filterDropdown: ({ setSelectedKeys, confirm, clearFilters }) => (
+      <div style={{ padding: 8 }}>
+        <Slider
+          range
+          tooltipVisible={true}
+          step={5}
+          defaultValue={[20, 40]}
+          onAfterChange={(value) => {
+            if (value) {
+              setSelectedKeys([value[0], value[1]]);
+            }
+          }}
+        />
+        <div>
+          <div style={{ marginTop: '10px' }}>
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => handleSearchDateRange(confirm, dataIndex)}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Search
+              </Button>
+              <Button
+                onClick={() => handleReset(clearFilters)}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Reset
+              </Button>
+            </Space>
+          </div>
+        </div>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SlidersFilled style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+  });
+
+  // Custom date range filter functionality implementation
+  const getColumnSearchPropsForDateRangeFilter = (
+    dataIndex: string
+  ): ColumnType<any> => ({
+    filterDropdown: ({ setSelectedKeys, confirm, clearFilters }) => (
+      <div style={{ padding: 8 }}>
+        <RangePicker
+          value={dateRange}
+          inputReadOnly={true}
+          format="YYYY/MM/DD"
+          onChange={(
+            dates: RangeValue<Moment>,
+            dateStrings: [string, string]
+          ) => {
+            if (dates) {
+              setDateRange([dates![0], dates![1]]);
+              setSelectedKeys([
+                dates![0]?.format('YYYY/MM/DD') as ReactText,
+                dates![1]?.format('YYYY/MM/DD') as ReactText,
+              ]);
+            }
+          }}
+        />
+        <div>
+          <div style={{ marginTop: '10px' }}>
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => handleSearchDateRange(confirm, dataIndex)}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Search
+              </Button>
+              <Button
+                onClick={() => handleReset(clearFilters)}
+                size="small"
+                style={{ width: 90 }}
+              >
+                Reset
+              </Button>
+            </Space>
+          </div>
+        </div>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <CalendarFilled style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+  });
+
+  const handleSearchDateRange = (
+    confirm: () => void,
+    dataIndex: string | number | React.ReactText[] | undefined
+  ) => {
+    confirm();
+    setSearchedColumn(dataIndex);
+  };
+
   let searchInput: Input;
   // Custom filter functionality implementation
-  const getColumnSearchProps = (dataIndex: string): ColumnType<any> => ({
+  const getColumnSearchPropsForSearchFilter = (
+    dataIndex: string
+  ): ColumnType<any> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -193,13 +354,6 @@ const PostList: FC<IProps> = ({
     filterIcon: (filtered) => (
       <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
-    // onFilter: (value, record) =>
-    //   record[dataIndex]
-    //     ? record[dataIndex]
-    //         .toString()
-    //         .toLowerCase()
-    //         .includes(value.toString().toLowerCase())
-    //     : '',
     onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.select(), 100);
@@ -218,7 +372,6 @@ const PostList: FC<IProps> = ({
       ) : (
         text
       ),
-
   });
 
   const handleSearch = (
@@ -234,6 +387,7 @@ const PostList: FC<IProps> = ({
   const handleReset = (clearFilters: (() => void) | undefined) => {
     clearFilters!();
     setSearchText('');
+    setDateRange([null, null]);
     setLoading(true) && getPostsEnvelope(DFAULT_PAGE_SIZE, 0);
   };
 
@@ -241,24 +395,24 @@ const PostList: FC<IProps> = ({
     {
       title: <Trans>{t('post-list.table.thead.title')}</Trans>,
       width: 200,
-      dataIndex: 'title',
+      dataIndex: TITLE,
       fixed: windowWidth > 576 ? 'left' : undefined,
       ellipsis: true,
       sorter: true,
-      ...getColumnSearchProps('title'),
+      ...getColumnSearchPropsForSearchFilter(TITLE),
     },
     {
       title: <Trans>{t('post-list.table.thead.category')}</Trans>,
       width: 200,
-      dataIndex: 'postCategory',
+      dataIndex: CATEGORY,
       ellipsis: true,
       sorter: true,
-      ...getColumnSearchProps('postCategory'),
+      ...getColumnSearchPropsForSearchFilter(CATEGORY),
     },
     {
       title: <Trans>{t('post-list.table.thead.status')}</Trans>,
       width: 100,
-      dataIndex: 'postStatus',
+      dataIndex: STATUS,
       sorter: true,
       filterMultiple: false,
       filters: [
@@ -299,14 +453,15 @@ const PostList: FC<IProps> = ({
     {
       title: <Trans>{t('post-list.table.thead.attachments')}</Trans>,
       width: 130,
-      dataIndex: 'postAttachments',
+      dataIndex: ATTACHMENTS,
       align: 'center',
       sorter: true,
+      ...getColumnSearchPropsForSliderFilter(ATTACHMENTS),
     },
     {
       title: <Trans>{t('post-list.table.thead.comment-allowed')}</Trans>,
       width: 200,
-      dataIndex: 'commentAllowed',
+      dataIndex: COMMENT_ALLOWED,
       align: 'center',
       sorter: true,
       filterMultiple: false,
@@ -324,14 +479,15 @@ const PostList: FC<IProps> = ({
     {
       title: <Trans>{t('post-list.table.thead.view-count')}</Trans>,
       width: 200,
-      dataIndex: 'viewCount',
+      dataIndex: VIEW_COUNT,
       align: 'center',
       sorter: true,
+      ...getColumnSearchPropsForSliderFilter(VIEW_COUNT),
     },
     {
       title: <Trans>{t('post-list.table.thead.pinned')}</Trans>,
       width: 100,
-      dataIndex: 'pinned',
+      dataIndex: PINNED,
       align: 'center',
       sorter: true,
       filterMultiple: false,
@@ -349,65 +505,72 @@ const PostList: FC<IProps> = ({
     {
       title: <Trans>{t('post-list.table.thead.histories')}</Trans>,
       width: 100,
-      dataIndex: 'postHistories',
+      dataIndex: HISTORIES,
       align: 'center',
       sorter: true,
+      ...getColumnSearchPropsForSliderFilter(HISTORIES),
     },
     {
       title: <Trans>{t('post-list.table.thead.comments')}</Trans>,
       width: 120,
-      dataIndex: 'comments',
+      dataIndex: COMMENTS,
       align: 'center',
       sorter: true,
+      ...getColumnSearchPropsForSliderFilter(COMMENTS),
     },
     {
       title: <Trans>{t('post-list.table.thead.child-posts')}</Trans>,
       width: 150,
-      dataIndex: 'childPosts',
+      dataIndex: CHILD_POSTS,
       align: 'center',
       sorter: true,
+      ...getColumnSearchPropsForSliderFilter(CHILD_POSTS),
     },
     {
       title: <Trans>{t('post-list.table.thead.created-at')}</Trans>,
       width: 200,
-      dataIndex: 'createdAt',
+      dataIndex: CREATED_AT,
       sorter: true,
+      ...getColumnSearchPropsForDateRangeFilter(CREATED_AT),
     },
     {
       title: <Trans>{t('post-list.table.thead.created-by')}</Trans>,
       width: 150,
-      dataIndex: 'createdBy',
+      dataIndex: CREATED_BY,
       sorter: true,
+      ...getColumnSearchPropsForSearchFilter(CREATED_BY),
     },
     {
       title: <Trans>{t('post-list.table.thead.modified-at')}</Trans>,
       width: 150,
-      dataIndex: 'modifiedAt',
+      dataIndex: MODIFIED_AT,
       sorter: true,
+      ...getColumnSearchPropsForDateRangeFilter(MODIFIED_AT),
     },
     {
       title: <Trans>{t('post-list.table.thead.modified-by')}</Trans>,
       width: 150,
-      dataIndex: 'modifiedBy',
+      dataIndex: MODIFIED_BY,
       sorter: true,
+      ...getColumnSearchPropsForSearchFilter(MODIFIED_BY),
     },
     {
       title: <Trans>{t('post-list.table.thead.user-agent')}</Trans>,
       width: 150,
-      dataIndex: 'userAgent',
+      dataIndex: USER_AGENT,
       ellipsis: true,
       sorter: true,
     },
     {
       title: <Trans>{t('post-list.table.thead.ip-address')}</Trans>,
       width: 150,
-      dataIndex: 'userIPAddress',
+      dataIndex: IP_ADDRESS,
       sorter: true,
-      ...getColumnSearchProps('postCategory'),
+      ...getColumnSearchPropsForSearchFilter(IP_ADDRESS),
     },
     {
       title: <Trans>{t('post-list.table.thead.actions')}</Trans>,
-      key: 'operation',
+      key: ACTIONS,
       fixed: windowWidth > 576 ? 'right' : undefined,
       width: 150,
       align: 'center',
@@ -461,7 +624,7 @@ const PostList: FC<IProps> = ({
           : ''
       ),
       postStatus: post.postStatus,
-      postAttachments: 4,
+      postAttachments: post.postAttachments.length,
       commentAllowed: post.commentAllowed ? (
         <CheckOutlined style={{ color: '#52c41a' }} />
       ) : (
@@ -550,6 +713,7 @@ const PostList: FC<IProps> = ({
       <Row>
         <Table<IPostAntdTable>
           loading={postsState.loadingInitial}
+          bordered
           rowSelection={rowSelection}
           columns={columns}
           dataSource={data}
@@ -568,22 +732,39 @@ const PostList: FC<IProps> = ({
             const sort = sorter as SorterResult<IPostAntdTable>;
             let filterKey;
             let filterValue;
-            
-              for (const [key, value] of Object.entries(filters)) {
-                if (value) {
-                  filterKey = key;
-                  filterValue = value[0];
-                }
+            let startDate;
+            let endDate;
+            let startNumber;
+            let endNumber;
+            for (const [key, value] of Object.entries(filters)) {
+              if (value && SEARCH_FILTERED_COLUMNS.includes(key)) {
+                filterKey = key;
+                filterValue = value[0];
               }
-              setLoading(true) &&
-                getPostsEnvelope(
-                  pagination.pageSize,
-                  pagination.current ? pagination.current! - 1 : undefined,
-                  filterKey,
-                  filterValue,
-                  sort.field,
-                  sort.order
-                );
+              if (value && DATERANGE_FILTERED_COLUMNS.includes(key)) {
+                filterKey = key;
+                startDate = value![0];
+                endDate = value![1];
+              }
+              if (value && SLIDER_FILTERED_COLUMNS.includes(key)) {
+                filterKey = key;
+                startNumber = value[0];
+                endNumber = value[1];
+              }
+            }
+            setLoading(true) &&
+              getPostsEnvelope(
+                pagination.pageSize,
+                pagination.current ? pagination.current! - 1 : undefined,
+                filterKey,
+                filterValue,
+                sort.field,
+                sort.order,
+                startDate,
+                endDate,
+                startNumber,
+                endNumber
+              );
           }}
         />
       </Row>

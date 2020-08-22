@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
 {
-    public class HelperTDO  {
+    public class HelperTDO
+    {
         public List<Post> PostsEnvelope { get; set; }
         public int PostCount { get; set; }
     }
@@ -25,7 +26,11 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
         /// <param name="Order" >Order of sorting. It can be 'ascend', 'descend' or empty</param>
         /// <param name="FilterKey" >Name of the column you want to filter.</param>
         /// <param name="FilterValue" >The value you want the posts to be filtered base on that.</param>
-        public static async Task<HelperTDO> PaginateAndFilterAndSort(DataContext context, int? Limit, int? Offset, string Field, string Order, string FilterKey, string FilterValue)
+        /// <param name="StartDate" >Starting date for range date filter.</param>
+        /// <param name="EndDate" >Ending date for range date filter.</param>
+        /// <param name="StartNumber" >Starting number for slider filter.</param>
+        /// <param name="EndNumber" >Ending number for slider filter.</param>
+        public static async Task<HelperTDO> PaginateAndFilterAndSort(DataContext context, int? Limit, int? Offset, string Field, string Order, string FilterKey, string FilterValue, DateTime? StartDate, DateTime? EndDate, int? StartNumber, int? EndNumber)
         {
             var queryable = context.Posts.AsQueryable();
             var postCount = queryable.Count();
@@ -33,7 +38,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
             List<Post> posts;
 
             // Sorting and pagination logic
-            if (Field != null && Order != null && Order != "undefined" && FilterValue == null || FilterValue == "undefined")
+            if (Field != null && Order != null && Order != null && FilterValue == null)
             {
                 switch (Field)
                 {
@@ -650,6 +655,94 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
                         }
                         break;
 
+                    case "createdBy":
+                        switch (Order)
+                        {
+                            case "ascend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.CreatedBy.UserName.ToLower().Contains(FilterValue.ToLower()))
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderBy(x => x.CreatedBy.UserName)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "descend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.CreatedBy.UserName.ToLower().Contains(FilterValue.ToLower()))
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.CreatedBy.UserName)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts =
+                                    await queryable
+                                    .Where(x => x.CreatedBy.UserName.ToLower().Contains(FilterValue.ToLower()))
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.CreatedBy.UserName)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+                    case "modifiedBy":
+                        switch (Order)
+                        {
+                            case "ascend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ModifiedBy.UserName.ToLower().Contains(FilterValue.ToLower()))
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderBy(x => x.ModifiedBy.UserName)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "descend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ModifiedBy.UserName.ToLower().Contains(FilterValue.ToLower()))
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.ModifiedBy.UserName)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ModifiedBy.UserName.ToLower().Contains(FilterValue.ToLower()))
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.ModifiedBy.UserName)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
                     case "userIPAddress":
                         switch (Order)
                         {
@@ -677,11 +770,11 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
                         break;
 
                     case "postStatus":
-                        PostStatusEnum _valueToEnum = (PostStatusEnum) Enum.Parse(typeof(PostStatusEnum), FilterValue);
+                        PostStatusEnum _valueToEnum = (PostStatusEnum)Enum.Parse(typeof(PostStatusEnum), FilterValue);
                         switch (Order)
                         {
                             case "ascend":
-                                
+
                                 posts = await queryable.Where(x => x.PostStatus == _valueToEnum).ToListAsync();
 
                                 postCount = posts.Count;
@@ -709,7 +802,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
                         switch (Order)
                         {
                             case "ascend":
-                                
+
                                 posts = await queryable.Where(x => x.CommentAllowed == commentAllowedFilterValue).ToListAsync();
 
                                 postCount = posts.Count;
@@ -737,7 +830,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
                         switch (Order)
                         {
                             case "ascend":
-                                
+
                                 posts = await queryable.Where(x => x.IsPinned == pinFilterValue).ToListAsync();
 
                                 postCount = posts.Count;
@@ -772,6 +865,349 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
                         break;
                 }
             }
+            else if (FilterKey != null && StartDate != null && EndDate != null)
+            {
+                switch (FilterKey)
+                {
+                    case "createdAt":
+                        switch (Order)
+                        {
+                            case "ascend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.CreatedAt >= StartDate && x.CreatedAt <= EndDate)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderBy(x => x.CreatedAt)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "descend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.CreatedAt >= StartDate && x.CreatedAt <= EndDate)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.CreatedAt)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts =
+                                    await queryable
+                                    .Where(x => x.CreatedAt >= StartDate && x.CreatedAt <= EndDate)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.CreatedAt)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+                    case "modifiedAt":
+                        switch (Order)
+                        {
+                            case "ascend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ModifiedAt >= StartDate && x.CreatedAt <= EndDate)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderBy(x => x.ModifiedAt)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "descend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ModifiedAt >= StartDate && x.CreatedAt <= EndDate)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.ModifiedAt)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ModifiedAt >= StartDate && x.CreatedAt <= EndDate)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.ModifiedAt)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+                    default:
+                        posts =
+                        await queryable
+                        .Skip(Offset ?? 0)
+                        .Take(Limit ?? 3)
+                        .OrderByDescending(x => x.CreatedAt)
+                        .ThenByDescending(x => x.ModifiedAt)
+                        .ThenByDescending(x => x.Title)
+                        .ToListAsync();
+                        break;
+
+                }
+            }
+            else if (FilterKey != null && StartNumber != null && EndNumber != null)
+            {
+                switch (FilterKey)
+                {
+                    case "postAttachments":
+                        switch (Order)
+                        {
+                            case "ascend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.PostAttachments.Count >= StartNumber && x.PostAttachments.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderBy(x => x.PostAttachments.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "descend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.PostAttachments.Count >= StartNumber && x.PostAttachments.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.PostAttachments.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts =
+                                    await queryable
+                                    .Where(x => x.PostAttachments.Count >= StartNumber && x.PostAttachments.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.PostAttachments.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+                    case "viewCount":
+                        switch (Order)
+                        {
+                            case "ascend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ViewCount >= StartNumber && x.ViewCount <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderBy(x => x.ViewCount)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "descend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ViewCount >= StartNumber && x.ViewCount <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.ViewCount)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ViewCount >= StartNumber && x.ViewCount <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.ViewCount)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+                    case "postHistories":
+                        switch (Order)
+                        {
+                            case "ascend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.PostHistories.Count >= StartNumber && x.PostHistories.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderBy(x => x.PostHistories.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "descend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.PostHistories.Count >= StartNumber && x.PostHistories.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.PostHistories.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts =
+                                    await queryable
+                                    .Where(x => x.PostHistories.Count >= StartNumber && x.PostHistories.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.PostHistories.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+                    case "comments":
+                        switch (Order)
+                        {
+                            case "ascend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.Comments.Count >= StartNumber && x.Comments.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderBy(x => x.CreatedAt)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "descend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.Comments.Count >= StartNumber && x.Comments.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.Comments.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts =
+                                    await queryable
+                                    .Where(x => x.Comments.Count >= StartNumber && x.Comments.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.Comments.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+                    case "childPosts":
+                        switch (Order)
+                        {
+                            case "ascend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ChildPosts.Count >= StartNumber && x.ChildPosts.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderBy(x => x.ChildPosts.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "descend":
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ChildPosts.Count >= StartNumber && x.ChildPosts.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.ChildPosts.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts =
+                                    await queryable
+                                    .Where(x => x.ChildPosts.Count >= StartNumber && x.ChildPosts.Count <= EndNumber)
+                                    .Skip(Offset ?? 0)
+                                    .Take(Limit ?? 3)
+                                    .OrderByDescending(x => x.ChildPosts.Count)
+                                    .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+
+                    default:
+                        posts =
+                        await queryable
+                        .Skip(Offset ?? 0)
+                        .Take(Limit ?? 3)
+                        .OrderByDescending(x => x.CreatedAt)
+                        .ThenByDescending(x => x.ModifiedAt)
+                        .ThenByDescending(x => x.Title)
+                        .ToListAsync();
+                        break;
+
+                }
+            }
             else
             {
                 posts =
@@ -784,7 +1220,8 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
                         .ToListAsync();
             }
 
-            return new HelperTDO {
+            return new HelperTDO
+            {
                 PostsEnvelope = posts,
                 PostCount = postCount
             };
