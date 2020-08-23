@@ -23,6 +23,11 @@ namespace Aspian.Application.Core.PostServices.AdminServices
         {
             public List<PostDto> Posts { get; set; }
             public int PostCount { get; set; }
+            public int MaxAttachmentsNumber { get; set; }
+            public int MaxViewCount { get; set; }
+            public int MaxPostHistories { get; set; }
+            public int MaxComments { get; set; }
+            public int MaxChildPosts { get; set; }
         }
         public class Query : IRequest<PostsEnvelope>
         {
@@ -71,6 +76,11 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                     request.StartDate, request.EndDate,
                     request.StartNumber, request.EndNumber
                     );
+                var maxAttachmentsNumber = _context.Posts.OrderByDescending(x => x.PostAttachments.Count).First().PostAttachments.Count;
+                var maxViewCount = await _context.Posts.MaxAsync(x => x.ViewCount);
+                var maxPostHistories = _context.Posts.OrderByDescending(x => x.PostHistories.Count).First().PostHistories.Count;
+                var maxComments = _context.Posts.OrderByDescending(x => x.Comments.Count).First().Comments.Count;
+                var maxChildPosts = _context.Posts.OrderByDescending(x => x.ChildPosts.Count).First().ChildPosts.Count;
 
                 await _logger.LogActivity(
                     site.Id,
@@ -82,7 +92,12 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                 return new PostsEnvelope
                 {
                     Posts = _mapper.Map<List<PostDto>>(helperTDO.PostsEnvelope),
-                    PostCount = helperTDO.PostCount
+                    PostCount = helperTDO.PostCount,
+                    MaxAttachmentsNumber = maxAttachmentsNumber,
+                    MaxViewCount = maxViewCount,
+                    MaxPostHistories = maxPostHistories,
+                    MaxComments = maxComments,
+                    MaxChildPosts = maxChildPosts
                 };
 
             }

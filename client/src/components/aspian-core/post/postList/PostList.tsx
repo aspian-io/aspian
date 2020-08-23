@@ -29,6 +29,7 @@ import {
   SearchOutlined,
   CalendarFilled,
   SlidersFilled,
+  FilterOutlined,
 } from '@ant-design/icons';
 import '../../../../scss/aspian-core/pages/posts/all-posts/_all-posts.scss';
 import { connect } from 'react-redux';
@@ -54,6 +55,7 @@ import {
   DirectionActionTypeEnum,
 } from '../../../../app/stores/actions/aspian-core/locale/types';
 import { SorterResult, ColumnType } from 'antd/es/table/interface';
+import { UAParser } from 'ua-parser-js';
 import Highlighter from 'react-highlight-words';
 
 interface IProps extends WithTranslation {
@@ -80,7 +82,10 @@ interface IPostAntdTable {
   createdBy: string;
   modifiedAt: string;
   modifiedBy: string;
-  userAgent: string;
+  //userAgent: string;
+  device: string | undefined;
+  os: string | undefined;
+  browser: string | undefined;
   userIPAddress: string;
 }
 
@@ -113,6 +118,9 @@ const PostList: FC<IProps> = ({
   const MODIFIED_AT = 'modifiedAt';
   const MODIFIED_BY = 'modifiedBy';
   const USER_AGENT = 'userAgent';
+  const USER_AGENT_DEVICE = 'device';
+  const USER_AGENT_OS = 'os';
+  const USER_AGENT_BROWSER = 'browser';
   const IP_ADDRESS = 'userIPAddress';
   const ACTIONS = 'actions';
   // Colomn arrays with different types of filters
@@ -125,7 +133,10 @@ const PostList: FC<IProps> = ({
     PINNED,
     IP_ADDRESS,
     CREATED_BY,
-    MODIFIED_BY
+    MODIFIED_BY,
+    USER_AGENT_DEVICE,
+    USER_AGENT_OS,
+    USER_AGENT_BROWSER
   ];
   /// Columns with DateRange filter
   const DATERANGE_FILTERED_COLUMNS: string[] = [CREATED_AT, MODIFIED_AT];
@@ -203,15 +214,16 @@ const PostList: FC<IProps> = ({
 
   // Custom slider filter functionality implementation
   const getColumnSearchPropsForSliderFilter = (
-    dataIndex: string
+    dataIndex: string,
+    maxNumber: number
   ): ColumnType<any> => ({
     filterDropdown: ({ setSelectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
         <Slider
           range
-          tooltipVisible={true}
-          step={5}
-          defaultValue={[20, 40]}
+          step={1}
+          max={maxNumber + 50}
+          defaultValue={[0, maxNumber > 20 ? maxNumber : 30]}
           onAfterChange={(value) => {
             if (value) {
               setSelectedKeys([value[0], value[1]]);
@@ -224,11 +236,11 @@ const PostList: FC<IProps> = ({
               <Button
                 type="primary"
                 onClick={() => handleSearchDateRange(confirm, dataIndex)}
-                icon={<SearchOutlined />}
+                icon={<FilterOutlined />}
                 size="small"
                 style={{ width: 90 }}
               >
-                Search
+                Filter
               </Button>
               <Button
                 onClick={() => handleReset(clearFilters)}
@@ -413,6 +425,7 @@ const PostList: FC<IProps> = ({
       title: <Trans>{t('post-list.table.thead.status')}</Trans>,
       width: 100,
       dataIndex: STATUS,
+      align: 'center',
       sorter: true,
       filterMultiple: false,
       filters: [
@@ -456,7 +469,10 @@ const PostList: FC<IProps> = ({
       dataIndex: ATTACHMENTS,
       align: 'center',
       sorter: true,
-      ...getColumnSearchPropsForSliderFilter(ATTACHMENTS),
+      ...getColumnSearchPropsForSliderFilter(
+        ATTACHMENTS,
+        postsState.postsEnvelope.maxAttachmentsNumber
+      ),
     },
     {
       title: <Trans>{t('post-list.table.thead.comment-allowed')}</Trans>,
@@ -482,7 +498,10 @@ const PostList: FC<IProps> = ({
       dataIndex: VIEW_COUNT,
       align: 'center',
       sorter: true,
-      ...getColumnSearchPropsForSliderFilter(VIEW_COUNT),
+      ...getColumnSearchPropsForSliderFilter(
+        VIEW_COUNT,
+        postsState.postsEnvelope.maxViewCount
+      ),
     },
     {
       title: <Trans>{t('post-list.table.thead.pinned')}</Trans>,
@@ -508,7 +527,10 @@ const PostList: FC<IProps> = ({
       dataIndex: HISTORIES,
       align: 'center',
       sorter: true,
-      ...getColumnSearchPropsForSliderFilter(HISTORIES),
+      ...getColumnSearchPropsForSliderFilter(
+        HISTORIES,
+        postsState.postsEnvelope.maxPostHistories
+      ),
     },
     {
       title: <Trans>{t('post-list.table.thead.comments')}</Trans>,
@@ -516,7 +538,10 @@ const PostList: FC<IProps> = ({
       dataIndex: COMMENTS,
       align: 'center',
       sorter: true,
-      ...getColumnSearchPropsForSliderFilter(COMMENTS),
+      ...getColumnSearchPropsForSliderFilter(
+        COMMENTS,
+        postsState.postsEnvelope.maxComments
+      ),
     },
     {
       title: <Trans>{t('post-list.table.thead.child-posts')}</Trans>,
@@ -524,12 +549,16 @@ const PostList: FC<IProps> = ({
       dataIndex: CHILD_POSTS,
       align: 'center',
       sorter: true,
-      ...getColumnSearchPropsForSliderFilter(CHILD_POSTS),
+      ...getColumnSearchPropsForSliderFilter(
+        CHILD_POSTS,
+        postsState.postsEnvelope.maxChildPosts
+      ),
     },
     {
       title: <Trans>{t('post-list.table.thead.created-at')}</Trans>,
       width: 200,
       dataIndex: CREATED_AT,
+      align: 'center',
       sorter: true,
       ...getColumnSearchPropsForDateRangeFilter(CREATED_AT),
     },
@@ -544,6 +573,7 @@ const PostList: FC<IProps> = ({
       title: <Trans>{t('post-list.table.thead.modified-at')}</Trans>,
       width: 150,
       dataIndex: MODIFIED_AT,
+      align: 'center',
       sorter: true,
       ...getColumnSearchPropsForDateRangeFilter(MODIFIED_AT),
     },
@@ -556,10 +586,98 @@ const PostList: FC<IProps> = ({
     },
     {
       title: <Trans>{t('post-list.table.thead.user-agent')}</Trans>,
-      width: 150,
+
       dataIndex: USER_AGENT,
       ellipsis: true,
-      sorter: true,
+      children: [
+        {
+          title: 'Device',
+          dataIndex: USER_AGENT_DEVICE,
+          align: 'center',
+          width: 100,
+          filterMultiple: false,
+          filters: [
+            {
+              text: 'Desktop',
+              value: "desktop",
+            },
+            {
+              text: 'Tablet',
+              value: "tablet",
+            },
+            {
+              text: 'Mobile',
+              value: "mobile",
+            },
+          ],
+        },
+        {
+          title: 'OS',
+          dataIndex: USER_AGENT_OS,
+          align: 'center',
+          width: 150,
+          filterMultiple: false,
+          filters: [
+            {
+              text: 'macOS',
+              value: "macOS",
+            },
+            {
+              text: 'Windows',
+              value: "windows",
+            },
+            {
+              text: 'Linux',
+              value: "linux",
+            },
+            {
+              text: 'iPadOS',
+              value: "iPadOS",
+            },
+            {
+              text: 'iPhoneOS',
+              value: "iPhoneOS",
+            },
+            {
+              text: 'Android',
+              value: "android",
+            },
+          ],
+        },
+        {
+          title: 'Browser',
+          dataIndex: USER_AGENT_BROWSER,
+          align: 'center',
+          width: 170,
+          filterMultiple: false,
+          filters: [
+            {
+              text: 'Chrome',
+              value: "chrome",
+            },
+            {
+              text: 'Safari',
+              value: "safari",
+            },
+            {
+              text: 'Firefox',
+              value: "firefox",
+            },
+            {
+              text: 'Edge',
+              value: "edge",
+            },
+            {
+              text: 'Internet Explorer',
+              value: "IE",
+            },
+            {
+              text: 'Opera',
+              value: "opera",
+            },
+          ],
+        },
+      ],
     },
     {
       title: <Trans>{t('post-list.table.thead.ip-address')}</Trans>,
@@ -615,6 +733,9 @@ const PostList: FC<IProps> = ({
   }, [getPostsEnvelope]);
 
   postsState.postsEnvelope.posts.forEach((post, i) => {
+    const ua = new UAParser();
+    ua.setUA(post.userAgent);
+
     data.push({
       key: i,
       title: post.title,
@@ -645,7 +766,10 @@ const PostList: FC<IProps> = ({
         ? moment(post.modifiedAt).format('YYYY-MM-DD HH:m:s')
         : '',
       modifiedBy: post.modifiedBy?.userName,
-      userAgent: post.userAgent,
+      //userAgent: post.userAgent,
+      device: ua.getDevice().type ?? 'Desktop',
+      os: `${ua.getOS().name} ${ua.getOS().version}`,
+      browser: `${ua.getBrowser().name} ${ua.getBrowser().version}`,
       userIPAddress: post.userIPAddress,
     });
   });

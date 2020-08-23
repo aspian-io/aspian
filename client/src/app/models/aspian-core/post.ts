@@ -1,6 +1,11 @@
 export interface IPostsEnvelope {
   posts: IPost[];
   postCount: number;
+  maxAttachmentsNumber: number;
+  maxViewCount: number;
+  maxPostHistories: number;
+  maxComments: number;
+  maxChildPosts: number;
 }
 
 export interface IPost {
@@ -67,13 +72,13 @@ interface IAttachment {
 }
 
 export interface ITaxonomyPost {
-    taxonomy: ITaxonomy;
+  taxonomy: ITaxonomy;
 }
 
 interface ITaxonomy {
-    id: string;
-    type: TaxonomyTypeEnum;
-    term: ITerm;
+  id: string;
+  type: TaxonomyTypeEnum;
+  term: ITerm;
 }
 
 export enum TaxonomyTypeEnum {
@@ -83,6 +88,6 @@ export enum TaxonomyTypeEnum {
 }
 
 interface ITerm {
-    id: string;
-    name: string;
+  id: string;
+  name: string;
 }

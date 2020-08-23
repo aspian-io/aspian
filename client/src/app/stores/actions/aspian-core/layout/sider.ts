@@ -30,26 +30,30 @@ export const onLayoutBreakpoint = (broken: boolean, isRtl: boolean) => (
   dispatch: Dispatch
 ) => {
   if (broken) {
-    document.getElementById('contentLayout')!.style.marginLeft = '0';
-    document.getElementById('contentLayout')!.style.marginRight = '0';
-    document.getElementById('appLayout')!.style.overflow = 'hidden';
-    document.getElementById('contentLayout')!.style.minWidth = `100%`;
+    if (document.getElementById('contentLayout')) {
+      document.getElementById('contentLayout')!.style.marginLeft = '0';
+      document.getElementById('contentLayout')!.style.marginRight = '0';
+      document.getElementById('appLayout')!.style.overflow = 'hidden';
+      document.getElementById('contentLayout')!.style.minWidth = `100%`;
+    }
 
     dispatch<ISiderOnBreakpointsCollapse>({
       type: LayoutActionTypesEnum.COLLAPSE_SIDER,
       payload: broken,
     });
   } else {
-    if (isRtl) {
-      document.getElementById('contentLayout')!.style.marginRight = '200px';
-      document.getElementById('contentLayout')!.style.marginLeft = '0';
-    } else {
-      document.getElementById('contentLayout')!.style.marginLeft = '200px';
-      document.getElementById('contentLayout')!.style.marginRight = '0';
-    }
+    if (document.getElementById('contentLayout')) {
+      if (isRtl) {
+        document.getElementById('contentLayout')!.style.marginRight = '200px';
+        document.getElementById('contentLayout')!.style.marginLeft = '0';
+      } else {
+        document.getElementById('contentLayout')!.style.marginLeft = '200px';
+        document.getElementById('contentLayout')!.style.marginRight = '0';
+      }
 
-    document.getElementById('appLayout')!.style.overflow = 'initial';
-    document.getElementById('contentLayout')!.style.minWidth = `initial`;
+      document.getElementById('appLayout')!.style.overflow = 'initial';
+      document.getElementById('contentLayout')!.style.minWidth = `initial`;
+    }
 
     dispatch<ISiderOnBreakpointsCollapse>({
       type: LayoutActionTypesEnum.COLLAPSE_SIDER,

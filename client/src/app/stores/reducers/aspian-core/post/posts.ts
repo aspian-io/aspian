@@ -10,7 +10,7 @@ export interface IPostState {
 }
 
 const initialState: IPostState = {
-  postsEnvelope: {posts: [], postCount: 0},
+  postsEnvelope: {posts: [], postCount: 0, maxAttachmentsNumber: 1000, maxChildPosts: 1000, maxComments: 1000, maxPostHistories: 1000, maxViewCount: 1000},
   loadingInitial: true,
 };
 

@@ -484,40 +484,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
                         }
                         break;
 
-                    case "userAgent":
-                        switch (Order)
-                        {
-                            case "ascend":
-                                posts =
-                                    await queryable
-                                    .Skip(Offset ?? 0)
-                                    .Take(Limit ?? 3)
-                                    .OrderBy(x => x.UserAgent)
-                                    .ToListAsync();
-                                break;
-
-                            case "descend":
-                                posts =
-                                    await queryable
-                                    .Skip(Offset ?? 0)
-                                    .Take(Limit ?? 3)
-                                    .OrderByDescending(x => x.UserAgent)
-                                    .ToListAsync();
-                                break;
-
-                            default:
-                                posts =
-                                    await queryable
-                                    .Skip(Offset ?? 0)
-                                    .Take(Limit ?? 3)
-                                    .OrderByDescending(x => x.CreatedAt)
-                                    .ThenByDescending(x => x.ModifiedAt)
-                                    .ThenByDescending(x => x.Title)
-                                    .ToListAsync();
-                                break;
-                        }
-                        break;
-
                     case "userIPAddress":
                         switch (Order)
                         {
@@ -762,6 +728,158 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
 
                             default:
                                 posts = await queryable.Where(x => x.UserIPAddress == FilterValue).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+                    case "device":
+                        switch (FilterValue)
+                        {
+                            case "desktop":
+                                posts = await queryable.Where(x => !x.UserAgent.ToLower().Contains("mobile") && !x.UserAgent.ToLower().Contains("ipad")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "tablet":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("ipad") || 
+                                                                   x.UserAgent.ToLower().Contains("tablet") ||
+                                                                   (x.UserAgent.ToLower().Contains("android") &&
+                                                                   !x.UserAgent.ToLower().Contains("mobile"))
+                                                                   )
+                                                                   .ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "mobile":
+                                posts = await queryable.Where(x => (x.UserAgent.ToLower().Contains("mobile") &&
+                                                                   x.UserAgent.ToLower().Contains("android")) ||
+                                                                   x.UserAgent.ToLower().Contains("iphone")
+                                                                    ).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts = await queryable.ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+                    case "os":
+                        switch (FilterValue)
+                        {
+                            case "macOS":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("macintosh")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "windows":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("windows")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "linux":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("linux") && !x.UserAgent.ToLower().Contains("android")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "iPadOS":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("ipad")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "iPhoneOS":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("iphone")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "android":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("android")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts = await queryable.ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+                        }
+                        break;
+
+                    case "browser":
+                        switch (FilterValue)
+                        {
+                            case "chrome":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("chrome") && !x.UserAgent.ToLower().Contains("edge")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "safari":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("safari") && 
+                                                                  !x.UserAgent.ToLower().Contains("chrome") && 
+                                                                  !x.UserAgent.ToLower().Contains("android")
+                                                                  ).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "firefox":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("firefox")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "edge":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("edge")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "IE":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("trident") || x.UserAgent.ToLower().Contains("msie")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            case "opera":
+                                posts = await queryable.Where(x => x.UserAgent.ToLower().Contains("opr") || x.UserAgent.ToLower().Contains("opera")).ToListAsync();
+
+                                postCount = posts.Count;
+
+                                break;
+
+                            default:
+                                posts = await queryable.ToListAsync();
 
                                 postCount = posts.Count;
 

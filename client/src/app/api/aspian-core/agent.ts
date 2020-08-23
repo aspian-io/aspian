@@ -19,7 +19,7 @@ axios.defaults.baseURL = 'http://localhost:5001/api';
 
 axios.interceptors.response.use(undefined, (error) => {
   if (error.message === 'Network Error' && !error.response) {
-    history.push('/network-rerror');
+    history.push('/network-error');
   }
   const { status, data, config } = error.response;
   if (status === 404) {
@@ -33,7 +33,7 @@ axios.interceptors.response.use(undefined, (error) => {
     history.push('/notfound');
   }
   if (status === 500) {
-    history.push('/serve-rerror');
+    history.push('/server-error');
   }
   throw error;
 });
