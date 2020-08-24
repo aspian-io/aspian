@@ -1,0 +1,13 @@
+.persian-datepicker {
+  font-size: 7px;
+  top: -10px;
+  &-input {
+    width: 100%;
+  }
+}
+.DatePicker {
+  width: 100%;
+  &__calendarArrow{
+      top: 30px;
+  }
+}

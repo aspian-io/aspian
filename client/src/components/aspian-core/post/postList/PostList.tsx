@@ -28,7 +28,7 @@ import {
   ClockCircleFilled,
   SearchOutlined,
   CalendarFilled,
-  SlidersFilled,
+  ControlOutlined,
   FilterOutlined,
 } from '@ant-design/icons';
 import '../../../../scss/aspian-core/pages/posts/all-posts/_all-posts.scss';
@@ -45,6 +45,7 @@ import {
 } from '../../../../app/stores/actions/aspian-core/post/posts';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import moment, { Moment } from 'moment';
+import jalaliMoment from 'jalali-moment';
 import { IPostState } from '../../../../app/stores/reducers/aspian-core/post/posts';
 import { WithTranslation, Trans, withTranslation } from 'react-i18next';
 import Title from 'antd/lib/typography/Title';
@@ -57,6 +58,11 @@ import {
 import { SorterResult, ColumnType } from 'antd/es/table/interface';
 import { UAParser } from 'ua-parser-js';
 import Highlighter from 'react-highlight-words';
+
+import 'react-modern-calendar-datepicker/lib/DatePicker.css';
+import PesianDatePicker, { DayRange } from 'react-modern-calendar-datepicker';
+import '../../../../scss/aspian-core/components/modern-calendar/_persian-datepicker.scss';
+import { e2p } from '../../../../js/aspian-core/base/numberConverter';
 
 interface IProps extends WithTranslation {
   postsState: IPostState;
@@ -136,7 +142,7 @@ const PostList: FC<IProps> = ({
     MODIFIED_BY,
     USER_AGENT_DEVICE,
     USER_AGENT_OS,
-    USER_AGENT_BROWSER
+    USER_AGENT_BROWSER,
   ];
   /// Columns with DateRange filter
   const DATERANGE_FILTERED_COLUMNS: string[] = [CREATED_AT, MODIFIED_AT];
@@ -159,6 +165,11 @@ const PostList: FC<IProps> = ({
     string | number | React.ReactText[] | undefined
   >('');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  const [selectedDayRange, setSelectedDayRange] = useState<DayRange>({
+    from: null,
+    to: null,
+  });
 
   // On select a row event
   const onSelectChange = (selectedRowKeys: ReactText[]) => {
@@ -255,7 +266,9 @@ const PostList: FC<IProps> = ({
       </div>
     ),
     filterIcon: (filtered) => (
-      <SlidersFilled style={{ color: filtered ? '#1890ff' : undefined }} />
+      <ControlOutlined
+        style={{ color: filtered ? '#1890ff' : undefined, fontSize: '13px' }}
+      />
     ),
   });
 
@@ -265,45 +278,118 @@ const PostList: FC<IProps> = ({
   ): ColumnType<any> => ({
     filterDropdown: ({ setSelectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
-        <RangePicker
-          value={dateRange}
-          inputReadOnly={true}
-          format="YYYY/MM/DD"
-          onChange={(
-            dates: RangeValue<Moment>,
-            dateStrings: [string, string]
-          ) => {
-            if (dates) {
-              setDateRange([dates![0], dates![1]]);
-              setSelectedKeys([
-                dates![0]?.format('YYYY/MM/DD') as ReactText,
-                dates![1]?.format('YYYY/MM/DD') as ReactText,
-              ]);
-            }
-          }}
-        />
-        <div>
-          <div style={{ marginTop: '10px' }}>
-            <Space>
-              <Button
-                type="primary"
-                onClick={() => handleSearchDateRange(confirm, dataIndex)}
-                icon={<SearchOutlined />}
-                size="small"
-                style={{ width: 90 }}
-              >
-                Search
-              </Button>
-              <Button
-                onClick={() => handleReset(clearFilters)}
-                size="small"
-                style={{ width: 90 }}
-              >
-                Reset
-              </Button>
-            </Space>
-          </div>
-        </div>
+        {lang === LanguageActionTypeEnum.fa && (
+          <Fragment>
+            <PesianDatePicker
+              inputPlaceholder="از تاریخ --- تا تاریخ"
+              value={selectedDayRange}
+              onChange={setSelectedDayRange}
+              shouldHighlightWeekends
+              locale="fa"
+              calendarPopperPosition="bottom"
+              calendarClassName="persian-datepicker"
+              inputClassName="persian-datepicker-input"
+            />
+
+            <div>
+              <div style={{ marginTop: '10px' }}>
+                <Space>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      const fromDay = selectedDayRange.from?.day;
+                      const fromMonth = selectedDayRange.from?.month;
+                      const fromYear = selectedDayRange.from?.year;
+
+                      const toDay = selectedDayRange.to?.day;
+                      const toMonth = selectedDayRange.to?.month;
+                      const toYear = selectedDayRange.to?.year;
+
+                      const fromInput = `${fromYear}/${fromMonth}/${fromDay}`;
+                      const toInput = `${toYear}/${toMonth}/${toDay}`;
+
+                      const from = jalaliMoment
+                        .from(fromInput, 'fa', 'YYYY/MM/DD')
+                        .locale('en')
+                        .format('YYYY/MM/DD');
+
+                      const to = jalaliMoment
+                        .from(toInput, 'fa', 'YYYY/MM/DD')
+                        .locale('en')
+                        .format('YYYY/MM/DD');
+
+                      setSelectedKeys([from, to]);
+
+                      confirm();
+                      setSearchedColumn(dataIndex);
+                    }}
+                    icon={<SearchOutlined />}
+                    size="small"
+                    style={{ width: 90 }}
+                  >
+                    Search
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      clearFilters!();
+                      setSelectedDayRange({ from: null, to: null });
+                      setLoading(true) && getPostsEnvelope(DFAULT_PAGE_SIZE, 0);
+                    }}
+                    size="small"
+                    style={{ width: 90 }}
+                  >
+                    Reset
+                  </Button>
+                </Space>
+              </div>
+            </div>
+          </Fragment>
+        )}
+
+        {lang === LanguageActionTypeEnum.en && (
+          <Fragment>
+            <RangePicker
+              value={dateRange}
+              inputReadOnly={true}
+              format="YYYY/MM/DD"
+              onChange={(
+                dates: RangeValue<Moment>,
+                dateStrings: [string, string]
+              ) => {
+                if (dates) {
+                  setDateRange([dates![0], dates![1]]);
+                  setSelectedKeys([
+                    dates![0]?.format('YYYY/MM/DD') as ReactText,
+                    dates![1]?.format('YYYY/MM/DD') as ReactText,
+                  ]);
+                }
+              }}
+            />
+
+            <div>
+              <div style={{ marginTop: '10px' }}>
+                <Space>
+                  <Button
+                    type="primary"
+                    onClick={() => handleSearchDateRange(confirm, dataIndex)}
+                    icon={<SearchOutlined />}
+                    size="small"
+                    style={{ width: 90 }}
+                  >
+                    Search
+                  </Button>
+                  <Button
+                    onClick={() => handleReset(clearFilters)}
+                    size="small"
+                    style={{ width: 90 }}
+                  >
+                    Reset
+                  </Button>
+                </Space>
+              </div>
+            </div>
+          </Fragment>
+        )}
       </div>
     ),
     filterIcon: (filtered) => (
@@ -599,15 +685,15 @@ const PostList: FC<IProps> = ({
           filters: [
             {
               text: 'Desktop',
-              value: "desktop",
+              value: 'desktop',
             },
             {
               text: 'Tablet',
-              value: "tablet",
+              value: 'tablet',
             },
             {
               text: 'Mobile',
-              value: "mobile",
+              value: 'mobile',
             },
           ],
         },
@@ -620,27 +706,27 @@ const PostList: FC<IProps> = ({
           filters: [
             {
               text: 'macOS',
-              value: "macOS",
+              value: 'macOS',
             },
             {
               text: 'Windows',
-              value: "windows",
+              value: 'windows',
             },
             {
               text: 'Linux',
-              value: "linux",
+              value: 'linux',
             },
             {
               text: 'iPadOS',
-              value: "iPadOS",
+              value: 'iPadOS',
             },
             {
               text: 'iPhoneOS',
-              value: "iPhoneOS",
+              value: 'iPhoneOS',
             },
             {
               text: 'Android',
-              value: "android",
+              value: 'android',
             },
           ],
         },
@@ -653,27 +739,27 @@ const PostList: FC<IProps> = ({
           filters: [
             {
               text: 'Chrome',
-              value: "chrome",
+              value: 'chrome',
             },
             {
               text: 'Safari',
-              value: "safari",
+              value: 'safari',
             },
             {
               text: 'Firefox',
-              value: "firefox",
+              value: 'firefox',
             },
             {
               text: 'Edge',
-              value: "edge",
+              value: 'edge',
             },
             {
               text: 'Internet Explorer',
-              value: "IE",
+              value: 'IE',
             },
             {
               text: 'Opera',
-              value: "opera",
+              value: 'opera',
             },
           ],
         },
@@ -738,39 +824,63 @@ const PostList: FC<IProps> = ({
 
     data.push({
       key: i,
-      title: post.title,
+      title: lang === LanguageActionTypeEnum.fa
+      ? e2p(post.title)
+      : post.title,
       postCategory: post.taxonomyPosts.map((taxonomyPost: ITaxonomyPost) =>
         taxonomyPost.taxonomy.type === TaxonomyTypeEnum.category
-          ? `${taxonomyPost.taxonomy.term.name} \n`
+          ? `${ lang === LanguageActionTypeEnum.fa ? e2p(taxonomyPost.taxonomy.term.name) : taxonomyPost.taxonomy.term.name} \n`
           : ''
       ),
       postStatus: post.postStatus,
-      postAttachments: post.postAttachments.length,
+      postAttachments: lang === LanguageActionTypeEnum.fa
+        ? e2p(post.postAttachments.length.toString())
+        : post.postAttachments.length,
       commentAllowed: post.commentAllowed ? (
         <CheckOutlined style={{ color: '#52c41a' }} />
       ) : (
         <CloseOutlined style={{ color: '#f5222d' }} />
       ),
-      viewCount: post.viewCount,
+      viewCount: lang === LanguageActionTypeEnum.fa
+        ? e2p(post.viewCount.toString())
+        : post.viewCount,
       pinned: post.isPinned ? (
         <CheckOutlined style={{ color: '#52c41a' }} />
       ) : (
         <CloseOutlined style={{ color: '#f5222d' }} />
       ),
-      postHistories: post.postHistories,
-      comments: post.comments,
-      childPosts: post.childPosts,
-      createdAt: moment(post.createdAt).format('YYYY-MM-DD HH:m:s'),
+      postHistories:
+        lang === LanguageActionTypeEnum.fa
+          ? e2p(post.postHistories.toString())
+          : post.postHistories,
+      comments: lang === LanguageActionTypeEnum.fa ? e2p(post.comments.toString()) : post.comments,
+      childPosts: lang === LanguageActionTypeEnum.fa
+        ? e2p(post.childPosts.toString())
+        : post.childPosts,
+      createdAt:
+        lang === LanguageActionTypeEnum.fa
+          ? e2p(
+              jalaliMoment(post.createdAt, 'YYYY-MM-DD HH:m:s')
+                .locale('fa')
+                .format('YYYY-MM-DD HH:m:s')
+            )
+          : moment(post.createdAt).format('YYYY-MM-DD HH:m:s'),
       createdBy: post.createdBy?.userName,
       modifiedAt: post.modifiedAt
-        ? moment(post.modifiedAt).format('YYYY-MM-DD HH:m:s')
+        ? lang === LanguageActionTypeEnum.fa
+          ? e2p(
+              jalaliMoment(post.modifiedAt, 'YYYY-MM-DD HH:m:s')
+                .locale('fa')
+                .format('YYYY-MM-DD HH:m:s')
+            )
+          : moment(post.modifiedAt).format('YYYY-MM-DD HH:m:s')
         : '',
       modifiedBy: post.modifiedBy?.userName,
       //userAgent: post.userAgent,
       device: ua.getDevice().type ?? 'Desktop',
-      os: `${ua.getOS().name} ${ua.getOS().version}`,
-      browser: `${ua.getBrowser().name} ${ua.getBrowser().version}`,
-      userIPAddress: post.userIPAddress,
+      os: lang === LanguageActionTypeEnum.fa ? `${ua.getOS().name} ${e2p(ua.getOS().version)}` : `${ua.getOS().name} ${ua.getOS().version}`,
+      browser: lang === LanguageActionTypeEnum.fa ? `${ua.getBrowser().name} ${e2p(ua.getBrowser().version?.toString())}` : `${ua.getBrowser().name} ${ua.getBrowser().version}`,
+      userIPAddress: lang === LanguageActionTypeEnum.fa ? e2p(post.userIPAddress) : post.userIPAddress,
     });
   });
 
