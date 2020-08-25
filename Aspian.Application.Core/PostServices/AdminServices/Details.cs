@@ -10,6 +10,7 @@ using Aspian.Domain.PostModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Persistence;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,15 @@ namespace Aspian.Application.Core.PostServices.AdminServices
     {
         public class Query : IRequest<PostDto>
         {
-            public Guid Id { get; set; }
+            public string Slug { get; set; }
+        }
+
+        public class QueryValidator : AbstractValidator<Query>
+        {
+            public QueryValidator()
+            {
+                RuleFor(x => x.Slug).NotEmpty();
+            }
         }
 
         public class Handler : IRequestHandler<Query, PostDto>
@@ -37,17 +46,18 @@ namespace Aspian.Application.Core.PostServices.AdminServices
             public async Task<PostDto> Handle(Query request, CancellationToken cancellationToken)
             {
                 var site = await _context.Sites.FirstOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
-                var post = await _context.Posts.FindAsync(request.Id);
+                var post = await _context.Posts.SingleOrDefaultAsync(x => x.Slug == request.Slug);
 
                 if (post == null)
                     throw new RestException(HttpStatusCode.NotFound, new { post = "Not found!" });
 
+                var postTitleSubstring = post.Title.Length > 30 ? post.Title.Substring(0, 30) + "..." : post.Title;
                 await _logger.LogActivity(
                     site.Id,
                     ActivityCodeEnum.PostDetails,
                     ActivitySeverityEnum.Information,
                     ActivityObjectEnum.Post,
-                    $"The post \"{post.Title.Substring(0, 30)}...\" has been read.");
+                    $"The post \"{postTitleSubstring}\" has been read.");
 
                 return _mapper.Map<PostDto>(post);
             }

@@ -35,14 +35,14 @@ export interface IPost {
 }
 
 export enum PostStatusEnum {
-  Publish,
-  Future,
-  Draft,
-  Pending,
-  Private,
-  Trash,
-  AutoDraft,
-  Inherit,
+  Publish = "Publish",
+  Future = "Future",
+  Draft = "Draft",
+  Pending = "Pending",
+  Private = "Private",
+  Trash = "Trash",
+  AutoDraft = "AutoDraft",
+  Inherit = "Inherit",
 }
 
 export enum PostTypeEnum {

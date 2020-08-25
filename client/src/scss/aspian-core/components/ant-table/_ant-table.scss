@@ -4,4 +4,11 @@
   &-small {
     font-size: 0.7rem !important;
   }
+
+  &-rtl {
+    th.ant-table-column-has-sorters {
+      padding: 8px 8px !important;
+    }
+  }
 }
+

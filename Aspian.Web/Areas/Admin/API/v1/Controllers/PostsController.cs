@@ -29,10 +29,10 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         }
 
         //[Authorize(Policy = AspianCorePolicy.AdminPostDetailsPolicy)]
-        [HttpGet("details/{id}")]
-        public async Task<ActionResult<PostDto>> Details(Guid id)
+        [HttpGet("details/{slug}")]
+        public async Task<ActionResult<PostDto>> Details(string slug)
         {
-            return await Mediator.Send(new Details.Query { Id = id });
+            return await Mediator.Send(new Details.Query { Slug = slug });
         }
 
         //[Authorize(Policy = AspianCorePolicy.AdminPostEditPolicy)]
@@ -44,10 +44,10 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         }
 
         //[Authorize(Policy = AspianCorePolicy.AdminPostDeletePolicy)]
-        [HttpDelete("delete/{id}")]
-        public async Task<ActionResult<Unit>> Delete(Guid id)
+        [HttpDelete("delete")]
+        public async Task<ActionResult<Unit>> Delete(Delete.Command command)
         {
-            return await Mediator.Send(new Delete.Command { Id = id });
+            return await Mediator.Send(command);
         }
     }
 }

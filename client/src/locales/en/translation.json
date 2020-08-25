@@ -1,5 +1,27 @@
 {
   "appName": "ASPIAN",
+  "result-pages": {
+    "400": {
+      "title": "400",
+      "subtitle": "Something is not right. Please check everything and try again.",
+      "button": "Back to dashboard"
+    },
+    "404": {
+      "title": "404",
+      "subtitle": "Sorry, the page you visited does not exist.",
+      "button": "Back to dashboard"
+    },
+    "500": {
+      "title": "500",
+      "subtitle": "Sorry, something went wrong.",
+      "button": "Back to dashboard"
+    },
+    "network-problem": {
+      "title": "Network Error",
+      "subtitle": "Sorry, something went wrong. (Network error)",
+      "button": "Back to dashboard"
+    }
+  },
   "sider": {
     "menu": {
       "items": {
@@ -120,7 +142,14 @@
         "created-by": "Created By",
         "modified-at": "Modified At",
         "modified-by": "Modified By",
-        "user-agent": "User Agent",
+        "user-agent": {
+          "name": "User Agent",
+          "sub-items": {
+            "device": "Device",
+            "os": "OS",
+            "browser": "Browser"
+          }
+        },
         "ip-address": "IP Address",
         "actions": "Actions"
       },
@@ -129,6 +158,59 @@
         "edit-post": "Edit Post",
         "delete-post": "Delete Post",
         "post-history": "Post History"
+      },
+
+      "filters": {
+        "buttons": {
+          "search": "Search",
+          "reset": "Reset",
+          "filter": "Filter"
+        },
+        "post-status": {
+          "publish": "Publish",
+          "pending": "Pending",
+          "draft": "Draft",
+          "auto-draft": "Auto Draft",
+          "future": "Future",
+          "inherit": "Inherit",
+          "private": "Private",
+          "trash": "Trash"
+        },
+        "comment-allowed": {
+          "allowed": "Allowed",
+          "not-allowed": "Not Allowed"
+        },
+        "is-pinned": {
+          "pinned": "Pinned",
+          "not-pinned": "Not Pinned"
+        },
+        "device": {
+          "desktop": "Desktop",
+          "tablet": "Tablet",
+          "mobile": "Mobile"
+        },
+        "os": {
+          "macos": "macOS",
+          "windows": "Windows",
+          "linux": "Linux",
+          "ipados": "iPadOS",
+          "iphoneos": "iPhoneOS",
+          "android": "Android"
+        },
+        "browser": {
+          "chrome": "Chrome",
+          "safari": "Safari",
+          "firefox": "Firefox",
+          "edge": "Edge",
+          "ie": "Internet Explorer",
+          "opera": "Opera"
+        }
+      },
+      "pagination": {
+        "show-total": {
+          "of": "of",
+          "items": "items"
+        }
       }
     }
   }

@@ -30,7 +30,7 @@ axios.interceptors.response.use(undefined, (error) => {
     config.method === 'get' &&
     data.errors.hasOwnProperty('id')
   ) {
-    history.push('/notfound');
+    history.push('/badrequest');
   }
   if (status === 500) {
     history.push('/server-error');
@@ -52,7 +52,7 @@ const requests = {
     axios.post(url, body).then(sleep(1000)).then(responseBody),
   put: (url: string, body: {}) =>
     axios.put(url, body).then(sleep(1000)).then(responseBody),
-  del: (url: string) => axios.delete(url).then(sleep(1000)).then(responseBody),
+  del: (url: string, ids: string[]) => axios.delete(url, {data:{ids: ids}}).then(sleep(1000)).then(responseBody),
 };
 
 const Posts = {
@@ -62,7 +62,7 @@ const Posts = {
     requests.get(`/v1/posts/details/${id}`),
   create: (post: IPost) => requests.post('/v1/posts/create', post),
   update: (post: IPost) => requests.put(`/v1/posts/edit/${post.id}`, post),
-  delete: (id: string) => requests.del(`/posts/delete/${id}`),
+  delete: (ids: string[]) => requests.del(`/v1/posts/delete`, ids),
 };
 
 const User = {

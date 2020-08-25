@@ -42,12 +42,13 @@ import { IStoreState } from '../../../../app/stores/reducers';
 import {
   getPostsEnvelope,
   setLoading,
+  deletePosts
 } from '../../../../app/stores/actions/aspian-core/post/posts';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import moment, { Moment } from 'moment';
 import jalaliMoment from 'jalali-moment';
 import { IPostState } from '../../../../app/stores/reducers/aspian-core/post/posts';
-import { WithTranslation, Trans, withTranslation } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import Title from 'antd/lib/typography/Title';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import Text from 'antd/lib/typography/Text';
@@ -70,13 +71,14 @@ interface IProps extends WithTranslation {
   lang: LanguageActionTypeEnum;
   dir: DirectionActionTypeEnum;
   setLoading: Function;
+  deletePosts: Function;
 }
 
 interface IPostAntdTable {
-  key: number;
+  key: string;
   title: string;
   postCategory: string[];
-  postStatus: PostStatusEnum;
+  postStatus: any;
   postAttachments: number;
   commentAllowed: JSX.Element;
   viewCount: number;
@@ -88,7 +90,6 @@ interface IPostAntdTable {
   createdBy: string;
   modifiedAt: string;
   modifiedBy: string;
-  //userAgent: string;
   device: string | undefined;
   os: string | undefined;
   browser: string | undefined;
@@ -104,6 +105,7 @@ const PostList: FC<IProps> = ({
   lang,
   dir,
   setLoading,
+  deletePosts,
 }) => {
   // Constants
   /// Default page size
@@ -187,9 +189,9 @@ const PostList: FC<IProps> = ({
       {
         key: 'odd',
         text: (
-          <Trans>
-            {t('post-list.row-selection-menu.items.select-odd-row')}
-          </Trans>
+          
+            t('post-list.row-selection-menu.items.select-odd-row')
+          
         ),
         onSelect: (changableRowKeys: ReactText[]) => {
           let newSelectedRowKeys = [];
@@ -205,9 +207,9 @@ const PostList: FC<IProps> = ({
       {
         key: 'even',
         text: (
-          <Trans>
-            {t('post-list.row-selection-menu.items.select-even-row')}
-          </Trans>
+          
+            t('post-list.row-selection-menu.items.select-even-row')
+          
         ),
         onSelect: (changableRowKeys: ReactText[]) => {
           let newSelectedRowKeys = [];
@@ -251,14 +253,14 @@ const PostList: FC<IProps> = ({
                 size="small"
                 style={{ width: 90 }}
               >
-                Filter
+                {t('post-list.table.filters.buttons.filter')}
               </Button>
               <Button
                 onClick={() => handleReset(clearFilters)}
                 size="small"
                 style={{ width: 90 }}
               >
-                Reset
+                {t('post-list.table.filters.buttons.reset')}
               </Button>
             </Space>
           </div>
@@ -327,7 +329,7 @@ const PostList: FC<IProps> = ({
                     size="small"
                     style={{ width: 90 }}
                   >
-                    Search
+                    {t('post-list.table.filters.buttons.search')}
                   </Button>
                   <Button
                     onClick={() => {
@@ -338,7 +340,7 @@ const PostList: FC<IProps> = ({
                     size="small"
                     style={{ width: 90 }}
                   >
-                    Reset
+                    {t('post-list.table.filters.buttons.reset')}
                   </Button>
                 </Space>
               </div>
@@ -376,14 +378,14 @@ const PostList: FC<IProps> = ({
                     size="small"
                     style={{ width: 90 }}
                   >
-                    Search
+                    {t('post-list.table.filters.buttons.search')}
                   </Button>
                   <Button
                     onClick={() => handleReset(clearFilters)}
                     size="small"
                     style={{ width: 90 }}
                   >
-                    Reset
+                    {t('post-list.table.filters.buttons.reset')}
                   </Button>
                 </Space>
               </div>
@@ -437,14 +439,14 @@ const PostList: FC<IProps> = ({
             size="small"
             style={{ width: 90 }}
           >
-            Search
+            {t('post-list.table.filters.buttons.search')}
           </Button>
           <Button
             onClick={() => handleReset(clearFilters)}
             size="small"
             style={{ width: 90 }}
           >
-            Reset
+            {t('post-list.table.filters.buttons.reset')}
           </Button>
         </Space>
       </div>
@@ -491,7 +493,7 @@ const PostList: FC<IProps> = ({
 
   const columns: ColumnsType<IPostAntdTable> = [
     {
-      title: <Trans>{t('post-list.table.thead.title')}</Trans>,
+      title: t('post-list.table.thead.title'),
       width: 200,
       dataIndex: TITLE,
       fixed: windowWidth > 576 ? 'left' : undefined,
@@ -500,7 +502,7 @@ const PostList: FC<IProps> = ({
       ...getColumnSearchPropsForSearchFilter(TITLE),
     },
     {
-      title: <Trans>{t('post-list.table.thead.category')}</Trans>,
+      title: t('post-list.table.thead.category'),
       width: 200,
       dataIndex: CATEGORY,
       ellipsis: true,
@@ -508,7 +510,7 @@ const PostList: FC<IProps> = ({
       ...getColumnSearchPropsForSearchFilter(CATEGORY),
     },
     {
-      title: <Trans>{t('post-list.table.thead.status')}</Trans>,
+      title: t('post-list.table.thead.status'),
       width: 100,
       dataIndex: STATUS,
       align: 'center',
@@ -516,41 +518,53 @@ const PostList: FC<IProps> = ({
       filterMultiple: false,
       filters: [
         {
-          text: 'Publish',
+          text: 
+          t('post-list.table.filters.post-status.publish'
+          ),
           value: PostStatusEnum.Publish,
         },
         {
-          text: 'Pending',
+          text: 
+          t('post-list.table.filters.post-status.pending'
+          ),
           value: PostStatusEnum.Pending,
         },
         {
-          text: 'Draft',
+          text:t('post-list.table.filters.post-status.draft'),
           value: PostStatusEnum.Draft,
         },
         {
-          text: 'Auto Draft',
+          text: 
+          t('post-list.table.filters.post-status.auto-draft'
+          ),
           value: PostStatusEnum.AutoDraft,
         },
         {
-          text: 'Future',
+          text: 
+          t('post-list.table.filters.post-status.future'
+          ),
           value: PostStatusEnum.Future,
         },
         {
-          text: 'Inherit',
+          text: 
+          t('post-list.table.filters.post-status.inherit'
+          ),
           value: PostStatusEnum.Inherit,
         },
         {
-          text: 'Private',
+          text: (
+            t('post-list.table.filters.post-status.private')
+          ),
           value: PostStatusEnum.Private,
         },
         {
-          text: 'Trash',
+          text: t('post-list.table.filters.post-status.trash'),
           value: PostStatusEnum.Trash,
         },
       ],
     },
     {
-      title: <Trans>{t('post-list.table.thead.attachments')}</Trans>,
+      title: t('post-list.table.thead.attachments'),
       width: 130,
       dataIndex: ATTACHMENTS,
       align: 'center',
@@ -561,7 +575,7 @@ const PostList: FC<IProps> = ({
       ),
     },
     {
-      title: <Trans>{t('post-list.table.thead.comment-allowed')}</Trans>,
+      title: t('post-list.table.thead.comment-allowed'),
       width: 200,
       dataIndex: COMMENT_ALLOWED,
       align: 'center',
@@ -569,17 +583,25 @@ const PostList: FC<IProps> = ({
       filterMultiple: false,
       filters: [
         {
-          text: 'Allowed',
+          text: (
+            
+              t('post-list.table.filters.comment-allowed.allowed')
+            
+          ),
           value: true,
         },
         {
-          text: 'Not Allowed',
+          text: (
+            
+              t('post-list.table.filters.comment-allowed.not-allowed')
+            
+          ),
           value: false,
         },
       ],
     },
     {
-      title: <Trans>{t('post-list.table.thead.view-count')}</Trans>,
+      title: t('post-list.table.thead.view-count'),
       width: 200,
       dataIndex: VIEW_COUNT,
       align: 'center',
@@ -590,7 +612,7 @@ const PostList: FC<IProps> = ({
       ),
     },
     {
-      title: <Trans>{t('post-list.table.thead.pinned')}</Trans>,
+      title: t('post-list.table.thead.pinned'),
       width: 100,
       dataIndex: PINNED,
       align: 'center',
@@ -598,17 +620,19 @@ const PostList: FC<IProps> = ({
       filterMultiple: false,
       filters: [
         {
-          text: 'Pinned',
+          text: t('post-list.table.filters.is-pinned.pinned'),
           value: true,
         },
         {
-          text: 'Not Pinned',
+          text: (
+            t('post-list.table.filters.is-pinned.not-pinned')
+          ),
           value: false,
         },
       ],
     },
     {
-      title: <Trans>{t('post-list.table.thead.histories')}</Trans>,
+      title: t('post-list.table.thead.histories'),
       width: 100,
       dataIndex: HISTORIES,
       align: 'center',
@@ -619,7 +643,7 @@ const PostList: FC<IProps> = ({
       ),
     },
     {
-      title: <Trans>{t('post-list.table.thead.comments')}</Trans>,
+      title: t('post-list.table.thead.comments'),
       width: 120,
       dataIndex: COMMENTS,
       align: 'center',
@@ -630,7 +654,7 @@ const PostList: FC<IProps> = ({
       ),
     },
     {
-      title: <Trans>{t('post-list.table.thead.child-posts')}</Trans>,
+      title: t('post-list.table.thead.child-posts'),
       width: 150,
       dataIndex: CHILD_POSTS,
       align: 'center',
@@ -641,7 +665,7 @@ const PostList: FC<IProps> = ({
       ),
     },
     {
-      title: <Trans>{t('post-list.table.thead.created-at')}</Trans>,
+      title: t('post-list.table.thead.created-at'),
       width: 200,
       dataIndex: CREATED_AT,
       align: 'center',
@@ -649,14 +673,14 @@ const PostList: FC<IProps> = ({
       ...getColumnSearchPropsForDateRangeFilter(CREATED_AT),
     },
     {
-      title: <Trans>{t('post-list.table.thead.created-by')}</Trans>,
+      title: t('post-list.table.thead.created-by'),
       width: 150,
       dataIndex: CREATED_BY,
       sorter: true,
       ...getColumnSearchPropsForSearchFilter(CREATED_BY),
     },
     {
-      title: <Trans>{t('post-list.table.thead.modified-at')}</Trans>,
+      title: t('post-list.table.thead.modified-at'),
       width: 150,
       dataIndex: MODIFIED_AT,
       align: 'center',
@@ -664,20 +688,24 @@ const PostList: FC<IProps> = ({
       ...getColumnSearchPropsForDateRangeFilter(MODIFIED_AT),
     },
     {
-      title: <Trans>{t('post-list.table.thead.modified-by')}</Trans>,
+      title: t('post-list.table.thead.modified-by'),
       width: 150,
       dataIndex: MODIFIED_BY,
       sorter: true,
       ...getColumnSearchPropsForSearchFilter(MODIFIED_BY),
     },
     {
-      title: <Trans>{t('post-list.table.thead.user-agent')}</Trans>,
+      title: t('post-list.table.thead.user-agent.name'),
 
       dataIndex: USER_AGENT,
       ellipsis: true,
       children: [
         {
-          title: 'Device',
+          title: (
+            
+              t('post-list.table.thead.user-agent.sub-items.device')
+            
+          ),
           dataIndex: USER_AGENT_DEVICE,
           align: 'center',
           width: 100,
@@ -698,7 +726,9 @@ const PostList: FC<IProps> = ({
           ],
         },
         {
-          title: 'OS',
+          title: (
+            t('post-list.table.thead.user-agent.sub-items.os')
+          ),
           dataIndex: USER_AGENT_OS,
           align: 'center',
           width: 150,
@@ -731,7 +761,11 @@ const PostList: FC<IProps> = ({
           ],
         },
         {
-          title: 'Browser',
+          title: (
+            
+              t('post-list.table.thead.user-agent.sub-items.browser')
+            
+          ),
           dataIndex: USER_AGENT_BROWSER,
           align: 'center',
           width: 170,
@@ -766,14 +800,14 @@ const PostList: FC<IProps> = ({
       ],
     },
     {
-      title: <Trans>{t('post-list.table.thead.ip-address')}</Trans>,
+      title: t('post-list.table.thead.ip-address'),
       width: 150,
       dataIndex: IP_ADDRESS,
       sorter: true,
       ...getColumnSearchPropsForSearchFilter(IP_ADDRESS),
     },
     {
-      title: <Trans>{t('post-list.table.thead.actions')}</Trans>,
+      title: t('post-list.table.thead.actions'),
       key: ACTIONS,
       fixed: windowWidth > 576 ? 'right' : undefined,
       width: 150,
@@ -781,7 +815,7 @@ const PostList: FC<IProps> = ({
       render: () => (
         <Space>
           <Tooltip
-            title={<Trans>{t('post-list.table.tooltip.edit-post')}</Trans>}
+            title={t('post-list.table.tooltip.edit-post')}
             color="gray"
           >
             <Button
@@ -792,13 +826,13 @@ const PostList: FC<IProps> = ({
             />
           </Tooltip>
           <Tooltip
-            title={<Trans>{t('post-list.table.tooltip.delete-post')}</Trans>}
+            title={t('post-list.table.tooltip.delete-post')}
             color="gray"
           >
             <Button type="link" size="middle" icon={<DeleteFilled />} danger />
           </Tooltip>
           <Tooltip
-            title={<Trans>{t('post-list.table.tooltip.post-history')}</Trans>}
+            title={t('post-list.table.tooltip.post-history')}
             color="gray"
           >
             <Button type="link" size="middle" icon={<ClockCircleFilled />} />
@@ -822,28 +856,82 @@ const PostList: FC<IProps> = ({
     const ua = new UAParser();
     ua.setUA(post.userAgent);
 
+    /// PostStatus Localization:
+    // Localized postStatus: to localize postStatus use "localizedPostStatus" variable as its value
+    let localizedPostStatus: any;
+    // Setting localized value for postStatus through the following switch statement
+    switch (post.postStatus) {
+      case PostStatusEnum.Publish:
+        localizedPostStatus = (
+          t('post-list.table.filters.post-status.publish')
+        );
+        break;
+      case PostStatusEnum.Pending:
+        localizedPostStatus = (
+          t('post-list.table.filters.post-status.pending')
+        );
+        break;
+      case PostStatusEnum.Inherit:
+        localizedPostStatus = (
+          t('post-list.table.filters.post-status.inherit')
+        );
+        break;
+      case PostStatusEnum.AutoDraft:
+        localizedPostStatus = (
+          t('post-list.table.filters.post-status.auto-draft')
+        );
+        break;
+      case PostStatusEnum.Draft:
+        localizedPostStatus = (
+          t('post-list.table.filters.post-status.draft')
+        );
+        break;
+      case PostStatusEnum.Private:
+        localizedPostStatus = (
+          t('post-list.table.filters.post-status.private')
+        );
+        break;
+      case PostStatusEnum.Future:
+        localizedPostStatus = (
+          t('post-list.table.filters.post-status.future')
+        );
+        break;
+      case PostStatusEnum.Trash:
+        localizedPostStatus = (
+          t('post-list.table.filters.post-status.trash')
+        );
+        break;
+      default:
+        localizedPostStatus = '';
+        break;
+    }
+    // Initializing columns data
     data.push({
-      key: i,
-      title: lang === LanguageActionTypeEnum.fa
-      ? e2p(post.title)
-      : post.title,
+      key: post.id,
+      title: lang === LanguageActionTypeEnum.fa ? e2p(post.title) : post.title,
       postCategory: post.taxonomyPosts.map((taxonomyPost: ITaxonomyPost) =>
         taxonomyPost.taxonomy.type === TaxonomyTypeEnum.category
-          ? `${ lang === LanguageActionTypeEnum.fa ? e2p(taxonomyPost.taxonomy.term.name) : taxonomyPost.taxonomy.term.name} \n`
+          ? `${
+              lang === LanguageActionTypeEnum.fa
+                ? e2p(taxonomyPost.taxonomy.term.name)
+                : taxonomyPost.taxonomy.term.name
+            } \n`
           : ''
       ),
-      postStatus: post.postStatus,
-      postAttachments: lang === LanguageActionTypeEnum.fa
-        ? e2p(post.postAttachments.length.toString())
-        : post.postAttachments.length,
+      postStatus: localizedPostStatus,
+      postAttachments:
+        lang === LanguageActionTypeEnum.fa
+          ? e2p(post.postAttachments.length.toString())
+          : post.postAttachments.length,
       commentAllowed: post.commentAllowed ? (
         <CheckOutlined style={{ color: '#52c41a' }} />
       ) : (
         <CloseOutlined style={{ color: '#f5222d' }} />
       ),
-      viewCount: lang === LanguageActionTypeEnum.fa
-        ? e2p(post.viewCount.toString())
-        : post.viewCount,
+      viewCount:
+        lang === LanguageActionTypeEnum.fa
+          ? e2p(post.viewCount.toString())
+          : post.viewCount,
       pinned: post.isPinned ? (
         <CheckOutlined style={{ color: '#52c41a' }} />
       ) : (
@@ -853,10 +941,14 @@ const PostList: FC<IProps> = ({
         lang === LanguageActionTypeEnum.fa
           ? e2p(post.postHistories.toString())
           : post.postHistories,
-      comments: lang === LanguageActionTypeEnum.fa ? e2p(post.comments.toString()) : post.comments,
-      childPosts: lang === LanguageActionTypeEnum.fa
-        ? e2p(post.childPosts.toString())
-        : post.childPosts,
+      comments:
+        lang === LanguageActionTypeEnum.fa
+          ? e2p(post.comments.toString())
+          : post.comments,
+      childPosts:
+        lang === LanguageActionTypeEnum.fa
+          ? e2p(post.childPosts.toString())
+          : post.childPosts,
       createdAt:
         lang === LanguageActionTypeEnum.fa
           ? e2p(
@@ -878,15 +970,30 @@ const PostList: FC<IProps> = ({
       modifiedBy: post.modifiedBy?.userName,
       //userAgent: post.userAgent,
       device: ua.getDevice().type ?? 'Desktop',
-      os: lang === LanguageActionTypeEnum.fa ? `${ua.getOS().name} ${e2p(ua.getOS().version)}` : `${ua.getOS().name} ${ua.getOS().version}`,
-      browser: lang === LanguageActionTypeEnum.fa ? `${ua.getBrowser().name} ${e2p(ua.getBrowser().version?.toString())}` : `${ua.getBrowser().name} ${ua.getBrowser().version}`,
-      userIPAddress: lang === LanguageActionTypeEnum.fa ? e2p(post.userIPAddress) : post.userIPAddress,
+      os:
+        lang === LanguageActionTypeEnum.fa
+          ? `${ua.getOS().name} ${e2p(ua.getOS().version)}`
+          : `${ua.getOS().name} ${ua.getOS().version}`,
+      browser:
+        lang === LanguageActionTypeEnum.fa
+          ? `${ua.getBrowser().name} ${e2p(
+              ua.getBrowser().version?.toString()
+            )}`
+          : `${ua.getBrowser().name} ${ua.getBrowser().version}`,
+      userIPAddress:
+        lang === LanguageActionTypeEnum.fa
+          ? e2p(post.userIPAddress)
+          : post.userIPAddress,
     });
   });
 
   function confirm(e: MouseEvent | undefined): void {
     console.log(e);
     message.success('Click on Yes');
+    deletePosts([
+      "E6BB384F-06ED-4C43-6C61-08D83C52AD84",
+      "BD62C1E3-AB88-4535-D5BF-08D83C62A226"
+  ]);
   }
 
   function cancel(e: MouseEvent | undefined): void {
@@ -900,11 +1007,11 @@ const PostList: FC<IProps> = ({
         <Col span={12}>
           <Typography>
             <Title level={4}>
-              <Trans>{t('post-list.title')}</Trans>
+              {t('post-list.title')}
             </Title>
             <Paragraph ellipsis>
               <Text type="secondary">
-                <Trans>{t('post-list.text')}</Trans>
+                {t('post-list.text')}
               </Text>
             </Paragraph>
           </Typography>
@@ -917,17 +1024,17 @@ const PostList: FC<IProps> = ({
         >
           <Popconfirm
             title={
-              <Trans>{t('post-list.button.delete.popConfirm.title')}</Trans>
+              t('post-list.button.delete.popConfirm.title')
             }
             onConfirm={confirm}
             onCancel={cancel}
             okText={
-              <Trans>{t('post-list.button.delete.popConfirm.okText')}</Trans>
+              t('post-list.button.delete.popConfirm.okText')
             }
             cancelText={
-              <Trans>
-                {t('post-list.button.delete.popConfirm.cancelText')}
-              </Trans>
+              
+                t('post-list.button.delete.popConfirm.cancelText')
+              
             }
             placement={lang === LanguageActionTypeEnum.en ? 'left' : 'right'}
             okButtonProps={{ danger: true }}
@@ -939,7 +1046,7 @@ const PostList: FC<IProps> = ({
               size="small"
               style={{ marginBottom: '1rem' }}
             >
-              <Trans>{t('post-list.button.delete.name')}</Trans>
+              {t('post-list.button.delete.name')}
             </Button>
           </Popconfirm>
         </Col>
@@ -957,8 +1064,23 @@ const PostList: FC<IProps> = ({
             size: 'small',
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${total} items`,
+            showTotal: (total, range) => {
+              const localizedRangeZero =
+                lang === LanguageActionTypeEnum.fa
+                  ? e2p(range[0].toString())
+                  : range[0];
+              const localizedRangeOne =
+                lang === LanguageActionTypeEnum.fa
+                  ? e2p(range[1].toString())
+                  : range[1];
+              const localizedTotal =
+                lang === LanguageActionTypeEnum.fa
+                  ? e2p(total.toString())
+                  : total;
+              const of = t('post-list.table.pagination.show-total.of');
+              const items = t('post-list.table.pagination.show-total.items');
+              return `${localizedRangeZero}-${localizedRangeOne} ${of} ${localizedTotal} ${items}`;
+            },
             total: postsState.postsEnvelope.postCount,
             responsive: true,
           }}
@@ -1019,5 +1141,7 @@ const mapStateToProps = ({
 };
 
 export default withTranslation()(
-  connect(mapStateToProps, { getPostsEnvelope, setLoading })(PostList)
+  connect(mapStateToProps, { getPostsEnvelope, setLoading, deletePosts })(
+    PostList
+  )
 );

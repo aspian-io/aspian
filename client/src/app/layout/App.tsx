@@ -21,6 +21,7 @@ import AspianFooter from '../../components/aspian-core/layout/footer/Footer';
 import PostList from '../../components/aspian-core/post/postList/PostList';
 import Login from '../../components/aspian-core/user/Login';
 import Register from '../../components/aspian-core/user/Register';
+import BadRequest from '../../components/aspian-core/layout/result/BadRequest';
 import NotFound from '../../components/aspian-core/layout/result/NotFound';
 import ServerError from '../../components/aspian-core/layout/result/ServerError';
 import NetworkProblem from '../../components/aspian-core/layout/result/NetworkProblem';
@@ -81,6 +82,7 @@ const App: FC<IProps> = ({ lang, dir, onLayoutBreakpoint }) => {
                             path="/admin/posts"
                             component={PostList}
                           />
+                          <Route path="/badrequest" component={BadRequest} />
                           <Route path="/notfound" component={NotFound} />
                           <Route path="/server-error" component={ServerError} />
                           <Route

@@ -1,19 +1,20 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Result, Button } from 'antd';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
-const NetworkProblem = () => {
+const NetworkProblem: FC<WithTranslation> = ({t}) => {
   return (
     <Result
       status="500"
-      title="500"
-      subTitle="Sorry, something went wrong. (Network error)"
+      title={t("result-pages.network-problem.title")}
+      subTitle={t("result-pages.network-problem.subtitle")}
       extra={
-        <Button type="primary" href="/admin/dashboard">
-          Back to dashboard
+        <Button type="primary" href="/admin">
+          {t("result-pages.network-problem.button")}
         </Button>
       }
     />
   );
 };
 
-export default NetworkProblem;
+export default withTranslation()(NetworkProblem);
