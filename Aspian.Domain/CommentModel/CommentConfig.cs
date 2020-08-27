@@ -20,7 +20,8 @@ namespace Aspian.Domain.CommentModel
             builder
                 .HasMany(c => c.Replies)
                 .WithOne(c => c.Parent)
-                .HasForeignKey(c => c.ParentId);
+                .HasForeignKey(c => c.ParentId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasOne(s => s.Site)

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Menu } from 'antd';
 import Logo from '../../../../../assets/Logo.svg';
 import {
@@ -14,22 +14,23 @@ import {
 } from '@ant-design/icons';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
-import { connect } from 'react-redux';
-import { toggle } from '../../../../../app/stores/actions/aspian-core/layout/sider';
+import { observer } from 'mobx-react-lite';
+import SiderStore from '../../../../../app/stores/aspian-core/layout/siderStore';
 
-interface IProps extends WithTranslation, RouteComponentProps {
-  toggle: (collapsed: boolean) => void;
-}
+type IProps = WithTranslation & RouteComponentProps;
 
 const { SubMenu } = Menu;
-const AspianMenu: FC<IProps> = ({ t, location, toggle }) => {
+const AspianMenu: FC<IProps> = ({ t, location }) => {
+  // Stores
+  const siderStore = useContext(SiderStore)
+
   return (
     <Menu
       theme="dark"
       mode="inline"
       selectedKeys={[location.pathname]}
       onSelect={({ item, key, keyPath, selectedKeys, domEvent }) =>
-        toggle(false)
+      siderStore.toggle(false)
       }
     >
       <Menu.Item className="sider__menu-logo" disabled>
@@ -169,6 +170,4 @@ const AspianMenu: FC<IProps> = ({ t, location, toggle }) => {
   );
 };
 
-export default withRouter(
-  connect(null, { toggle })(withTranslation()(AspianMenu))
-);
+export default withRouter(withTranslation()(observer(AspianMenu)));

@@ -21,15 +21,11 @@ axios.interceptors.response.use(undefined, (error) => {
   if (error.message === 'Network Error' && !error.response) {
     history.push('/network-error');
   }
-  const { status, data, config } = error.response;
+  const { status } = error.response;
   if (status === 404) {
     history.push('/notfound');
   }
-  if (
-    status === 400 &&
-    config.method === 'get' &&
-    data.errors.hasOwnProperty('id')
-  ) {
+  if (status === 400) {
     history.push('/badrequest');
   }
   if (status === 500) {
@@ -52,12 +48,31 @@ const requests = {
     axios.post(url, body).then(sleep(1000)).then(responseBody),
   put: (url: string, body: {}) =>
     axios.put(url, body).then(sleep(1000)).then(responseBody),
-  del: (url: string, ids: string[]) => axios.delete(url, {data:{ids: ids}}).then(sleep(1000)).then(responseBody),
+  del: (url: string, ids: string[]) =>
+    axios
+      .delete(url, { data: { ids: ids } })
+      .then(sleep(1000))
+      .then(responseBody),
 };
 
 const Posts = {
-  list: (limit?: number, page?: number, filterKey: string = '', filterValue: string = '', field: string = '', order: string = '', startDate: string = '', endDate: string = '', startNumber: number | '' = '', endNumber: number | '' = ''): Promise<IPostsEnvelope> =>
-    requests.get(`/v1/posts?limit=${limit}&offset=${page ? page * limit! : 0}&field=${field}&order=${order}&filterKey=${filterKey}&filterValue=${filterValue}&startDate=${startDate}&endDate=${endDate}&startNumber=${startNumber}&endNumber=${endNumber}`),
+  list: (
+    limit?: number,
+    page?: number,
+    filterKey: string = '',
+    filterValue: string = '',
+    field: string = '',
+    order: string = '',
+    startDate: string = '',
+    endDate: string = '',
+    startNumber: number | '' = '',
+    endNumber: number | '' = ''
+  ): Promise<IPostsEnvelope> =>
+    requests.get(
+      `/v1/posts?limit=${limit}&offset=${
+        page ? page * limit! : 0
+      }&field=${field}&order=${order}&filterKey=${filterKey}&filterValue=${filterValue}&startDate=${startDate}&endDate=${endDate}&startNumber=${startNumber}&endNumber=${endNumber}`
+    ),
   details: (id: string): Promise<IPost> =>
     requests.get(`/v1/posts/details/${id}`),
   create: (post: IPost) => requests.post('/v1/posts/create', post),

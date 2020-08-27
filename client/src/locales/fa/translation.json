@@ -115,6 +115,7 @@
         "name": "حذف",
         "popConfirm": {
           "title": "آیا از حذف دائمی نوشته های انتخابی اطمینان دارید؟",
+          "single-item-title": "آیا از حذف دائمی نوشته انتخابی اطمینان دارید؟",
           "okText": "تایید",
           "cancelText": "انصراف"
         }
@@ -161,6 +162,11 @@
       },
 
       "filters": {
+        "inputs": {
+          "search": {
+            "placeholder": "جستجو..."
+          }
+        },
         "buttons": {
           "search": "جستجو",
           "reset": "پاک کردن",

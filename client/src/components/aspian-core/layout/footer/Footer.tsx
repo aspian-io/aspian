@@ -7,7 +7,7 @@ import moment from 'jalali-moment';
 import {
   LocaleVariableEnum,
   LanguageActionTypeEnum,
-} from '../../../../app/stores/actions/aspian-core/locale/types';
+} from '../../../../app/stores/aspian-core/locale/types';
 
 const { Footer } = Layout;
 const AspianFooter: FC<WithTranslation> = ({ t }) => {

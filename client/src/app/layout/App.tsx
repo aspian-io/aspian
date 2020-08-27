@@ -1,8 +1,5 @@
-import React, { Fragment, FC, useEffect } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
-// Redux
-import { connect } from 'react-redux';
-import { IStoreState } from '../stores/reducers/index';
 
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../locales/i18n';
@@ -26,40 +23,41 @@ import NotFound from '../../components/aspian-core/layout/result/NotFound';
 import ServerError from '../../components/aspian-core/layout/result/ServerError';
 import NetworkProblem from '../../components/aspian-core/layout/result/NetworkProblem';
 
-import { onLayoutBreakpoint } from '../stores/actions/aspian-core/layout/sider';
+import { observer } from 'mobx-react-lite';
+import SiderStore from '../stores/aspian-core/layout/siderStore';
+import LocaleStore from '../stores/aspian-core/locale/localeStore';
 import {
   DirectionActionTypeEnum,
   LanguageActionTypeEnum,
-} from '../stores/actions/aspian-core/locale/types';
+} from '../stores/aspian-core/locale/types';
 
-interface IProps {
-  lang: LanguageActionTypeEnum;
-  onLayoutBreakpoint: (broken: boolean, isRtl: boolean) => void;
-  dir: DirectionActionTypeEnum;
-}
+const App = () => {
+  // Stores
+  const siderStore = useContext(SiderStore);
+  const localeStore = useContext(LocaleStore);
 
-const App: FC<IProps> = ({ lang, dir, onLayoutBreakpoint }) => {
   const { Content } = Layout;
 
   useEffect(() => {
     if (window.innerWidth >= 992)
-      onLayoutBreakpoint(
+      siderStore.onLayoutBreakpoint(
         false,
-        dir === DirectionActionTypeEnum.LTR ? false : true
+        localeStore.dir === DirectionActionTypeEnum.LTR ? false : true
       );
-      i18n.changeLanguage(lang);
-  }, [onLayoutBreakpoint, dir, lang]);
+    i18n.changeLanguage(localeStore.lang);
+  }, [siderStore, siderStore.onLayoutBreakpoint, localeStore.dir, localeStore.lang]);
 
-  if (lang === LanguageActionTypeEnum.fa) {
+  if (localeStore.lang === LanguageActionTypeEnum.fa) {
     document.body.style.fontFamily = 'Vazir';
   }
-  
 
   return (
     <I18nextProvider i18n={i18n}>
       <ConfigProvider
-        direction={dir === DirectionActionTypeEnum.LTR ? 'ltr' : 'rtl'}
-        locale={lang === LanguageActionTypeEnum.en ? enUS : faIR}
+        direction={
+          localeStore.dir === DirectionActionTypeEnum.LTR ? 'ltr' : 'rtl'
+        }
+        locale={localeStore.lang === LanguageActionTypeEnum.en ? enUS : faIR}
       >
         <Layout className="aspian__layout" id="appLayout">
           <Switch>
@@ -69,7 +67,10 @@ const App: FC<IProps> = ({ lang, dir, onLayoutBreakpoint }) => {
               render={() => (
                 <Fragment>
                   <AspianSider />
-                  <Layout className="aspian__layout--content" id="contentLayout">
+                  <Layout
+                    className="aspian__layout--content"
+                    id="contentLayout"
+                  >
                     <AspianHeader />
                     <Content className="content">
                       <AspianBreadcrumb />
@@ -104,14 +105,4 @@ const App: FC<IProps> = ({ lang, dir, onLayoutBreakpoint }) => {
   );
 };
 
-const mapStateToProps = ({
-  localeState,
-}: IStoreState): {
-  lang: LanguageActionTypeEnum;
-  dir: DirectionActionTypeEnum;
-} => {
-  const { lang, dir } = localeState;
-  return { lang, dir };
-};
-
-export default connect(mapStateToProps, { onLayoutBreakpoint })(App);
+export default observer(App);

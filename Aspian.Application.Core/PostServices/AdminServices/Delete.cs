@@ -46,6 +46,15 @@ namespace Aspian.Application.Core.PostServices.AdminServices
 
                     _context.PostAttachments.RemoveRange(post.PostAttachments);
                     _context.TaxonomyPosts.RemoveRange(post.TaxonomyPosts);
+                    foreach (var item in post.Comments)
+                    {
+                        await RemoveCommentChildren(item.Id);
+                    }
+                    _context.Comments.RemoveRange(post.Comments);
+                    foreach (var item in post.ChildPosts)
+                    {
+                        await RemovePostChildren(item.Id);
+                    }
                     _context.Posts.Remove(post);
 
                     posts.Add(post);
@@ -67,11 +76,30 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                         ActivityObjectEnum.Comment,
                         $"The post \"{postTruncatedContent}\" has been deleted.");
                     }
-                    
+
                     return Unit.Value;
                 }
 
                 throw new Exception("Problem saving changes!");
+            }
+
+            private async Task RemovePostChildren(Guid id)
+            {
+                var children = await _context.Posts.Where(c => c.ParentId == id).ToListAsync();
+                foreach (var child in children)
+                {
+                    await RemovePostChildren(child.Id);
+                    _context.Posts.Remove(child);
+                }
+            }
+            private async Task RemoveCommentChildren(Guid id)
+            {
+                var children = await _context.Comments.Where(c => c.ParentId == id).ToListAsync();
+                foreach (var child in children)
+                {
+                    await RemoveCommentChildren(child.Id);
+                    _context.Comments.Remove(child);
+                }
             }
         }
     }

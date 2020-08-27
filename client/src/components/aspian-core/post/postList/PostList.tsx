@@ -5,6 +5,7 @@ import React, {
   useEffect,
   Fragment,
   MouseEvent,
+  useContext,
 } from 'react';
 import {
   Table,
@@ -15,7 +16,6 @@ import {
   Col,
   Typography,
   Popconfirm,
-  message,
   Input,
   DatePicker,
   Slider,
@@ -32,22 +32,14 @@ import {
   FilterOutlined,
 } from '@ant-design/icons';
 import '../../../../scss/aspian-core/pages/posts/all-posts/_all-posts.scss';
-import { connect } from 'react-redux';
 import {
   ITaxonomyPost,
   TaxonomyTypeEnum,
   PostStatusEnum,
 } from '../../../../app/models/aspian-core/post';
-import { IStoreState } from '../../../../app/stores/reducers';
-import {
-  getPostsEnvelope,
-  setLoading,
-  deletePosts
-} from '../../../../app/stores/actions/aspian-core/post/posts';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import moment, { Moment } from 'moment';
 import jalaliMoment from 'jalali-moment';
-import { IPostState } from '../../../../app/stores/reducers/aspian-core/post/posts';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import Title from 'antd/lib/typography/Title';
 import Paragraph from 'antd/lib/typography/Paragraph';
@@ -55,7 +47,7 @@ import Text from 'antd/lib/typography/Text';
 import {
   LanguageActionTypeEnum,
   DirectionActionTypeEnum,
-} from '../../../../app/stores/actions/aspian-core/locale/types';
+} from '../../../../app/stores/aspian-core/locale/types';
 import { SorterResult, ColumnType } from 'antd/es/table/interface';
 import { UAParser } from 'ua-parser-js';
 import Highlighter from 'react-highlight-words';
@@ -64,15 +56,9 @@ import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import PesianDatePicker, { DayRange } from 'react-modern-calendar-datepicker';
 import '../../../../scss/aspian-core/components/modern-calendar/_persian-datepicker.scss';
 import { e2p } from '../../../../js/aspian-core/base/numberConverter';
-
-interface IProps extends WithTranslation {
-  postsState: IPostState;
-  getPostsEnvelope: Function;
-  lang: LanguageActionTypeEnum;
-  dir: DirectionActionTypeEnum;
-  setLoading: Function;
-  deletePosts: Function;
-}
+import PostStore from '../../../../app/stores/aspian-core/post/postStore';
+import { observer } from 'mobx-react-lite';
+import LocaleStore from '../../../../app/stores/aspian-core/locale/localeStore';
 
 interface IPostAntdTable {
   key: string;
@@ -98,15 +84,7 @@ interface IPostAntdTable {
 
 const { RangePicker } = DatePicker;
 
-const PostList: FC<IProps> = ({
-  postsState,
-  getPostsEnvelope,
-  t,
-  lang,
-  dir,
-  setLoading,
-  deletePosts,
-}) => {
+const PostList: FC<WithTranslation> = ({ t }) => {
   // Constants
   /// Default page size
   const DFAULT_PAGE_SIZE = 10;
@@ -157,8 +135,14 @@ const PostList: FC<IProps> = ({
     CHILD_POSTS,
   ];
 
+  // Stores
+  const postStore = useContext(PostStore);
+  const localeStore = useContext(LocaleStore);
+
   // UseStates
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedRowKeys, setSelectedRowKeys] = useState<ReactText[]>([]);
+  const [deleteRangeBtn, setDeleteRangeBtn] = useState(true);
   const [searchText, setSearchText] = useState<React.ReactText>('');
   const [dateRange, setDateRange] = useState<
     [EventValue<Moment>, EventValue<Moment>]
@@ -172,10 +156,13 @@ const PostList: FC<IProps> = ({
     from: null,
     to: null,
   });
+  const [targetBtn, setTargetBtn] = useState('');
 
   // On select a row event
   const onSelectChange = (selectedRowKeys: ReactText[]) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    selectedRowKeys.length > 0
+      ? setDeleteRangeBtn(false)
+      : setDeleteRangeBtn(true);
     setSelectedRowKeys(selectedRowKeys);
   };
 
@@ -188,11 +175,7 @@ const PostList: FC<IProps> = ({
       Table.SELECTION_INVERT,
       {
         key: 'odd',
-        text: (
-          
-            t('post-list.row-selection-menu.items.select-odd-row')
-          
-        ),
+        text: t('post-list.row-selection-menu.items.select-odd-row'),
         onSelect: (changableRowKeys: ReactText[]) => {
           let newSelectedRowKeys = [];
           newSelectedRowKeys = changableRowKeys.filter((key, index) => {
@@ -206,11 +189,7 @@ const PostList: FC<IProps> = ({
       },
       {
         key: 'even',
-        text: (
-          
-            t('post-list.row-selection-menu.items.select-even-row')
-          
-        ),
+        text: t('post-list.row-selection-menu.items.select-even-row'),
         onSelect: (changableRowKeys: ReactText[]) => {
           let newSelectedRowKeys = [];
           newSelectedRowKeys = changableRowKeys.filter((key, index) => {
@@ -236,6 +215,7 @@ const PostList: FC<IProps> = ({
           range
           step={1}
           max={maxNumber + 50}
+          disabled={maxNumber === 0}
           defaultValue={[0, maxNumber > 20 ? maxNumber : 30]}
           onAfterChange={(value) => {
             if (value) {
@@ -280,7 +260,7 @@ const PostList: FC<IProps> = ({
   ): ColumnType<any> => ({
     filterDropdown: ({ setSelectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
-        {lang === LanguageActionTypeEnum.fa && (
+        {localeStore.lang === LanguageActionTypeEnum.fa && (
           <Fragment>
             <PesianDatePicker
               inputPlaceholder="از تاریخ --- تا تاریخ"
@@ -335,7 +315,7 @@ const PostList: FC<IProps> = ({
                     onClick={() => {
                       clearFilters!();
                       setSelectedDayRange({ from: null, to: null });
-                      setLoading(true) && getPostsEnvelope(DFAULT_PAGE_SIZE, 0);
+                      postStore.loadPosts(DFAULT_PAGE_SIZE, 0);
                     }}
                     size="small"
                     style={{ width: 90 }}
@@ -348,7 +328,7 @@ const PostList: FC<IProps> = ({
           </Fragment>
         )}
 
-        {lang === LanguageActionTypeEnum.en && (
+        {localeStore.lang === LanguageActionTypeEnum.en && (
           <Fragment>
             <RangePicker
               value={dateRange}
@@ -423,7 +403,7 @@ const PostList: FC<IProps> = ({
           ref={(node) => {
             searchInput = node!;
           }}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={t('post-list.table.filters.inputs.search.placeholder')}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -488,7 +468,7 @@ const PostList: FC<IProps> = ({
     clearFilters!();
     setSearchText('');
     setDateRange([null, null]);
-    setLoading(true) && getPostsEnvelope(DFAULT_PAGE_SIZE, 0);
+    postStore.loadPosts(DFAULT_PAGE_SIZE, 0);
   };
 
   const columns: ColumnsType<IPostAntdTable> = [
@@ -497,7 +477,6 @@ const PostList: FC<IProps> = ({
       width: 200,
       dataIndex: TITLE,
       fixed: windowWidth > 576 ? 'left' : undefined,
-      ellipsis: true,
       sorter: true,
       ...getColumnSearchPropsForSearchFilter(TITLE),
     },
@@ -518,43 +497,31 @@ const PostList: FC<IProps> = ({
       filterMultiple: false,
       filters: [
         {
-          text: 
-          t('post-list.table.filters.post-status.publish'
-          ),
+          text: t('post-list.table.filters.post-status.publish'),
           value: PostStatusEnum.Publish,
         },
         {
-          text: 
-          t('post-list.table.filters.post-status.pending'
-          ),
+          text: t('post-list.table.filters.post-status.pending'),
           value: PostStatusEnum.Pending,
         },
         {
-          text:t('post-list.table.filters.post-status.draft'),
+          text: t('post-list.table.filters.post-status.draft'),
           value: PostStatusEnum.Draft,
         },
         {
-          text: 
-          t('post-list.table.filters.post-status.auto-draft'
-          ),
+          text: t('post-list.table.filters.post-status.auto-draft'),
           value: PostStatusEnum.AutoDraft,
         },
         {
-          text: 
-          t('post-list.table.filters.post-status.future'
-          ),
+          text: t('post-list.table.filters.post-status.future'),
           value: PostStatusEnum.Future,
         },
         {
-          text: 
-          t('post-list.table.filters.post-status.inherit'
-          ),
+          text: t('post-list.table.filters.post-status.inherit'),
           value: PostStatusEnum.Inherit,
         },
         {
-          text: (
-            t('post-list.table.filters.post-status.private')
-          ),
+          text: t('post-list.table.filters.post-status.private'),
           value: PostStatusEnum.Private,
         },
         {
@@ -571,7 +538,7 @@ const PostList: FC<IProps> = ({
       sorter: true,
       ...getColumnSearchPropsForSliderFilter(
         ATTACHMENTS,
-        postsState.postsEnvelope.maxAttachmentsNumber
+        postStore.maxAttachmentsNumber
       ),
     },
     {
@@ -583,19 +550,11 @@ const PostList: FC<IProps> = ({
       filterMultiple: false,
       filters: [
         {
-          text: (
-            
-              t('post-list.table.filters.comment-allowed.allowed')
-            
-          ),
+          text: t('post-list.table.filters.comment-allowed.allowed'),
           value: true,
         },
         {
-          text: (
-            
-              t('post-list.table.filters.comment-allowed.not-allowed')
-            
-          ),
+          text: t('post-list.table.filters.comment-allowed.not-allowed'),
           value: false,
         },
       ],
@@ -608,7 +567,7 @@ const PostList: FC<IProps> = ({
       sorter: true,
       ...getColumnSearchPropsForSliderFilter(
         VIEW_COUNT,
-        postsState.postsEnvelope.maxViewCount
+        postStore.maxViewCount
       ),
     },
     {
@@ -624,9 +583,7 @@ const PostList: FC<IProps> = ({
           value: true,
         },
         {
-          text: (
-            t('post-list.table.filters.is-pinned.not-pinned')
-          ),
+          text: t('post-list.table.filters.is-pinned.not-pinned'),
           value: false,
         },
       ],
@@ -639,7 +596,7 @@ const PostList: FC<IProps> = ({
       sorter: true,
       ...getColumnSearchPropsForSliderFilter(
         HISTORIES,
-        postsState.postsEnvelope.maxPostHistories
+        postStore.maxPostHistories
       ),
     },
     {
@@ -648,10 +605,7 @@ const PostList: FC<IProps> = ({
       dataIndex: COMMENTS,
       align: 'center',
       sorter: true,
-      ...getColumnSearchPropsForSliderFilter(
-        COMMENTS,
-        postsState.postsEnvelope.maxComments
-      ),
+      ...getColumnSearchPropsForSliderFilter(COMMENTS, postStore.maxComments),
     },
     {
       title: t('post-list.table.thead.child-posts'),
@@ -661,7 +615,7 @@ const PostList: FC<IProps> = ({
       sorter: true,
       ...getColumnSearchPropsForSliderFilter(
         CHILD_POSTS,
-        postsState.postsEnvelope.maxChildPosts
+        postStore.maxChildPosts
       ),
     },
     {
@@ -701,11 +655,7 @@ const PostList: FC<IProps> = ({
       ellipsis: true,
       children: [
         {
-          title: (
-            
-              t('post-list.table.thead.user-agent.sub-items.device')
-            
-          ),
+          title: t('post-list.table.thead.user-agent.sub-items.device'),
           dataIndex: USER_AGENT_DEVICE,
           align: 'center',
           width: 100,
@@ -726,9 +676,7 @@ const PostList: FC<IProps> = ({
           ],
         },
         {
-          title: (
-            t('post-list.table.thead.user-agent.sub-items.os')
-          ),
+          title: t('post-list.table.thead.user-agent.sub-items.os'),
           dataIndex: USER_AGENT_OS,
           align: 'center',
           width: 150,
@@ -761,11 +709,7 @@ const PostList: FC<IProps> = ({
           ],
         },
         {
-          title: (
-            
-              t('post-list.table.thead.user-agent.sub-items.browser')
-            
-          ),
+          title: t('post-list.table.thead.user-agent.sub-items.browser'),
           dataIndex: USER_AGENT_BROWSER,
           align: 'center',
           width: 170,
@@ -812,12 +756,9 @@ const PostList: FC<IProps> = ({
       fixed: windowWidth > 576 ? 'right' : undefined,
       width: 150,
       align: 'center',
-      render: () => (
+      render: (text, record, index) => (
         <Space>
-          <Tooltip
-            title={t('post-list.table.tooltip.edit-post')}
-            color="gray"
-          >
+          <Tooltip title={t('post-list.table.tooltip.edit-post')} color="gray">
             <Button
               type="link"
               size="middle"
@@ -829,7 +770,30 @@ const PostList: FC<IProps> = ({
             title={t('post-list.table.tooltip.delete-post')}
             color="gray"
           >
-            <Button type="link" size="middle" icon={<DeleteFilled />} danger />
+            <Popconfirm
+              title={t('post-list.button.delete.popConfirm.single-item-title')}
+              onConfirm={() => onSingleRecordDeleteBtnClick(record)}
+              okText={t('post-list.button.delete.popConfirm.okText')}
+              cancelText={t('post-list.button.delete.popConfirm.cancelText')}
+              placement={
+                localeStore.lang === LanguageActionTypeEnum.en
+                  ? 'left'
+                  : 'right'
+              }
+              okButtonProps={{
+                danger: true,
+              }}
+            >
+              <Button
+                id={record.key}
+                onClick={(e) => setTargetBtn(e.currentTarget.id)}
+                loading={targetBtn === record.key && postStore.loadingInitial}
+                type="text"
+                size="middle"
+                icon={<DeleteFilled />}
+                danger
+              />
+            </Popconfirm>
           </Tooltip>
           <Tooltip
             title={t('post-list.table.tooltip.post-history')}
@@ -842,17 +806,34 @@ const PostList: FC<IProps> = ({
     },
   ];
 
+  const onSingleRecordDeleteBtnClick = async (record: IPostAntdTable) => {
+    await postStore.deletePosts([record.key]);
+    const existedSelectedRowKeys = selectedRowKeys.filter(
+      (value, index, arr) => {
+        return value !== record.key;
+      }
+    );
+    setSelectedRowKeys(existedSelectedRowKeys);
+    await postStore.loadPosts(DFAULT_PAGE_SIZE, currentPage - 1);
+  };
+
   let data: IPostAntdTable[] = [];
 
   useEffect(() => {
-    getPostsEnvelope(DFAULT_PAGE_SIZE, 0);
+    if (postStore.posts.length === 0) {
+      postStore.loadPosts(DFAULT_PAGE_SIZE, 0);
+    }
 
     window.addEventListener('resize', (event) => {
       setWindowWidth(window.innerWidth);
     });
-  }, [getPostsEnvelope]);
 
-  postsState.postsEnvelope.posts.forEach((post, i) => {
+    if (selectedRowKeys.length === 0) {
+      setDeleteRangeBtn(true);
+    }
+  }, [selectedRowKeys.length, postStore]);
+
+  postStore.posts.forEach((post, i) => {
     const ua = new UAParser();
     ua.setUA(post.userAgent);
 
@@ -862,44 +843,30 @@ const PostList: FC<IProps> = ({
     // Setting localized value for postStatus through the following switch statement
     switch (post.postStatus) {
       case PostStatusEnum.Publish:
-        localizedPostStatus = (
-          t('post-list.table.filters.post-status.publish')
-        );
+        localizedPostStatus = t('post-list.table.filters.post-status.publish');
         break;
       case PostStatusEnum.Pending:
-        localizedPostStatus = (
-          t('post-list.table.filters.post-status.pending')
-        );
+        localizedPostStatus = t('post-list.table.filters.post-status.pending');
         break;
       case PostStatusEnum.Inherit:
-        localizedPostStatus = (
-          t('post-list.table.filters.post-status.inherit')
-        );
+        localizedPostStatus = t('post-list.table.filters.post-status.inherit');
         break;
       case PostStatusEnum.AutoDraft:
-        localizedPostStatus = (
-          t('post-list.table.filters.post-status.auto-draft')
+        localizedPostStatus = t(
+          'post-list.table.filters.post-status.auto-draft'
         );
         break;
       case PostStatusEnum.Draft:
-        localizedPostStatus = (
-          t('post-list.table.filters.post-status.draft')
-        );
+        localizedPostStatus = t('post-list.table.filters.post-status.draft');
         break;
       case PostStatusEnum.Private:
-        localizedPostStatus = (
-          t('post-list.table.filters.post-status.private')
-        );
+        localizedPostStatus = t('post-list.table.filters.post-status.private');
         break;
       case PostStatusEnum.Future:
-        localizedPostStatus = (
-          t('post-list.table.filters.post-status.future')
-        );
+        localizedPostStatus = t('post-list.table.filters.post-status.future');
         break;
       case PostStatusEnum.Trash:
-        localizedPostStatus = (
-          t('post-list.table.filters.post-status.trash')
-        );
+        localizedPostStatus = t('post-list.table.filters.post-status.trash');
         break;
       default:
         localizedPostStatus = '';
@@ -908,11 +875,14 @@ const PostList: FC<IProps> = ({
     // Initializing columns data
     data.push({
       key: post.id,
-      title: lang === LanguageActionTypeEnum.fa ? e2p(post.title) : post.title,
+      title:
+        localeStore.lang === LanguageActionTypeEnum.fa
+          ? e2p(post.title)
+          : post.title,
       postCategory: post.taxonomyPosts.map((taxonomyPost: ITaxonomyPost) =>
         taxonomyPost.taxonomy.type === TaxonomyTypeEnum.category
           ? `${
-              lang === LanguageActionTypeEnum.fa
+              localeStore.lang === LanguageActionTypeEnum.fa
                 ? e2p(taxonomyPost.taxonomy.term.name)
                 : taxonomyPost.taxonomy.term.name
             } \n`
@@ -920,7 +890,7 @@ const PostList: FC<IProps> = ({
       ),
       postStatus: localizedPostStatus,
       postAttachments:
-        lang === LanguageActionTypeEnum.fa
+        localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(post.postAttachments.length.toString())
           : post.postAttachments.length,
       commentAllowed: post.commentAllowed ? (
@@ -929,7 +899,7 @@ const PostList: FC<IProps> = ({
         <CloseOutlined style={{ color: '#f5222d' }} />
       ),
       viewCount:
-        lang === LanguageActionTypeEnum.fa
+        localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(post.viewCount.toString())
           : post.viewCount,
       pinned: post.isPinned ? (
@@ -938,19 +908,19 @@ const PostList: FC<IProps> = ({
         <CloseOutlined style={{ color: '#f5222d' }} />
       ),
       postHistories:
-        lang === LanguageActionTypeEnum.fa
+        localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(post.postHistories.toString())
           : post.postHistories,
       comments:
-        lang === LanguageActionTypeEnum.fa
+        localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(post.comments.toString())
           : post.comments,
       childPosts:
-        lang === LanguageActionTypeEnum.fa
+        localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(post.childPosts.toString())
           : post.childPosts,
       createdAt:
-        lang === LanguageActionTypeEnum.fa
+        localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(
               jalaliMoment(post.createdAt, 'YYYY-MM-DD HH:m:s')
                 .locale('fa')
@@ -959,7 +929,7 @@ const PostList: FC<IProps> = ({
           : moment(post.createdAt).format('YYYY-MM-DD HH:m:s'),
       createdBy: post.createdBy?.userName,
       modifiedAt: post.modifiedAt
-        ? lang === LanguageActionTypeEnum.fa
+        ? localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(
               jalaliMoment(post.modifiedAt, 'YYYY-MM-DD HH:m:s')
                 .locale('fa')
@@ -971,75 +941,61 @@ const PostList: FC<IProps> = ({
       //userAgent: post.userAgent,
       device: ua.getDevice().type ?? 'Desktop',
       os:
-        lang === LanguageActionTypeEnum.fa
-          ? `${ua.getOS().name} ${e2p(ua.getOS().version)}`
+        localeStore.lang === LanguageActionTypeEnum.fa
+          ? `${ua.getOS().name} ${ua.getOS().version}`
           : `${ua.getOS().name} ${ua.getOS().version}`,
       browser:
-        lang === LanguageActionTypeEnum.fa
-          ? `${ua.getBrowser().name} ${e2p(
-              ua.getBrowser().version?.toString()
-            )}`
+        localeStore.lang === LanguageActionTypeEnum.fa
+          ? `${ua.getBrowser().name} ${ua.getBrowser().version?.toString()}`
           : `${ua.getBrowser().name} ${ua.getBrowser().version}`,
       userIPAddress:
-        lang === LanguageActionTypeEnum.fa
+        localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(post.userIPAddress)
           : post.userIPAddress,
     });
   });
 
-  function confirm(e: MouseEvent | undefined): void {
-    console.log(e);
-    message.success('Click on Yes');
-    deletePosts([
-      "E6BB384F-06ED-4C43-6C61-08D83C52AD84",
-      "BD62C1E3-AB88-4535-D5BF-08D83C62A226"
-  ]);
-  }
-
-  function cancel(e: MouseEvent | undefined): void {
-    console.log(e);
-    message.error('Click on No');
-  }
+  const confirm = async (e: MouseEvent | undefined) => {
+    await postStore.deletePosts(selectedRowKeys as string[]);
+    setSelectedRowKeys([]);
+    await postStore.loadPosts(DFAULT_PAGE_SIZE, currentPage - 1);
+  };
 
   return (
     <Fragment>
       <Row align="bottom">
         <Col span={12}>
           <Typography>
-            <Title level={4}>
-              {t('post-list.title')}
-            </Title>
+            <Title level={4}>{t('post-list.title')}</Title>
             <Paragraph ellipsis>
-              <Text type="secondary">
-                {t('post-list.text')}
-              </Text>
+              <Text type="secondary">{t('post-list.text')}</Text>
             </Paragraph>
           </Typography>
         </Col>
         <Col
           span={12}
           style={{
-            textAlign: dir === DirectionActionTypeEnum.LTR ? 'right' : 'left',
+            textAlign:
+              localeStore.dir === DirectionActionTypeEnum.LTR
+                ? 'right'
+                : 'left',
           }}
         >
           <Popconfirm
-            title={
-              t('post-list.button.delete.popConfirm.title')
-            }
+            title={t('post-list.button.delete.popConfirm.title')}
             onConfirm={confirm}
-            onCancel={cancel}
-            okText={
-              t('post-list.button.delete.popConfirm.okText')
+            okText={t('post-list.button.delete.popConfirm.okText')}
+            cancelText={t('post-list.button.delete.popConfirm.cancelText')}
+            placement={
+              localeStore.lang === LanguageActionTypeEnum.en ? 'left' : 'right'
             }
-            cancelText={
-              
-                t('post-list.button.delete.popConfirm.cancelText')
-              
-            }
-            placement={lang === LanguageActionTypeEnum.en ? 'left' : 'right'}
             okButtonProps={{ danger: true }}
           >
             <Button
+              id="delete_range_btn"
+              disabled={deleteRangeBtn}
+              loading={targetBtn === 'delete_range_btn' && postStore.submitting}
+              onClick={(e) => setTargetBtn(e.currentTarget.id)}
               type="primary"
               danger
               icon={<DeleteFilled />}
@@ -1053,7 +1009,7 @@ const PostList: FC<IProps> = ({
       </Row>
       <Row>
         <Table<IPostAntdTable>
-          loading={postsState.loadingInitial}
+          loading={postStore.loadingInitial}
           bordered
           rowSelection={rowSelection}
           columns={columns}
@@ -1066,22 +1022,22 @@ const PostList: FC<IProps> = ({
             showQuickJumper: true,
             showTotal: (total, range) => {
               const localizedRangeZero =
-                lang === LanguageActionTypeEnum.fa
+                localeStore.lang === LanguageActionTypeEnum.fa
                   ? e2p(range[0].toString())
                   : range[0];
               const localizedRangeOne =
-                lang === LanguageActionTypeEnum.fa
+                localeStore.lang === LanguageActionTypeEnum.fa
                   ? e2p(range[1].toString())
                   : range[1];
               const localizedTotal =
-                lang === LanguageActionTypeEnum.fa
+                localeStore.lang === LanguageActionTypeEnum.fa
                   ? e2p(total.toString())
                   : total;
               const of = t('post-list.table.pagination.show-total.of');
               const items = t('post-list.table.pagination.show-total.items');
               return `${localizedRangeZero}-${localizedRangeOne} ${of} ${localizedTotal} ${items}`;
             },
-            total: postsState.postsEnvelope.postCount,
+            total: postStore.postCount,
             responsive: true,
           }}
           onChange={(pagination, filters, sorter) => {
@@ -1104,23 +1060,23 @@ const PostList: FC<IProps> = ({
               }
               if (value && SLIDER_FILTERED_COLUMNS.includes(key)) {
                 filterKey = key;
-                startNumber = value[0];
-                endNumber = value[1];
+                startNumber = value[0] as number;
+                endNumber = value[1] as number;
               }
             }
-            setLoading(true) &&
-              getPostsEnvelope(
-                pagination.pageSize,
-                pagination.current ? pagination.current! - 1 : undefined,
-                filterKey,
-                filterValue,
-                sort.field,
-                sort.order,
-                startDate,
-                endDate,
-                startNumber,
-                endNumber
-              );
+            setCurrentPage(pagination.current ? pagination.current! : 1);
+            postStore.loadPosts(
+              pagination.pageSize,
+              pagination.current ? pagination.current! - 1 : undefined,
+              filterKey,
+              filterValue?.toString(),
+              sort.field?.toString(),
+              sort.order?.toString(),
+              startDate?.toString(),
+              endDate?.toString(),
+              startNumber,
+              endNumber
+            );
           }}
         />
       </Row>
@@ -1128,20 +1084,4 @@ const PostList: FC<IProps> = ({
   );
 };
 
-const mapStateToProps = ({
-  postsState,
-  localeState,
-}: IStoreState): {
-  postsState: IPostState;
-  lang: LanguageActionTypeEnum;
-  dir: DirectionActionTypeEnum;
-} => {
-  const { lang, dir } = localeState;
-  return { postsState, lang, dir };
-};
-
-export default withTranslation()(
-  connect(mapStateToProps, { getPostsEnvelope, setLoading, deletePosts })(
-    PostList
-  )
-);
+export default withTranslation()(observer(PostList));

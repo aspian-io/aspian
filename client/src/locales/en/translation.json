@@ -115,6 +115,7 @@
         "name": "Delete",
         "popConfirm": {
           "title": "Are you sure you want to delete the selected posts permanently?",
+          "single-item-title": "Are you sure you want to delete the selected post permanently?",
           "okText": "Confirm",
           "cancelText": "Cancel"
         }
@@ -161,6 +162,11 @@
       },
 
       "filters": {
+        "inputs": {
+          "search": {
+            "placeholder": "Search..."
+          }
+        },
         "buttons": {
           "search": "Search",
           "reset": "Reset",

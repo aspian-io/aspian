@@ -69,18 +69,18 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                 var site = await _context.Sites.FirstOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
                 // pagination, sorting and filtering
                 var helperTDO = await PostHelpers.PaginateAndFilterAndSort(
-                    _context, 
-                    request.Limit, request.Offset, 
-                    request.Field, request.Order, 
+                    _context,
+                    request.Limit, request.Offset,
+                    request.Field, request.Order,
                     request.FilterKey, request.FilterValue,
                     request.StartDate, request.EndDate,
                     request.StartNumber, request.EndNumber
                     );
-                var maxAttachmentsNumber = _context.Posts.OrderByDescending(x => x.PostAttachments.Count).First().PostAttachments.Count;
-                var maxViewCount = await _context.Posts.MaxAsync(x => x.ViewCount);
-                var maxPostHistories = _context.Posts.OrderByDescending(x => x.PostHistories.Count).First().PostHistories.Count;
-                var maxComments = _context.Posts.OrderByDescending(x => x.Comments.Count).First().Comments.Count;
-                var maxChildPosts = _context.Posts.OrderByDescending(x => x.ChildPosts.Count).First().ChildPosts.Count;
+                var maxAttachmentsNumber = helperTDO.PostCount > 0 ? _context.Posts.OrderByDescending(x => x.PostAttachments.Count).First().PostAttachments.Count : 0;
+                var maxViewCount = helperTDO.PostCount > 0 ? await _context.Posts.MaxAsync(x => x.ViewCount) : 0;
+                var maxPostHistories = helperTDO.PostCount > 0 ? _context.Posts.OrderByDescending(x => x.PostHistories.Count).First().PostHistories.Count : 0;
+                var maxComments = helperTDO.PostCount > 0 ? _context.Posts.OrderByDescending(x => x.Comments.Count).First().Comments.Count : 0;
+                var maxChildPosts = helperTDO.PostCount > 0 ? _context.Posts.OrderByDescending(x => x.ChildPosts.Count).First().ChildPosts.Count : 0;
 
                 await _logger.LogActivity(
                     site.Id,
