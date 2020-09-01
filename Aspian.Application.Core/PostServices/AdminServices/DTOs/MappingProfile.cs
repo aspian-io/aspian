@@ -60,8 +60,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
 
             CreateMap<Post, PostDto>()
                 .ForMember(d => d.Comments, o => o.MapFrom(s => s.Comments.Count))
-                .ForMember(d => d.PostHistories, o => o.MapFrom(s => s.PostHistories.Count))
-                .ForMember(d => d.PostHistories, o => o.MapFrom(s => s.PostHistories.Count))
                 .ForMember(d => d.ChildPosts, o => o.MapFrom(s => s.ChildPosts.Count));
             CreateMap<Postmeta, PostmetaDto>();
             CreateMap<User, UserDto>();
@@ -73,10 +71,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
             CreateMap<Term, TermDto>();
             CreateMap<Termmeta, TermmetaDto>();
             CreateMap<Site, SiteDto>();
-
-            CreateMap<Post, PostHistory>()
-                .ForMember(d => d.Id, o => o.UseDestinationValue())
-                .ForMember(d => d.CreatedAt, o => o.UseDestinationValue());
 
         }
     }

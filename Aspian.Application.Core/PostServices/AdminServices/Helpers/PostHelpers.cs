@@ -32,7 +32,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
         /// <param name="EndNumber" >Ending number for slider filter.</param>
         public static async Task<HelperTDO> PaginateAndFilterAndSort(DataContext context, int? Limit, int? Offset, string Field, string Order, string FilterKey, string FilterValue, DateTime? StartDate, DateTime? EndDate, int? StartNumber, int? EndNumber)
         {
-            var queryable = context.Posts.AsQueryable();
+            var queryable = context.Posts.Where(x => x.Type == PostTypeEnum.Posts).AsQueryable();
             var postCount = queryable.Count();
 
             List<Post> posts;
@@ -230,40 +230,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
                                     .Skip(Offset ?? 0)
                                     .Take(Limit ?? 3)
                                     .OrderByDescending(x => x.ViewCount)
-                                    .ToListAsync();
-                                break;
-
-                            default:
-                                posts =
-                                    await queryable
-                                    .Skip(Offset ?? 0)
-                                    .Take(Limit ?? 3)
-                                    .OrderByDescending(x => x.CreatedAt)
-                                    .ThenByDescending(x => x.ModifiedAt)
-                                    .ThenByDescending(x => x.Title)
-                                    .ToListAsync();
-                                break;
-                        }
-                        break;
-
-                    case "postHistories":
-                        switch (Order)
-                        {
-                            case "ascend":
-                                posts =
-                                    await queryable
-                                    .Skip(Offset ?? 0)
-                                    .Take(Limit ?? 3)
-                                    .OrderBy(x => x.PostHistories.Count)
-                                    .ToListAsync();
-                                break;
-
-                            case "descend":
-                                posts =
-                                    await queryable
-                                    .Skip(Offset ?? 0)
-                                    .Take(Limit ?? 3)
-                                    .OrderByDescending(x => x.PostHistories.Count)
                                     .ToListAsync();
                                 break;
 
@@ -1172,50 +1138,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices.Helpers
                                     .Skip(Offset ?? 0)
                                     .Take(Limit ?? 3)
                                     .OrderByDescending(x => x.ViewCount)
-                                    .ToListAsync();
-
-                                postCount = posts.Count;
-
-                                break;
-                        }
-                        break;
-
-                    case "postHistories":
-                        switch (Order)
-                        {
-                            case "ascend":
-                                posts =
-                                    await queryable
-                                    .Where(x => x.PostHistories.Count >= StartNumber && x.PostHistories.Count <= EndNumber)
-                                    .Skip(Offset ?? 0)
-                                    .Take(Limit ?? 3)
-                                    .OrderBy(x => x.PostHistories.Count)
-                                    .ToListAsync();
-
-                                postCount = posts.Count;
-
-                                break;
-
-                            case "descend":
-                                posts =
-                                    await queryable
-                                    .Where(x => x.PostHistories.Count >= StartNumber && x.PostHistories.Count <= EndNumber)
-                                    .Skip(Offset ?? 0)
-                                    .Take(Limit ?? 3)
-                                    .OrderByDescending(x => x.PostHistories.Count)
-                                    .ToListAsync();
-
-                                postCount = posts.Count;
-
-                                break;
-
-                            default:
-                                posts =
-                                    await queryable
-                                    .Where(x => x.PostHistories.Count >= StartNumber && x.PostHistories.Count <= EndNumber)
-                                    .Skip(Offset ?? 0)
-                                    .Take(Limit ?? 3)
-                                    .OrderByDescending(x => x.PostHistories.Count)
                                     .ToListAsync();
 
                                 postCount = posts.Count;

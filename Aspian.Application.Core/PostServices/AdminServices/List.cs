@@ -25,7 +25,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices
             public int PostCount { get; set; }
             public int MaxAttachmentsNumber { get; set; }
             public int MaxViewCount { get; set; }
-            public int MaxPostHistories { get; set; }
             public int MaxComments { get; set; }
             public int MaxChildPosts { get; set; }
         }
@@ -76,11 +75,30 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                     request.StartDate, request.EndDate,
                     request.StartNumber, request.EndNumber
                     );
-                var maxAttachmentsNumber = helperTDO.PostCount > 0 ? _context.Posts.OrderByDescending(x => x.PostAttachments.Count).First().PostAttachments.Count : 0;
-                var maxViewCount = helperTDO.PostCount > 0 ? await _context.Posts.MaxAsync(x => x.ViewCount) : 0;
-                var maxPostHistories = helperTDO.PostCount > 0 ? _context.Posts.OrderByDescending(x => x.PostHistories.Count).First().PostHistories.Count : 0;
-                var maxComments = helperTDO.PostCount > 0 ? _context.Posts.OrderByDescending(x => x.Comments.Count).First().Comments.Count : 0;
-                var maxChildPosts = helperTDO.PostCount > 0 ? _context.Posts.OrderByDescending(x => x.ChildPosts.Count).First().ChildPosts.Count : 0;
+
+                var maxAttachmentsNumber = helperTDO.PostCount > 0 ?
+                    _context.Posts
+                    .Where(x => x.Type == PostTypeEnum.Posts)
+                    .OrderByDescending(x => x.PostAttachments.Count)
+                    .First().PostAttachments.Count :
+                    0;
+                var maxViewCount = helperTDO.PostCount > 0 ? await
+                    _context.Posts
+                    .Where(x => x.Type == PostTypeEnum.Posts)
+                    .MaxAsync(x => x.ViewCount) :
+                    0;
+                var maxComments = helperTDO.PostCount > 0 ?
+                    _context.Posts
+                    .Where(x => x.Type == PostTypeEnum.Posts)
+                    .OrderByDescending(x => x.Comments.Count)
+                    .First().Comments.Count :
+                    0;
+                var maxChildPosts = helperTDO.PostCount > 0 ?
+                    _context.Posts
+                    .Where(x => x.Type == PostTypeEnum.Posts)
+                    .OrderByDescending(x => x.ChildPosts.Count)
+                    .First().ChildPosts.Count :
+                    0;
 
                 await _logger.LogActivity(
                     site.Id,
@@ -95,7 +113,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                     PostCount = helperTDO.PostCount,
                     MaxAttachmentsNumber = maxAttachmentsNumber,
                     MaxViewCount = maxViewCount,
-                    MaxPostHistories = maxPostHistories,
                     MaxComments = maxComments,
                     MaxChildPosts = maxChildPosts
                 };

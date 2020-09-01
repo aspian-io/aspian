@@ -1,3 +1,12 @@
+// Spinner Wrapper
+.spinner-wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 // preload for transition not loading while loading the page
 .preload {
   -webkit-transition: none !important;
@@ -28,17 +37,4 @@
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-// breadcrumb separator
-.separator {
-  display: inline-block;
-  border-radius: 2px;
-  margin: 0 1rem;
-
-  &--breadcrumb {
-    width: 1px;
-    height: 22px;
-    background-color: gray('300');
-  }
 }

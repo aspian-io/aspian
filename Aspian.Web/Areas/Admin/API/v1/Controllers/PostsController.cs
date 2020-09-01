@@ -29,10 +29,10 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         }
 
         //[Authorize(Policy = AspianCorePolicy.AdminPostDetailsPolicy)]
-        [HttpGet("details/{slug}")]
-        public async Task<ActionResult<PostDto>> Details(string slug)
+        [HttpGet("details/{id}")]
+        public async Task<ActionResult<PostDto>> Details(Guid id)
         {
-            return await Mediator.Send(new Details.Query { Slug = slug });
+            return await Mediator.Send(new Details.Query { Id = id });
         }
 
         //[Authorize(Policy = AspianCorePolicy.AdminPostEditPolicy)]

@@ -3,7 +3,6 @@ export interface IPostsEnvelope {
   postCount: number;
   maxAttachmentsNumber: number;
   maxViewCount: number;
-  maxPostHistories: number;
   maxComments: number;
   maxChildPosts: number;
 }
@@ -13,6 +12,7 @@ export interface IPost {
   title: string;
   subtitle: string;
   excerpt: string;
+  content: string;
   slug: string;
   postStatus: PostStatusEnum;
   commentAllowed: boolean;
@@ -21,7 +21,6 @@ export interface IPost {
   type: PostTypeEnum;
   isPinned: boolean;
   pinOrder: number;
-  postHistories: number;
   comments: number;
   childPosts: number;
   createdAt: Date;
@@ -30,19 +29,19 @@ export interface IPost {
   modifiedBy: User;
   userAgent: string;
   userIPAddress: string;
-  postAttachments: [];
+  postAttachments: PostAttachment[];
   taxonomyPosts: ITaxonomyPost[];
 }
 
 export enum PostStatusEnum {
-  Publish = "Publish",
-  Future = "Future",
-  Draft = "Draft",
-  Pending = "Pending",
-  Private = "Private",
-  Trash = "Trash",
-  AutoDraft = "AutoDraft",
-  Inherit = "Inherit",
+  Publish = 'Publish',
+  Future = 'Future',
+  Draft = 'Draft',
+  Pending = 'Pending',
+  Private = 'Private',
+  Trash = 'Trash',
+  AutoDraft = 'AutoDraft',
+  Inherit = 'Inherit',
 }
 
 export enum PostTypeEnum {
@@ -65,10 +64,27 @@ interface PostAttachment {
   attachment: IAttachment;
 }
 
+export enum AttachmentTypeEnum {
+  Photo,
+  Video,
+  Audio,
+  PDF,
+  TextFile,
+  Compressed,
+  Other,
+}
+export enum UploadLocationEnum {
+  LocalHost,
+  FtpServer,
+}
+
 interface IAttachment {
+  type: AttachmentTypeEnum;
   fileName: string;
   fileSize: string;
   mimeType: string;
+  uploadLocation: UploadLocationEnum;
+  relativePath: string;
 }
 
 export interface ITaxonomyPost {

@@ -33,7 +33,6 @@ namespace Aspian.Domain.PostModel
         Site Site { get; set; }
         ICollection<TaxonomyPost> TaxonomyPosts { get; set; }
         ICollection<Postmeta> Postmetas { get; set; }
-        ICollection<PostHistory> PostHistories { get; set; }
         ICollection<Comment> Comments { get; set; }
         #endregion
     }

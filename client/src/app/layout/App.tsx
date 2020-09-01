@@ -16,6 +16,7 @@ import AspianBreadcrumb from '../../components/aspian-core/layout/breadcrumb/Asp
 import AspianSider from '../../components/aspian-core/layout/sider/Sider';
 import AspianFooter from '../../components/aspian-core/layout/footer/Footer';
 import PostList from '../../components/aspian-core/post/postList/PostList';
+import PostDetails from '../../components/aspian-core/post/postDetails/PostDetails';
 import Login from '../../components/aspian-core/user/Login';
 import Register from '../../components/aspian-core/user/Register';
 import BadRequest from '../../components/aspian-core/layout/result/BadRequest';
@@ -82,6 +83,11 @@ const App = () => {
                             exact
                             path="/admin/posts"
                             component={PostList}
+                          />
+                          <Route
+                            exact
+                            path="/admin/posts/details/:id"
+                            component={PostDetails}
                           />
                           <Route path="/badrequest" component={BadRequest} />
                           <Route path="/notfound" component={NotFound} />

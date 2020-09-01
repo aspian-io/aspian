@@ -39,7 +39,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices
 
                 foreach (var id in request.Ids)
                 {
-                    var post = await _context.Posts.FindAsync(id);
+                    var post = await _context.Posts.Where(x => x.Type == PostTypeEnum.Posts).SingleOrDefaultAsync(x => x.Id == id);
 
                     if (post == null)
                         throw new RestException(HttpStatusCode.NotFound, new { post = "not found" });
@@ -51,10 +51,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                         await RemoveCommentChildren(item.Id);
                     }
                     _context.Comments.RemoveRange(post.Comments);
-                    foreach (var item in post.ChildPosts)
-                    {
-                        await RemovePostChildren(item.Id);
-                    }
+                    await RemovePostChildren(post.Id);
                     _context.Posts.Remove(post);
 
                     posts.Add(post);
@@ -83,6 +80,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                 throw new Exception("Problem saving changes!");
             }
 
+            // Removing post children recursively
             private async Task RemovePostChildren(Guid id)
             {
                 var children = await _context.Posts.Where(c => c.ParentId == id).ToListAsync();
@@ -92,6 +90,8 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                     _context.Posts.Remove(child);
                 }
             }
+
+            // Removing comment children recursively
             private async Task RemoveCommentChildren(Guid id)
             {
                 var children = await _context.Comments.Where(c => c.ParentId == id).ToListAsync();

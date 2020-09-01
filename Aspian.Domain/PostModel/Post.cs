@@ -33,11 +33,9 @@ namespace Aspian.Domain.PostModel
         public virtual Site Site { get; set; }
         public virtual ICollection<TaxonomyPost> TaxonomyPosts { get; set; }
         public virtual ICollection<Postmeta> Postmetas { get; set; }
-        public virtual ICollection<PostHistory> PostHistories { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         #endregion
 
     }
-
 
 }

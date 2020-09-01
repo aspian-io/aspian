@@ -35,7 +35,6 @@ namespace Aspian.Persistence
         public DbSet<Optionmeta> Optionmetas { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Postmeta> Postmetas { get; set; }
-        public DbSet<PostHistory> PostHistories { get; set; }
         public DbSet<PostAttachment> PostAttachments { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Attachmentmeta> Attachmentmetas { get; set; }
@@ -64,7 +63,6 @@ namespace Aspian.Persistence
             builder.ApplyConfiguration(new OptionmetaConfig());
             builder.ApplyConfiguration(new PostConfig());
             builder.ApplyConfiguration(new PostmetaConfig());
-            builder.ApplyConfiguration(new PostHistoryConfig());
             builder.ApplyConfiguration(new PostAttachmentConfig());
             builder.ApplyConfiguration(new AttachmentConfig());
             builder.ApplyConfiguration(new AttachmentmetaConfig());

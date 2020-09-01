@@ -95,7 +95,8 @@
   "breadcrumb": {
     "items": {
       "dashboard": "پیشخوان",
-      "all-posts": "همه نوشته‌ها"
+      "all-posts": "همه نوشته‌ها",
+      "view-post": "مشاهده پست"
     }
   },
 
@@ -156,9 +157,9 @@
       },
 
       "tooltip": {
+        "view-post": "مشاهده نوشته",
         "edit-post": "ویرایش نوشته",
-        "delete-post": "حذف نوشته",
-        "post-history": "تاریخچه نوشته"
+        "delete-post": "حذف نوشته"
       },
 
       "filters": {

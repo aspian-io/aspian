@@ -1,16 +1,21 @@
 .content {
-  margin: .2rem 1rem;
+  margin: 0.2rem 1rem;
+  min-height: 360px;
 
   &-wrapper {
     background: #fff;
     padding: 24px;
-    min-height: 360px;
+    height: 100%;
+    width: 100%;
+    @media only screen and (max-width: 600px) {
+      padding: 0;
+    }
   }
 }
 
 .breadcrumb {
   margin: 1rem 0;
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
 
 .ant-pagination {

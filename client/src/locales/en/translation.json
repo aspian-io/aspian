@@ -95,7 +95,8 @@
   "breadcrumb": {
     "items": {
       "dashboard": "Dashboard",
-      "all-posts": "All Posts"
+      "all-posts": "All Posts",
+      "view-post": "View Post"
     }
   },
 
@@ -156,9 +157,9 @@
       },
 
       "tooltip": {
+        "view-post": "View Post",
         "edit-post": "Edit Post",
-        "delete-post": "Delete Post",
-        "post-history": "Post History"
+        "delete-post": "Delete Post"
       },
 
       "filters": {

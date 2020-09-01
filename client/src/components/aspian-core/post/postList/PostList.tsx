@@ -25,11 +25,11 @@ import { RangeValue, EventValue } from 'rc-picker/lib/interface';
 import {
   EditFilled,
   DeleteFilled,
-  ClockCircleFilled,
   SearchOutlined,
   CalendarFilled,
   ControlOutlined,
   FilterOutlined,
+  EyeFilled,
 } from '@ant-design/icons';
 import '../../../../scss/aspian-core/pages/posts/all-posts/_all-posts.scss';
 import {
@@ -59,17 +59,18 @@ import { e2p } from '../../../../js/aspian-core/base/numberConverter';
 import PostStore from '../../../../app/stores/aspian-core/post/postStore';
 import { observer } from 'mobx-react-lite';
 import LocaleStore from '../../../../app/stores/aspian-core/locale/localeStore';
+import { Link } from 'react-router-dom';
+import { history } from '../../../..';
 
 interface IPostAntdTable {
   key: string;
-  title: string;
-  postCategory: string[];
+  title: JSX.Element;
+  postCategory: (JSX.Element | '')[];
   postStatus: any;
   postAttachments: number;
   commentAllowed: JSX.Element;
   viewCount: number;
   pinned: JSX.Element;
-  postHistories: number;
   comments: number;
   childPosts: number;
   createdAt: string;
@@ -96,7 +97,6 @@ const PostList: FC<WithTranslation> = ({ t }) => {
   const COMMENT_ALLOWED = 'commentAllowed';
   const VIEW_COUNT = 'viewCount';
   const PINNED = 'pinned';
-  const HISTORIES = 'postHistories';
   const COMMENTS = 'comments';
   const CHILD_POSTS = 'childPosts';
   const CREATED_AT = 'createdAt';
@@ -130,7 +130,6 @@ const PostList: FC<WithTranslation> = ({ t }) => {
   const SLIDER_FILTERED_COLUMNS: string[] = [
     ATTACHMENTS,
     VIEW_COUNT,
-    HISTORIES,
     COMMENTS,
     CHILD_POSTS,
   ];
@@ -589,17 +588,6 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ],
     },
     {
-      title: t('post-list.table.thead.histories'),
-      width: 100,
-      dataIndex: HISTORIES,
-      align: 'center',
-      sorter: true,
-      ...getColumnSearchPropsForSliderFilter(
-        HISTORIES,
-        postStore.maxPostHistories
-      ),
-    },
-    {
       title: t('post-list.table.thead.comments'),
       width: 120,
       dataIndex: COMMENTS,
@@ -758,9 +746,18 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       align: 'center',
       render: (text, record, index) => (
         <Space>
+          <Tooltip title={t('post-list.table.tooltip.view-post')} color="gray">
+            <Button
+              onClick={() => history.push(`/admin/posts/details/${record.key}`)}
+              type="text"
+              size="middle"
+              icon={<EyeFilled />}
+              className="text primary-color"
+            />
+          </Tooltip>
           <Tooltip title={t('post-list.table.tooltip.edit-post')} color="gray">
             <Button
-              type="link"
+              type="text"
               size="middle"
               icon={<EditFilled />}
               className="text warning-color"
@@ -795,12 +792,6 @@ const PostList: FC<WithTranslation> = ({ t }) => {
               />
             </Popconfirm>
           </Tooltip>
-          <Tooltip
-            title={t('post-list.table.tooltip.post-history')}
-            color="gray"
-          >
-            <Button type="link" size="middle" icon={<ClockCircleFilled />} />
-          </Tooltip>
         </Space>
       ),
     },
@@ -820,7 +811,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
   let data: IPostAntdTable[] = [];
 
   useEffect(() => {
-    if (postStore.posts.length === 0) {
+    if (Array.from(postStore.postRegistry.values()).length === 0) {
       postStore.loadPosts(DFAULT_PAGE_SIZE, 0);
     }
 
@@ -833,7 +824,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
     }
   }, [selectedRowKeys.length, postStore]);
 
-  postStore.posts.forEach((post, i) => {
+  postStore.postRegistry.forEach((post, i) => {
     const ua = new UAParser();
     ua.setUA(post.userAgent);
 
@@ -874,20 +865,24 @@ const PostList: FC<WithTranslation> = ({ t }) => {
     }
     // Initializing columns data
     data.push({
-      key: post.id,
+      key: i,
       title:
-        localeStore.lang === LanguageActionTypeEnum.fa
-          ? e2p(post.title)
-          : post.title,
-      postCategory: post.taxonomyPosts.map((taxonomyPost: ITaxonomyPost) =>
-        taxonomyPost.taxonomy.type === TaxonomyTypeEnum.category
-          ? `${
-              localeStore.lang === LanguageActionTypeEnum.fa
-                ? e2p(taxonomyPost.taxonomy.term.name)
-                : taxonomyPost.taxonomy.term.name
-            } \n`
-          : ''
-      ),
+        localeStore.lang === LanguageActionTypeEnum.fa ? (
+          <Link to={`/admin/posts/details/${i}`}>{e2p(post.title)}</Link>
+        ) : (
+          <Link to={`/admin/posts/details/${i}`}>{post.title}</Link>
+        ),
+      postCategory: post.taxonomyPosts.map((taxonomyPost: ITaxonomyPost) => {
+        return taxonomyPost.taxonomy.type === TaxonomyTypeEnum.category ? (
+          localeStore.lang === LanguageActionTypeEnum.fa ? (
+            <div key={i}>{e2p(taxonomyPost.taxonomy.term.name)}</div>
+          ) : (
+            <div key={i}>{taxonomyPost.taxonomy.term.name}</div>
+          )
+        ) : (
+          ''
+        );
+      }),
       postStatus: localizedPostStatus,
       postAttachments:
         localeStore.lang === LanguageActionTypeEnum.fa
@@ -907,10 +902,6 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ) : (
         <CloseOutlined style={{ color: '#f5222d' }} />
       ),
-      postHistories:
-        localeStore.lang === LanguageActionTypeEnum.fa
-          ? e2p(post.postHistories.toString())
-          : post.postHistories,
       comments:
         localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(post.comments.toString())
@@ -940,14 +931,8 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       modifiedBy: post.modifiedBy?.userName,
       //userAgent: post.userAgent,
       device: ua.getDevice().type ?? 'Desktop',
-      os:
-        localeStore.lang === LanguageActionTypeEnum.fa
-          ? `${ua.getOS().name} ${ua.getOS().version}`
-          : `${ua.getOS().name} ${ua.getOS().version}`,
-      browser:
-        localeStore.lang === LanguageActionTypeEnum.fa
-          ? `${ua.getBrowser().name} ${ua.getBrowser().version?.toString()}`
-          : `${ua.getBrowser().name} ${ua.getBrowser().version}`,
+      os: `${ua.getOS().name} ${ua.getOS().version}`,
+      browser: `${ua.getBrowser().name} ${ua.getBrowser().version}`,
       userIPAddress:
         localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(post.userIPAddress)

@@ -76,10 +76,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                         throw new RestException(HttpStatusCode.BadRequest, new { slug = "duplicate slug is no allowed" });
                 }
 
-                var postHistory = _mapper.Map<PostHistory>(post);
-                postHistory.PostId = post.Id;
-                _context.PostHistories.Add(postHistory);
-
                 _mapper.Map(request, post);
 
                 var success = await _context.SaveChangesAsync() > 0;

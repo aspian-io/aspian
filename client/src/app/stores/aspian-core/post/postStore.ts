@@ -5,9 +5,9 @@ import agent from '../../../api/aspian-core/agent';
 
 configure({ enforceActions: 'observed' });
 
-class PostStore {
+export class PostStore {
   @observable postRegistry = new Map<string, IPost>();
-  @observable posts: IPost[] = [];
+  @observable post: IPost | undefined = undefined;
   @observable loadingInitial = true;
   @observable submitting = false;
   @observable postCount: number = 0;
@@ -52,20 +52,18 @@ class PostStore {
       );
       runInAction('loading all posts', () => {
         postsEnvelope.posts.map((i) => this.postRegistry.set(i.id, i));
-        this.posts = postsEnvelope.posts;
         this.postCount = postsEnvelope.postCount;
         this.maxAttachmentsNumber = postsEnvelope.maxAttachmentsNumber;
         this.maxChildPosts = postsEnvelope.maxChildPosts;
         this.maxComments = postsEnvelope.maxComments;
-        this.maxPostHistories = postsEnvelope.maxPostHistories;
         this.maxViewCount = postsEnvelope.maxViewCount;
-        this.loadingInitial = false;
       });
     } catch (error) {
-      runInAction('load all posts error', () => {
+      console.log(error);
+    } finally {
+      runInAction('load all posts remove loading - finally', () => {
         this.loadingInitial = false;
       });
-      console.log(error);
     }
   };
 
@@ -73,14 +71,42 @@ class PostStore {
     try {
       this.submitting = true;
       await agent.Posts.delete(ids);
-      runInAction('deletePosts action - remove loading', async () => {
-        this.submitting = false;
+      runInAction('deletePosts action - remove loading', () => {
+        ids.forEach((i) => this.postRegistry.delete(i));
       });
     } catch (error) {
       console.log(error);
-      runInAction('deletePosts action - remove loading', () => {
+    } finally {
+      runInAction('deletePosts action - remove loading - finally', () => {
         this.submitting = false;
       });
+    }
+  };
+
+  private loadPost = (id: string) => {
+    return this.postRegistry.get(id);
+  };
+
+  @action getPost = async (id: string) => {
+    this.loadingInitial = true;
+    const postFromRegistry = this.loadPost(id);
+    if (postFromRegistry) {
+      this.post = postFromRegistry;
+      this.loadingInitial = false;
+    } else {
+      try {
+        const loadedPost = await agent.Posts.details(id);
+        runInAction('getPost action - initilizing post', () => {
+          this.post = loadedPost;
+          this.loadingInitial = false;
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        runInAction('getPost action - remove loading - finally', () => {
+          this.loadingInitial = false;
+        });
+      }
     }
   };
 }
