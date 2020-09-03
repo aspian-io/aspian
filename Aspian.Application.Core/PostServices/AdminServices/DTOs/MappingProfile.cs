@@ -62,7 +62,9 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
                 .ForMember(d => d.Comments, o => o.MapFrom(s => s.Comments.Count))
                 .ForMember(d => d.ChildPosts, o => o.MapFrom(s => s.ChildPosts.Count));
             CreateMap<Postmeta, PostmetaDto>();
-            CreateMap<User, UserDto>();
+            CreateMap<Attachment, PhotoDto>();
+            CreateMap<User, UserDto>()
+                .ForMember(d => d.ProfilePhoto, o => o.MapFrom(s => s.CreatedAttachments.SingleOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain)));
             CreateMap<PostAttachment, PostAttachmentDto>();
             CreateMap<Attachment, AttachmentDto>();
             CreateMap<Attachmentmeta, AttachmentmetaDto>();

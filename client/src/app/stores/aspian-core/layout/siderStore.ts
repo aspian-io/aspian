@@ -1,9 +1,14 @@
 import { observable, action, configure, runInAction } from 'mobx';
-import { createContext } from 'react';
+import { CoreRootStore } from '../CoreRootStore';
 
 configure({ enforceActions: 'observed' });
 
-class SiderStore {
+export default class SiderStore {
+  coreRootStore: CoreRootStore;
+  constructor(coreRootStore: CoreRootStore) {
+    this.coreRootStore = coreRootStore;
+  }
+
   @observable collapsed = false;
 
   @action toggle = (collapsed: boolean) => {
@@ -59,5 +64,3 @@ class SiderStore {
     }
   };
 }
-
-export default createContext(new SiderStore());

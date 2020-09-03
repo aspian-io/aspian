@@ -2,19 +2,18 @@ import React, { useContext } from 'react';
 import { Layout, Row, Col, Select } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
-import SiderStore from '../../../../app/stores/aspian-core/layout/siderStore';
-import LocaleStore from '../../../../app/stores/aspian-core/locale/localeStore';
 import {
   DirectionActionTypeEnum,
   LanguageActionTypeEnum,
 } from '../../../../app/stores/aspian-core/locale/types';
+import { CoreRootStoreContext } from '../../../../app/stores/aspian-core/CoreRootStore';
 
 const { Header } = Layout;
 
 const AspianHeader = () => {
   // Stores
-  const siderStore = useContext(SiderStore);
-  const localeStore = useContext(LocaleStore);
+  const coreRootStore = useContext(CoreRootStoreContext);
+  const {siderStore, localeStore} = coreRootStore;
 
   return (
     <Header className="header">

@@ -2,16 +2,15 @@ import React, { useContext } from 'react';
 import { Layout } from 'antd';
 import AspianMenu from './menu/Menu';
 import { observer } from 'mobx-react-lite';
-import SiderStore from '../../../../app/stores/aspian-core/layout/siderStore';
-import LocaleStore from '../../../../app/stores/aspian-core/locale/localeStore';
 import { LanguageActionTypeEnum } from '../../../../app/stores/aspian-core/locale/types';
+import { CoreRootStoreContext } from '../../../../app/stores/aspian-core/CoreRootStore';
 
 const { Sider } = Layout;
 
 const AspianSider = () => {
   // Stores
-  const siderStore = useContext(SiderStore);
-  const localeStore = useContext(LocaleStore);
+  const coreRootStore = useContext(CoreRootStoreContext);
+  const {siderStore, localeStore} = coreRootStore;
 
   return (
     <Sider

@@ -55,32 +55,34 @@ import Highlighter from 'react-highlight-words';
 import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 import PesianDatePicker, { DayRange } from 'react-modern-calendar-datepicker';
 import '../../../../scss/aspian-core/components/modern-calendar/_persian-datepicker.scss';
-import { e2p } from '../../../../js/aspian-core/base/numberConverter';
-import PostStore from '../../../../app/stores/aspian-core/post/postStore';
+import {
+  e2p,
+  ConvertDigitsToCurrentLanguage,
+} from '../../../../utils/aspian-core/base/numberConverter';
 import { observer } from 'mobx-react-lite';
-import LocaleStore from '../../../../app/stores/aspian-core/locale/localeStore';
 import { Link } from 'react-router-dom';
 import { history } from '../../../..';
+import { CoreRootStoreContext } from '../../../../app/stores/aspian-core/CoreRootStore';
 
 interface IPostAntdTable {
   key: string;
   title: JSX.Element;
   postCategory: (JSX.Element | '')[];
   postStatus: any;
-  postAttachments: number;
+  postAttachments: number | string;
   commentAllowed: JSX.Element;
-  viewCount: number;
+  viewCount: number | string;
   pinned: JSX.Element;
-  comments: number;
-  childPosts: number;
-  createdAt: string;
+  comments: number | string;
+  childPosts: number | string;
+  createdAt: string | number;
   createdBy: string;
-  modifiedAt: string;
+  modifiedAt: string | number;
   modifiedBy: string;
   device: string | undefined;
   os: string | undefined;
   browser: string | undefined;
-  userIPAddress: string;
+  userIPAddress: string | number;
 }
 
 const { RangePicker } = DatePicker;
@@ -135,8 +137,8 @@ const PostList: FC<WithTranslation> = ({ t }) => {
   ];
 
   // Stores
-  const postStore = useContext(PostStore);
-  const localeStore = useContext(LocaleStore);
+  const coreRootStore = useContext(CoreRootStoreContext);
+  const {postStore, localeStore} = coreRootStore;
 
   // UseStates
   const [currentPage, setCurrentPage] = useState(1);
@@ -866,50 +868,59 @@ const PostList: FC<WithTranslation> = ({ t }) => {
     // Initializing columns data
     data.push({
       key: i,
-      title:
-        localeStore.lang === LanguageActionTypeEnum.fa ? (
-          <Link to={`/admin/posts/details/${i}`}>{e2p(post.title)}</Link>
-        ) : (
-          <Link to={`/admin/posts/details/${i}`}>{post.title}</Link>
-        ),
+      title: (
+        <Link to={`/admin/posts/details/${i}`}>
+          {ConvertDigitsToCurrentLanguage(
+            post.title,
+            LanguageActionTypeEnum.en,
+            localeStore.lang
+          )}
+        </Link>
+      ),
       postCategory: post.taxonomyPosts.map((taxonomyPost: ITaxonomyPost) => {
         return taxonomyPost.taxonomy.type === TaxonomyTypeEnum.category ? (
-          localeStore.lang === LanguageActionTypeEnum.fa ? (
-            <div key={i}>{e2p(taxonomyPost.taxonomy.term.name)}</div>
-          ) : (
-            <div key={i}>{taxonomyPost.taxonomy.term.name}</div>
-          )
+          <div key={taxonomyPost.taxonomy.term.id}>
+            {ConvertDigitsToCurrentLanguage(
+              taxonomyPost.taxonomy.term.name,
+              LanguageActionTypeEnum.en,
+              localeStore.lang
+            )}
+          </div>
         ) : (
           ''
         );
       }),
       postStatus: localizedPostStatus,
-      postAttachments:
-        localeStore.lang === LanguageActionTypeEnum.fa
-          ? e2p(post.postAttachments.length.toString())
-          : post.postAttachments.length,
+      postAttachments: ConvertDigitsToCurrentLanguage(
+        post.postAttachments.length,
+        LanguageActionTypeEnum.en,
+        localeStore.lang
+      ),
       commentAllowed: post.commentAllowed ? (
         <CheckOutlined style={{ color: '#52c41a' }} />
       ) : (
         <CloseOutlined style={{ color: '#f5222d' }} />
       ),
-      viewCount:
-        localeStore.lang === LanguageActionTypeEnum.fa
-          ? e2p(post.viewCount.toString())
-          : post.viewCount,
+      viewCount: ConvertDigitsToCurrentLanguage(
+        post.viewCount,
+        LanguageActionTypeEnum.en,
+        localeStore.lang
+      ),
       pinned: post.isPinned ? (
         <CheckOutlined style={{ color: '#52c41a' }} />
       ) : (
         <CloseOutlined style={{ color: '#f5222d' }} />
       ),
-      comments:
-        localeStore.lang === LanguageActionTypeEnum.fa
-          ? e2p(post.comments.toString())
-          : post.comments,
-      childPosts:
-        localeStore.lang === LanguageActionTypeEnum.fa
-          ? e2p(post.childPosts.toString())
-          : post.childPosts,
+      comments: ConvertDigitsToCurrentLanguage(
+        post.comments,
+        LanguageActionTypeEnum.en,
+        localeStore.lang
+      ),
+      childPosts: ConvertDigitsToCurrentLanguage(
+        post.childPosts,
+        LanguageActionTypeEnum.en,
+        localeStore.lang
+      ),
       createdAt:
         localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(
@@ -933,10 +944,11 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       device: ua.getDevice().type ?? 'Desktop',
       os: `${ua.getOS().name} ${ua.getOS().version}`,
       browser: `${ua.getBrowser().name} ${ua.getBrowser().version}`,
-      userIPAddress:
-        localeStore.lang === LanguageActionTypeEnum.fa
-          ? e2p(post.userIPAddress)
-          : post.userIPAddress,
+      userIPAddress: ConvertDigitsToCurrentLanguage(
+        post.userIPAddress,
+        LanguageActionTypeEnum.en,
+        localeStore.lang
+      ),
     });
   });
 

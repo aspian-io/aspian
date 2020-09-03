@@ -15,14 +15,15 @@ import {
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
-import SiderStore from '../../../../../app/stores/aspian-core/layout/siderStore';
+import { CoreRootStoreContext } from '../../../../../app/stores/aspian-core/CoreRootStore';
 
 type IProps = WithTranslation & RouteComponentProps;
 
 const { SubMenu } = Menu;
 const AspianMenu: FC<IProps> = ({ t, location }) => {
   // Stores
-  const siderStore = useContext(SiderStore)
+  const coreRootStore = useContext(CoreRootStoreContext);
+  const {siderStore} = coreRootStore;
 
   return (
     <Menu

@@ -76,7 +76,7 @@ namespace Aspian.Persistence
                 {
                     new Site {
                         Id = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
-                        Domain = "localhost",
+                        Domain = "http://localhost",
                         Path = "/",
                         SiteType = SiteTypeEnum.Blog,
                         IsActivated = true,

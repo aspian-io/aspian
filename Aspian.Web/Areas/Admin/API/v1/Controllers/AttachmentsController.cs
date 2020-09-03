@@ -40,7 +40,8 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
             return await Mediator.Send(new SetMainPhoto.Command { Id = id });
         }
 
-        [Authorize(Policy = AspianCorePolicy.AdminAttachmentGetImagePolicy)]
+        //[Authorize(Policy = AspianCorePolicy.AdminAttachmentGetImagePolicy)]
+        [AllowAnonymous]
         [HttpGet("images/{filename}")]
         public async Task<ActionResult> GetImage(string filename)
         {

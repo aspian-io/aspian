@@ -4,7 +4,8 @@ import { IPost, IPostsEnvelope } from '../../models/aspian-core/post';
 import { IUser, IUserFormValues } from '../../models/aspian-core/user';
 import { history } from '../../..';
 
-axios.defaults.baseURL = 'http://localhost:5001/api';
+const baseURL = 'http://localhost:5001/api';
+axios.defaults.baseURL = baseURL;
 
 // axios.interceptors.request.use(
 //   (config) => {
@@ -55,6 +56,10 @@ const requests = {
       .then(responseBody),
 };
 
+const Attachments = {
+  getImageUrl: (fileName: string): string => `${baseURL}/v1/attachments/images/${fileName}`,
+}
+
 const Posts = {
   list: (
     limit?: number,
@@ -89,6 +94,7 @@ const User = {
 };
 
 export default {
+  Attachments,
   Posts,
   User,
 };

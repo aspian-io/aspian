@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
 {
     public class UserDto
@@ -7,5 +9,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
         public string Email { get; set; }
         public string Bio { get; set; }
         public string Role { get; set; }
+        public PhotoDto ProfilePhoto { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 import { observable, action, configure, runInAction } from 'mobx';
-import { createContext } from 'react';
+import { CoreRootStore } from '../CoreRootStore';
 import {
   LocaleVariableEnum,
   LanguageActionTypeEnum,
@@ -8,7 +8,12 @@ import {
 
 configure({ enforceActions: 'observed' });
 
-class LocaleStore {
+export default class LocaleStore {
+  coreRootStore: CoreRootStore;
+  constructor(coreRootStore: CoreRootStore) {
+    this.coreRootStore = coreRootStore;
+  }
+
   // Convert local storage string value to an anum key for language
   localStorageInitialLang =
     localStorage.getItem(LocaleVariableEnum.ASPIAN_CMS_LANG) !== null
@@ -36,7 +41,7 @@ class LocaleStore {
     lang: LanguageActionTypeEnum = LanguageActionTypeEnum.en
   ) => {
     localStorage.setItem(LocaleVariableEnum.ASPIAN_CMS_LANG, lang);
-  
+
     // For English language
     if (lang === LanguageActionTypeEnum.en) {
       localStorage.setItem(
@@ -49,7 +54,7 @@ class LocaleStore {
         this.dir = DirectionActionTypeEnum.LTR;
       });
     }
-  
+
     // For Persian (Farsi) language
     if (lang === LanguageActionTypeEnum.fa) {
       localStorage.setItem(
@@ -64,5 +69,3 @@ class LocaleStore {
     }
   };
 }
-
-export default createContext(new LocaleStore());

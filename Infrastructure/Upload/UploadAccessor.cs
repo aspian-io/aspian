@@ -70,8 +70,14 @@ namespace Infrastructure.Upload
 
                     using (var stream = File.Create(fileAbsolutePath))
                     {
-                        if (IsFileTypeVerified(file, stream))
+                        if (IsFileTypeVerified(file))
+                        {
                             await file.CopyToAsync(stream);
+                        }
+                        else
+                        {
+                            throw new Exception("Problem uploading the file!");
+                        }
                     }
                 }
                 if (uploadLocation == UploadLocationEnum.FtpServer)
@@ -88,7 +94,7 @@ namespace Infrastructure.Upload
 
                     using (var stream = file.OpenReadStream())
                     {
-                        if (IsFileTypeVerified(file, stream))
+                        if (IsFileTypeVerified(file))
                         {
                             // Upload file
                             var ftpStatus = await client.UploadAsync(stream, fileRelativePath);
@@ -337,7 +343,7 @@ namespace Infrastructure.Upload
         }
 
 
-        private bool IsFileTypeVerified(IFormFile file, Stream data)
+        private bool IsFileTypeVerified(IFormFile file)
         {
             // If you require a check on specific characters in the IsValidFileExtensionAndSignature
             // method, supply the characters in the _allowedChars field.
@@ -442,15 +448,15 @@ namespace Infrastructure.Upload
                 { ".rar", new List<byte[]> { new byte[] { 0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00 } } },
                 { ".7z", new List<byte[]> { new byte[] { 0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C } } },
             };
-
-            using (var reader = new BinaryReader(data))
+            using(var stream = file.OpenReadStream())
+            using (var reader = new BinaryReader(stream))
             {
                 if (ext.Equals(".txt") || ext.Equals(".csv") || ext.Equals(".prn") || ext.Equals(".svg"))
                 {
                     if (_allowedChars.Length == 0)
                     {
                         // Limits characters to ASCII encoding.
-                        for (var i = 0; i < data.Length; i++)
+                        for (var i = 0; i < stream.Length; i++)
                         {
                             if (reader.ReadByte() > sbyte.MaxValue)
                             {
@@ -462,7 +468,7 @@ namespace Infrastructure.Upload
                     {
                         // Limits characters to ASCII encoding and
                         // values of the _allowedChars array.
-                        for (var i = 0; i < data.Length; i++)
+                        for (var i = 0; i < stream.Length; i++)
                         {
                             var b = reader.ReadByte();
                             if (b > sbyte.MaxValue ||

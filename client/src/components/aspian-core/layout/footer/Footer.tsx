@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Layout } from 'antd';
 import { HeartFilled } from '@ant-design/icons';
 import { withTranslation, WithTranslation, Trans } from 'react-i18next';
-import { e2p } from '../../../../js/aspian-core/base/numberConverter';
+import { e2p } from '../../../../utils/aspian-core/base/numberConverter';
 import moment from 'jalali-moment';
 import {
   LocaleVariableEnum,

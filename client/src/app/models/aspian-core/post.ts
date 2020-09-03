@@ -57,6 +57,7 @@ export interface User {
   email: string;
   bio: string;
   role: string;
+  profilePhoto: IAttachment;
 }
 
 interface PostAttachment {
@@ -81,10 +82,11 @@ export enum UploadLocationEnum {
 interface IAttachment {
   type: AttachmentTypeEnum;
   fileName: string;
-  fileSize: string;
+  fileSize: number;
   mimeType: string;
   uploadLocation: UploadLocationEnum;
   relativePath: string;
+  IsMain: boolean;
 }
 
 export interface ITaxonomyPost {

@@ -1,11 +1,19 @@
 import { observable, action, configure, runInAction, computed } from 'mobx';
-import { createContext } from 'react';
+import { CoreRootStore } from '../CoreRootStore';
 import { IPost } from '../../../models/aspian-core/post';
 import agent from '../../../api/aspian-core/agent';
+import { ResultStatusEnum } from '../layout/resultStore/types';
+import { history } from '../../../..';
+import { AxiosError } from 'axios';
 
 configure({ enforceActions: 'observed' });
 
-export class PostStore {
+export default class PostStore {
+  coreRootStore: CoreRootStore;
+  constructor(coreRootStore: CoreRootStore) {
+    this.coreRootStore = coreRootStore;
+  }
+
   @observable postRegistry = new Map<string, IPost>();
   @observable post: IPost | undefined = undefined;
   @observable loadingInitial = true;
@@ -75,9 +83,57 @@ export class PostStore {
         ids.forEach((i) => this.postRegistry.delete(i));
       });
     } catch (error) {
-      console.log(error);
+      const axiosError = error as AxiosError;
+      console.log(axiosError);
+      this.coreRootStore.resultStore.setResultPage(
+        ResultStatusEnum.Error,
+        'The operation faild!',
+        'Please check the following error message before trying again.',
+        'Back to Posts',
+        '/admin/posts',
+        'Back to Dashboard',
+        '/admin',
+        [axiosError.message]
+      );
+      history.push('/admin/post-deletion-result');
     } finally {
       runInAction('deletePosts action - remove loading - finally', () => {
+        this.submitting = false;
+      });
+    }
+  };
+
+  @action deletePost = async (id: string) => {
+    try {
+      this.submitting = true;
+      await agent.Posts.delete([id]);
+      runInAction('deletePost action - remove loading', () => {
+        this.postRegistry.delete(id);
+      });
+      this.coreRootStore.resultStore.setResultPage(
+        ResultStatusEnum.Success,
+        'The post deleted successfully!',
+        '',
+        'Back to Posts',
+        '/admin/posts'
+      );
+      history.push('/admin/post-deletion-result');
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      console.log(axiosError);
+      this.coreRootStore.resultStore.setResultPage(
+        ResultStatusEnum.Error,
+        'The operation faild!',
+        'Please check the following error message before trying again.',
+        'Back to the post',
+        `/admin/posts/details/${id}`,
+        'Back to Dashboard',
+        '/admin',
+        [axiosError.message]
+      );
+      history.push('/admin/post-deletion-result');
+    } finally {
+      runInAction('deletePost action - remove loading - finally', () => {
         this.submitting = false;
       });
     }
@@ -102,13 +158,10 @@ export class PostStore {
         });
       } catch (error) {
         console.log(error);
-      } finally {
-        runInAction('getPost action - remove loading - finally', () => {
+        runInAction('getPost action - remove loading - error', () => {
           this.loadingInitial = false;
         });
       }
     }
   };
 }
-
-export default createContext(new PostStore());

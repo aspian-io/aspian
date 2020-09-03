@@ -29,12 +29,8 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
         {
             private readonly DataContext _context;
             private readonly IUploadAccessor _uploadAccessor;
-            private readonly IUserAccessor _userAccessor;
-            private readonly UserManager<User> _userManager;
-            public Handler(DataContext context, IUploadAccessor uploadAccessor, IUserAccessor userAccessor, UserManager<User> userManager)
+            public Handler(DataContext context, IUploadAccessor uploadAccessor)
             {
-                _userManager = userManager;
-                _userAccessor = userAccessor;
                 _uploadAccessor = uploadAccessor;
                 _context = context;
             }
@@ -42,8 +38,6 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
             public async Task<GetImageDto> Handle(Query request, CancellationToken cancellationToken)
             {
                 var site = await _context.Sites.FirstOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
-                var user = await _userManager.FindByNameAsync(_userAccessor.GetCurrentUsername());
-                var userClaims = await _userManager.GetClaimsAsync(user);
 
                 var image = await _context.Attachments.SingleOrDefaultAsync(x => x.FileName == request.FileName && x.Type == AttachmentTypeEnum.Photo);
                 if (image == null)

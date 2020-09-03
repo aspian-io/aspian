@@ -9,6 +9,8 @@ import {
   Card,
   Popconfirm,
   Spin,
+  Avatar,
+  Empty,
 } from 'antd';
 import {
   EditFilled,
@@ -18,17 +20,18 @@ import {
 } from '@ant-design/icons';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import { RouteComponentProps } from 'react-router-dom';
-import PostStore from '../../../../app/stores/aspian-core/post/postStore';
-import LocaleStore from '../../../../app/stores/aspian-core/locale/localeStore';
 import { LanguageActionTypeEnum } from '../../../../app/stores/aspian-core/locale/types';
 import { observer } from 'mobx-react-lite';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { e2p } from '../../../../js/aspian-core/base/numberConverter';
+import { e2p } from '../../../../utils/aspian-core/base/numberConverter';
+import { GetRoundedFileSize } from '../../../../utils/aspian-core/base/fileSize';
 import { v4 as uuidv4 } from 'uuid';
 import { UAParser } from 'ua-parser-js';
 import { history } from '../../../..';
 import '../../../../scss/aspian-core/pages/posts/post-details/_post-details.scss';
 import { TaxonomyTypeEnum } from '../../../../app/models/aspian-core/post';
+import agent from '../../../../app/api/aspian-core/agent';
+import { CoreRootStoreContext } from '../../../../app/stores/aspian-core/CoreRootStore';
 
 const { TabPane } = Tabs;
 
@@ -39,21 +42,22 @@ interface DetailParams {
 }
 
 const PostDetails: FC<Props> = ({ match, t }) => {
-  // Stores
-  const postStore = useContext(PostStore);
-  const { getPost, deletePosts, post, submitting, loadingInitial } = postStore;
-
-  const localeStore = useContext(LocaleStore);
-  const { lang } = localeStore;
+  /// Stores
+  const coreRootStore = useContext(CoreRootStoreContext);
+  const {
+    getPost,
+    deletePost,
+    post,
+    submitting,
+    loadingInitial,
+  } = coreRootStore.postStore;
+  const { lang } = coreRootStore.localeStore;
 
   useEffect(() => {
     getPost(match.params.id);
   }, [getPost, match.params.id]);
 
-  const ondDeleteBtnClick = async (id: string) => {
-    await deletePosts([id]);
-  };
-
+  // Shows loading indicator if post hasn't been loaded completely yet
   if (loadingInitial || !post) {
     return (
       <div className="spinner-wrapper">
@@ -62,6 +66,19 @@ const PostDetails: FC<Props> = ({ match, t }) => {
     );
   }
 
+  // Gets random avatar colors from colors in the colors array
+  const getAvatarBgColor = () => {
+    const colors = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
+    const randomColorIndex = Math.floor(Math.random() * 3.9);
+    return colors[randomColorIndex];
+  };
+
+  // To delete a post
+  const ondDeleteBtnClick = async (id: string) => {
+    await deletePost(id);
+  };
+
+  // Initializing UA Parser
   const ua = new UAParser();
   ua.setUA(post.userAgent);
 
@@ -106,44 +123,38 @@ const PostDetails: FC<Props> = ({ match, t }) => {
         <Tabs defaultActiveKey="1">
           <TabPane tab="Attachments" key="1">
             <div style={{ margin: '1.5rem 0' }}>
-              {post!.postAttachments.map((value, i) => {
-                return (
-                  <Fragment>
-                    <Descriptions
-                      size="small"
-                      bordered
-                      column={{ sm: 1, xs: 1 }}
-                    >
-                      <Descriptions.Item label="File Name">
-                        <a
-                          href="http://"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {value.attachment.fileName}
-                        </a>
-                      </Descriptions.Item>
-                      <Descriptions.Item label="File Type">
-                        <Tag color="error">{value.attachment.type}</Tag>
-                      </Descriptions.Item>
-                      <Descriptions.Item label="Size">
-                        {lang === LanguageActionTypeEnum.fa
-                          ? Number(value.attachment.fileSize) > 1024
-                            ? `${e2p(
-                                (
-                                  Number(value.attachment.fileSize) / 1024
-                                ).toString()
-                              )} کیلوبایت`
-                            : `${e2p(value.attachment.fileSize)} بایت`
-                          : Number(value.attachment.fileSize) > 1024
-                          ? `${Number(value.attachment.fileSize) / 1024} KB`
-                          : `${Number(value.attachment.fileSize)} Bytes`}
-                      </Descriptions.Item>
-                    </Descriptions>
-                    <br />
-                  </Fragment>
-                );
-              })}
+              {post.postAttachments.length > 0 ? (
+                post!.postAttachments.map((value, i) => {
+                  return (
+                    <Fragment key={uuidv4()}>
+                      <Descriptions
+                        size="small"
+                        bordered
+                        column={{ sm: 1, xs: 1 }}
+                      >
+                        <Descriptions.Item label="File Name">
+                          <a
+                            href="http://"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {value.attachment.fileName}
+                          </a>
+                        </Descriptions.Item>
+                        <Descriptions.Item label="File Type">
+                          <Tag color="error">{value.attachment.type}</Tag>
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Size">
+                          {GetRoundedFileSize(value.attachment.fileSize, lang)}
+                        </Descriptions.Item>
+                      </Descriptions>
+                      <br />
+                    </Fragment>
+                  );
+                })
+              ) : (
+                <Empty />
+              )}
             </div>
           </TabPane>
           <TabPane tab="Statistics" key="2">
@@ -173,66 +184,96 @@ const PostDetails: FC<Props> = ({ match, t }) => {
           </TabPane>
           <TabPane tab="Author Info" key="3">
             <div style={{ margin: '1.5rem 0' }}>
-              <Card
-                className="user-info-card"
-                hoverable
-                cover={
-                  <img
-                    alt="Author"
-                    src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+              {post.createdBy ? (
+                <Card className="user-info-card" hoverable>
+                  <Card.Meta
+                    avatar={
+                      <Avatar
+                        src={agent.Attachments.getImageUrl(
+                          post.createdBy?.profilePhoto.fileName
+                        )}
+                        style={
+                          post.createdBy?.profilePhoto
+                            ? { backgroundColor: 'initial' }
+                            : { backgroundColor: getAvatarBgColor() }
+                        }
+                        size="large"
+                      >
+                        {post.createdBy?.profilePhoto ??
+                        post.createdBy?.displayName
+                          ? post.createdBy?.displayName
+                          : ''}
+                      </Avatar>
+                    }
+                    title={post!.createdBy?.displayName}
                   />
-                }
-              >
-                <Card.Meta title={post!.createdBy?.displayName} />
-                <br />
-                <Descriptions size="small" column={{ sm: 1, xs: 1 }}>
-                  <Descriptions.Item label="Username">
-                    {post!.createdBy?.userName}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Email Address">
-                    {post!.createdBy?.email}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Bio">
-                    <Paragraph
-                      ellipsis={{ rows: 4, expandable: true, symbol: 'more' }}
-                    >
-                      {post!.createdBy?.bio}
-                    </Paragraph>
-                  </Descriptions.Item>
-                </Descriptions>
-              </Card>
+                  <br />
+                  <Descriptions size="small" column={{ sm: 1, xs: 1 }}>
+                    <Descriptions.Item label="Username">
+                      {post.createdBy.userName}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Email Address">
+                      {post!.createdBy?.email}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Bio">
+                      <Paragraph
+                        ellipsis={{ rows: 4, expandable: true, symbol: 'more' }}
+                      >
+                        {post!.createdBy?.bio}
+                      </Paragraph>
+                    </Descriptions.Item>
+                  </Descriptions>
+                </Card>
+              ) : (
+                <Empty />
+              )}
             </div>
           </TabPane>
           <TabPane tab="Editor Info" key="4">
             <div style={{ margin: '1.5rem 0' }}>
-              <Card
-                className="user-info-card"
-                hoverable
-                cover={
-                  <img
-                    alt="Editor"
-                    src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+              {post.modifiedBy ? (
+                <Card className="user-info-card" hoverable>
+                  <Card.Meta
+                    avatar={
+                      <Avatar
+                        src={agent.Attachments.getImageUrl(
+                          post.modifiedBy?.profilePhoto.fileName
+                        )}
+                        style={
+                          post.modifiedBy?.profilePhoto
+                            ? { backgroundColor: 'initial' }
+                            : { backgroundColor: getAvatarBgColor() }
+                        }
+                        size="large"
+                      >
+                        {post.modifiedBy?.profilePhoto ??
+                        post.modifiedBy?.displayName
+                          ? post.modifiedBy?.displayName
+                          : ''}
+                      </Avatar>
+                    }
+                    title={post!.modifiedBy?.displayName}
                   />
-                }
-              >
-                <Card.Meta title={post!.modifiedBy?.displayName} />
-                <br />
-                <Descriptions size="small" column={{ sm: 1, xs: 1 }}>
-                  <Descriptions.Item label="Username">
-                    {post!.modifiedBy?.userName}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Email Address">
-                    {post!.modifiedBy?.email}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Bio">
-                    <Paragraph
-                      ellipsis={{ rows: 4, expandable: true, symbol: 'more' }}
-                    >
-                      {post!.modifiedBy?.bio}
-                    </Paragraph>
-                  </Descriptions.Item>
-                </Descriptions>
-              </Card>
+                  <br />
+                  <Descriptions size="small" column={{ sm: 1, xs: 1 }}>
+                    <Descriptions.Item label="Username">
+                      {post!.modifiedBy?.userName}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Email Address">
+                      {post!.modifiedBy?.email}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Bio">
+                      <Paragraph
+                        ellipsis={{ rows: 4, expandable: true, symbol: 'more' }}
+                      >
+                        {post!.modifiedBy?.bio}
+                      </Paragraph>
+                    </Descriptions.Item>
+                  </Descriptions>
+                </Card>
+              ) : (
+                <Empty />
+              )}
             </div>
           </TabPane>
           <TabPane tab="User Agent" key="5">

@@ -19,23 +19,23 @@ import PostList from '../../components/aspian-core/post/postList/PostList';
 import PostDetails from '../../components/aspian-core/post/postDetails/PostDetails';
 import Login from '../../components/aspian-core/user/Login';
 import Register from '../../components/aspian-core/user/Register';
+import ResultPage from '../../components/aspian-core/layout/result/ResultPage';
 import BadRequest from '../../components/aspian-core/layout/result/BadRequest';
 import NotFound from '../../components/aspian-core/layout/result/NotFound';
 import ServerError from '../../components/aspian-core/layout/result/ServerError';
 import NetworkProblem from '../../components/aspian-core/layout/result/NetworkProblem';
 
 import { observer } from 'mobx-react-lite';
-import SiderStore from '../stores/aspian-core/layout/siderStore';
-import LocaleStore from '../stores/aspian-core/locale/localeStore';
 import {
   DirectionActionTypeEnum,
   LanguageActionTypeEnum,
 } from '../stores/aspian-core/locale/types';
+import { CoreRootStoreContext } from '../stores/aspian-core/CoreRootStore';
 
 const App = () => {
   // Stores
-  const siderStore = useContext(SiderStore);
-  const localeStore = useContext(LocaleStore);
+  const coreRootStore = useContext(CoreRootStoreContext);
+  const { siderStore, localeStore } = coreRootStore;
 
   const { Content } = Layout;
 
@@ -46,7 +46,12 @@ const App = () => {
         localeStore.dir === DirectionActionTypeEnum.LTR ? false : true
       );
     i18n.changeLanguage(localeStore.lang);
-  }, [siderStore, siderStore.onLayoutBreakpoint, localeStore.dir, localeStore.lang]);
+  }, [
+    siderStore,
+    siderStore.onLayoutBreakpoint,
+    localeStore.dir,
+    localeStore.lang,
+  ]);
 
   if (localeStore.lang === LanguageActionTypeEnum.fa) {
     document.body.style.fontFamily = 'Vazir';
@@ -89,12 +94,17 @@ const App = () => {
                             path="/admin/posts/details/:id"
                             component={PostDetails}
                           />
+
                           <Route path="/badrequest" component={BadRequest} />
                           <Route path="/notfound" component={NotFound} />
                           <Route path="/server-error" component={ServerError} />
                           <Route
                             path="/network-error"
                             component={NetworkProblem}
+                          />
+                          <Route
+                            path={['/admin/post-deletion-result']}
+                            component={ResultPage}
                           />
                         </Switch>
                       </div>
