@@ -1,0 +1,73 @@
+{
+  "header": {
+    "created-by": "Created By",
+    "created-at": "Created At",
+    "modified-by": "Modified By",
+    "modified-at": "Modified At",
+    "status": "Status",
+    "slug": "Slug",
+    "is-pinned": "Is Pinned",
+    "pin-order": "Pin Order",
+    "order": "Order",
+    "comment-allowed": "Comment Allowed",
+    "categories": "Categories",
+    "tags": "Tags"
+  },
+  "messages": {
+    "post-deleting-success": "The post deleted successfully!",
+    "post-deleting-error": "Error! The opertion failed. Please try again later."
+  },
+  "popconfirm": {
+    "title": "Are you sure you want to delete the post permanently?",
+    "ok-text": "Confirm",
+    "cancel-text": "Cancel"
+  },
+  "post-content": "Post Content",
+  "buttons": {
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "tabs": {
+    "attachments": {
+      "name": "Attachments",
+      "content": {
+        "file-name": "File Name",
+        "file-type": "File Type",
+        "file-size": "File Size"
+      }
+    },
+    "statistics": {
+      "name": "Statistics",
+      "content": {
+        "view-count": "View Count",
+        "comments": "Comments",
+        "child-posts": "Child Posts"
+      }
+    },
+    "author-info": {
+      "name": "Author Info",
+      "content": {
+        "username": "Username",
+        "email-address": "Email Address",
+        "bio": "Bio"
+      }
+    },
+    "editor-info": {
+      "name": "Editor Info",
+      "content": {
+        "username": "Username",
+        "email-address": "Email Address",
+        "bio": "Bio"
+      }
+    },
+    "user-agent": {
+      "name": "User Agent",
+      "content": {
+        "device": "Device",
+        "os": "OS",
+        "browser": "Browser",
+        "ip-address": "IP Address"
+      }
+    }
+  }
+}

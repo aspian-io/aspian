@@ -15,7 +15,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/ua-parser-js": "^0.7.33",
     "@types/uuid": "^8.3.0",
-    "antd": "^4.5.4",
+    "antd": "^4.6.2",
     "axios": "^0.19.2",
     "i18next": "^19.6.3",
     "i18next-browser-languagedetector": "^6.0.0",

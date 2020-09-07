@@ -13,17 +13,16 @@ import {
   FundViewOutlined,
 } from '@ant-design/icons';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { observer } from 'mobx-react-lite';
 import { CoreRootStoreContext } from '../../../../../app/stores/aspian-core/CoreRootStore';
 
-type IProps = WithTranslation & RouteComponentProps;
-
 const { SubMenu } = Menu;
-const AspianMenu: FC<IProps> = ({ t, location }) => {
+const AspianMenu: FC<RouteComponentProps> = ({ location }) => {
+  const { t } = useTranslation(['core_menu', 'core_common']);
   // Stores
   const coreRootStore = useContext(CoreRootStoreContext);
-  const {siderStore} = coreRootStore;
+  const { siderStore } = coreRootStore;
 
   return (
     <Menu
@@ -31,7 +30,7 @@ const AspianMenu: FC<IProps> = ({ t, location }) => {
       mode="inline"
       selectedKeys={[location.pathname]}
       onSelect={({ item, key, keyPath, selectedKeys, domEvent }) =>
-      siderStore.toggle(false)
+        siderStore.toggle(false)
       }
     >
       <Menu.Item className="sider__menu-logo" disabled>
@@ -46,129 +45,125 @@ const AspianMenu: FC<IProps> = ({ t, location }) => {
         </span>
 
         <span style={{ color: '#fff', fontSize: '1.1rem' }}>
-          <Trans>{t('appName')}</Trans>
+          {t('core_common:appName')}
         </span>
       </Menu.Item>
       <Menu.Item
         key="/admin"
         icon={<DashboardOutlined className="sider__menu-icon" />}
       >
-        <Link to="/admin">
-          <Trans>{t('sider.menu.items.dashboard.name')}</Trans>
-        </Link>
+        <Link to="/admin">{t('items.dashboard.name')}</Link>
       </Menu.Item>
       <SubMenu
         key="sub1"
         icon={<PushpinOutlined className="sider__menu-icon" />}
-        title={<Trans>{t('sider.menu.items.posts.name')}</Trans>}
+        title={t('items.posts.name')}
       >
         <Menu.Item key="/admin/posts">
           <Link to="/admin/posts">
-            <Trans>{t('sider.menu.items.posts.items.all-posts')}</Trans>
+            {t('items.posts.items.all-posts')}
           </Link>
         </Menu.Item>
         <Menu.Item key="3">
-          <Trans>{t('sider.menu.items.posts.items.add-new')}</Trans>
+          {t('items.posts.items.add-new')}
         </Menu.Item>
         <Menu.Item key="4">
-          <Trans>{t('sider.menu.items.posts.items.categories')}</Trans>
+          {t('items.posts.items.categories')}
         </Menu.Item>
-        <Menu.Item key="5">
-          <Trans>{t('sider.menu.items.posts.items.tags')}</Trans>
-        </Menu.Item>
+        <Menu.Item key="5">{t('items.posts.items.tags')}</Menu.Item>
       </SubMenu>
       <SubMenu
         key="sub2"
         icon={<CloudServerOutlined className="sider__menu-icon" />}
-        title={<Trans>{t('sider.menu.items.media.name')}</Trans>}
+        title={t('items.media.name')}
       >
         <Menu.Item key="6">
-          <Trans>{t('sider.menu.items.media.items.library')}</Trans>
+          {t('items.media.items.library')}
         </Menu.Item>
         <Menu.Item key="7">
-          <Trans>{t('sider.menu.items.media.items.add-new')}</Trans>
+          {t('items.media.items.add-new')}
         </Menu.Item>
       </SubMenu>
       <SubMenu
         key="sub3"
         icon={<DiffOutlined className="sider__menu-icon" />}
-        title={<Trans>{t('sider.menu.items.pages.name')}</Trans>}
+        title={t('items.pages.name')}
       >
         <Menu.Item key="8">
-          <Trans>{t('sider.menu.items.pages.items.all-pages')}</Trans>
+          {t('items.pages.items.all-pages')}
         </Menu.Item>
         <Menu.Item key="9">
-          <Trans>{t('sider.menu.items.pages.items.add-new')}</Trans>
+          {t('items.pages.items.add-new')}
         </Menu.Item>
       </SubMenu>
       <Menu.Item
         key="10"
         icon={<CommentOutlined className="sider__menu-icon" />}
       >
-        <Trans>{t('sider.menu.items.comments.name')}</Trans>
+        {t('items.comments.name')}
       </Menu.Item>
       <SubMenu
         key="sub4"
         icon={<FormatPainterOutlined className="sider__menu-icon" />}
-        title={<Trans>{t('sider.menu.items.appearance.name')}</Trans>}
+        title={t('items.appearance.name')}
       >
         <Menu.Item key="11">
-          <Trans>{t('sider.menu.items.appearance.items.customize')}</Trans>
+          {t('items.appearance.items.customize')}
         </Menu.Item>
         <Menu.Item key="12">
-          <Trans>{t('sider.menu.items.appearance.items.menus')}</Trans>
+          {t('items.appearance.items.menus')}
         </Menu.Item>
       </SubMenu>
       <SubMenu
         key="sub5"
         icon={<TeamOutlined className="sider__menu-icon" />}
-        title={<Trans>{t('sider.menu.items.users.name')}</Trans>}
+        title={t('items.users.name')}
       >
         <Menu.Item key="13">
-          <Trans>{t('sider.menu.items.users.items.all-users')}</Trans>
+          {t('items.users.items.all-users')}
         </Menu.Item>
         <Menu.Item key="14">
-          <Trans>{t('sider.menu.items.users.items.add-new')}</Trans>
+          {t('items.users.items.add-new')}
         </Menu.Item>
         <Menu.Item key="15">
-          <Trans>{t('sider.menu.items.users.items.your-profile')}</Trans>
+          {t('items.users.items.your-profile')}
         </Menu.Item>
       </SubMenu>
       <SubMenu
         key="sub6"
         icon={<ControlOutlined className="sider__menu-icon" />}
-        title={<Trans>{t('sider.menu.items.settings.name')}</Trans>}
+        title={t('items.settings.name')}
       >
         <Menu.Item key="16">
-          <Trans>{t('sider.menu.items.settings.items.general')}</Trans>
+          {t('items.settings.items.general')}
         </Menu.Item>
         <Menu.Item key="17">
-          <Trans>{t('sider.menu.items.settings.items.writing')}</Trans>
+          {t('items.settings.items.writing')}
         </Menu.Item>
         <Menu.Item key="18">
-          <Trans>{t('sider.menu.items.settings.items.reading')}</Trans>
+          {t('items.settings.items.reading')}
         </Menu.Item>
         <Menu.Item key="19">
-          <Trans>{t('sider.menu.items.settings.items.discussion')}</Trans>
+          {t('items.settings.items.discussion')}
         </Menu.Item>
         <Menu.Item key="20">
-          <Trans>{t('sider.menu.items.settings.items.media')}</Trans>
+          {t('items.settings.items.media')}
         </Menu.Item>
         <Menu.Item key="21">
-          <Trans>{t('sider.menu.items.settings.items.permalinks')}</Trans>
+          {t('items.settings.items.permalinks')}
         </Menu.Item>
       </SubMenu>
       <SubMenu
         key="sub7"
         icon={<FundViewOutlined className="sider__menu-icon" />}
-        title={<Trans>{t('sider.menu.items.reports.name')}</Trans>}
+        title={t('items.reports.name')}
       >
         <Menu.Item key="13">
-          <Trans>{t('sider.menu.items.reports.items.users-activities')}</Trans>
+          {t('items.reports.items.users-activities')}
         </Menu.Item>
       </SubMenu>
     </Menu>
   );
 };
 
-export default withRouter(withTranslation()(observer(AspianMenu)));
+export default withRouter(observer(AspianMenu));

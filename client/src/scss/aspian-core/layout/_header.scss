@@ -2,6 +2,16 @@
   background: #fff;
   padding: 0;
 
+  &__avatar-text {
+    font-size: 0.8rem;
+    padding: 0 5px;
+    color: gray;
+
+    @media only screen and (max-width: 992px) {
+      display: none;
+    }
+  }
+
   &--trigger {
     font-size: 18px;
     line-height: 64px;

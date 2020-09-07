@@ -1,20 +1,21 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Result, Button } from 'antd';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-const NotFound: FC<WithTranslation> = ({t}) => {
+const NotFound = () => {
+  const {t} = useTranslation('core_notFoundPage');
   return (
     <Result
       status="404"
-      title={t("result-pages.404.title")}
-      subTitle={t("result-pages.404.subtitle")}
+      title={t("title")}
+      subTitle={t("subtitle")}
       extra={
         <Button type="primary" href="/admin">
-          {t("result-pages.404.button")}
+          {t("button")}
         </Button>
       }
     />
   );
 };
 
-export default withTranslation()(NotFound);
+export default NotFound;

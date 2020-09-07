@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Layout } from 'antd';
 import { HeartFilled } from '@ant-design/icons';
-import { withTranslation, WithTranslation, Trans } from 'react-i18next';
-import { e2p } from '../../../../utils/aspian-core/base/numberConverter';
+import { useTranslation } from 'react-i18next';
+import { e2p } from '../../../../utils/aspian-core/base/NumberConverter';
 import moment from 'jalali-moment';
 import {
   LocaleVariableEnum,
@@ -10,7 +10,8 @@ import {
 } from '../../../../app/stores/aspian-core/locale/types';
 
 const { Footer } = Layout;
-const AspianFooter: FC<WithTranslation> = ({ t }) => {
+const AspianFooter = () => {
+  const { t } = useTranslation(['core_footer', 'core_common']);
   const langFromLocalStorage = localStorage.getItem(
     LocaleVariableEnum.ASPIAN_CMS_LANG
   );
@@ -18,15 +19,15 @@ const AspianFooter: FC<WithTranslation> = ({ t }) => {
   return (
     <Footer style={{ textAlign: 'center', fontSize: '.65rem' }}>
       <div>
-        <Trans>{t('footer.made-with')}</Trans>
+        {t('made-with')}
         <HeartFilled style={{ color: 'red' }} />
-        <Trans>{t('footer.by')}</Trans>
+        {t('by')}
         <a href="#!">
-          <Trans>{t('footer.my-name')}</Trans>
+          {t('my-name')}
         </a>
       </div>
       <div>
-        <Trans>{t('appName')}</Trans> - <Trans>{t('footer.copyright')}</Trans>{' '}
+        {t('core_common:appName')} - {t('copyright')}{' '}
         &copy;{' '}
         {langFromLocalStorage === LanguageActionTypeEnum.fa
           ? persianYear
@@ -36,4 +37,4 @@ const AspianFooter: FC<WithTranslation> = ({ t }) => {
   );
 };
 
-export default withTranslation()(AspianFooter);
+export default AspianFooter;

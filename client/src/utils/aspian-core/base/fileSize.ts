@@ -1,4 +1,5 @@
 import { LanguageActionTypeEnum } from '../../../app/stores/aspian-core/locale/types';
+import { e2p } from './NumberConverter';
 
 /**
  * Gets a file size number rounded to keep only two decimals and add an appropriate unit of file size to it.
@@ -33,23 +34,23 @@ export const GetRoundedFileSize = (
   }
 
   if (lang === LanguageActionTypeEnum.fa) {
-    if (roundedFileSize < 1024) return `${roundedFileSize} یایت`;
+    if (roundedFileSize < 1024) return `${e2p(roundedFileSize)} یایت`;
 
     if (roundedFileSize >= 1024)
       roundedFileSize = parseFloat((roundedFileSize / 1024).toFixed(2));
-    if (roundedFileSize < 1024) return `${roundedFileSize} کیلوبایت`;
+    if (roundedFileSize < 1024) return `${e2p(roundedFileSize)} کیلوبایت`;
 
     if (roundedFileSize >= 1024)
       roundedFileSize = parseFloat((roundedFileSize / 1024).toFixed(2));
-    if (roundedFileSize < 1024) return `${roundedFileSize} مگابایت`;
+    if (roundedFileSize < 1024) return `${e2p(roundedFileSize)} مگابایت`;
 
     if (roundedFileSize >= 1024)
       roundedFileSize = parseFloat((roundedFileSize / 1024).toFixed(2));
-    if (roundedFileSize < 1024) return `${roundedFileSize} گیگابایت`;
+    if (roundedFileSize < 1024) return `${e2p(roundedFileSize)} گیگابایت`;
 
     if (roundedFileSize >= 1024)
       roundedFileSize = parseFloat((roundedFileSize / 1024).toFixed(2));
-    if (roundedFileSize < 1024) return `${roundedFileSize} ترابایت`;
+    if (roundedFileSize < 1024) return `${e2p(roundedFileSize)} ترابایت`;
   }
 
   return `${fileSizeToBytes} bytes`;

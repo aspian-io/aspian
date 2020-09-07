@@ -7,6 +7,7 @@ using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.UserServices.AdminServices.DTOs;
 using Aspian.Domain.ActivityModel;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
@@ -88,7 +89,8 @@ namespace Aspian.Application.Core.UserServices.AdminServices
                         DisplayName = user.DisplayName,
                         Token = _jwtGenerator.CreateToken(user, claims.ToList()),
                         UserName = user.UserName,
-                        //Image = user.CreatedAttachments.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain)?.Url
+                        Role = user.Role,
+                        ProfilePhotoName = user.CreatedAttachments?.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain).FileName
                     };
                 }
 

@@ -1,0 +1,9 @@
+{
+  "title": "Login to your account",
+  "subTitle": "Please enter your email and password",
+  "username-placeholder": "Email",
+  "username-error": "Please enter your email!",
+  "password-placeholder": "Password",
+  "password-error": "Please enter your Password!",
+  "login-btn": "Login"
+}

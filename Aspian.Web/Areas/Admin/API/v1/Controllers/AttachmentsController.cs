@@ -49,7 +49,8 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
             return File(imageDto.Memory, imageDto.MimeType, imageDto.FileName);
         }
 
-        [Authorize(Policy = AspianCorePolicy.AdminAttachmentDownloadPolicy)]
+        //[Authorize(Policy = AspianCorePolicy.AdminAttachmentDownloadPolicy)]
+        [AllowAnonymous]
         [HttpGet("download/{filename}")]
         public async Task<ActionResult> Download(string filename)
         {

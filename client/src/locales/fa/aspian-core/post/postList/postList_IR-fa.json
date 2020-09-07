@@ -1,0 +1,119 @@
+{
+  "title": "جدول نوشته‌ها",
+  "text": "از طریق این صفحه می توانید اطلاعات همه نوشته ها را دیده یا آن ها را تغییر دهید.",
+  "button": {
+    "delete": {
+      "name": "حذف",
+      "popConfirm": {
+        "title": "آیا از حذف دائمی نوشته های انتخابی اطمینان دارید؟",
+        "single-item-title": "آیا از حذف دائمی نوشته انتخابی اطمینان دارید؟",
+        "okText": "تایید",
+        "cancelText": "انصراف"
+      }
+    }
+  },
+  "messages": {
+    "post-deleting-success": "نوشته با موفقیت حذف گردید!",
+    "post-deleting-error": "خطا! عملیات ناموفق بود. لطفا بعدا دوباره تلاش کنید.",
+    "posts-deleting-success": "نوشته های انتخابی با موفقیت حذف گردید!",
+    "posts-deleting-error": "خطا! عملیات ناموفق بود. لطفا بعدا دوباره تلاش کنید."
+  },
+  "row-selection-menu": {
+    "items": {
+      "select-odd-row": "انتخاب موارد فرد",
+      "select-even-row": "انتخاب موارد زوج"
+    }
+  },
+  "table": {
+    "thead": {
+      "title": "عنوان",
+      "category": "دسته",
+      "status": "وضعیت",
+      "attachments": "رسانه‌ها",
+      "comment-allowed": "ارسال نظرات",
+      "view-count": "تعداد بازدیدها",
+      "pinned": "سنجاق شده",
+      "histories": "تاریخچه",
+      "comments": "نظرات",
+      "child-posts": "پست‌های وابسته",
+      "created-at": "تاریخ ایجاد",
+      "created-by": "ایجاد توسط",
+      "modified-at": "تاریخ ویرایش",
+      "modified-by": "ویرایش‌ توسط",
+      "user-agent": {
+        "name": "اطلاعات سیستمی کاربر",
+        "sub-items": {
+          "device": "دستگاه",
+          "os": "سیستم عامل",
+          "browser": "مرورگر"
+        }
+      },
+      "ip-address": "نشانی آی پی",
+      "actions": "عملیات"
+    },
+
+    "tooltip": {
+      "view-post": "مشاهده نوشته",
+      "edit-post": "ویرایش نوشته",
+      "delete-post": "حذف نوشته"
+    },
+
+    "filters": {
+      "inputs": {
+        "search": {
+          "placeholder": "جستجو..."
+        }
+      },
+      "buttons": {
+        "search": "جستجو",
+        "reset": "پاک کردن",
+        "filter": "فیلتر"
+      },
+      "post-status": {
+        "publish": "انتشار",
+        "pending": "انتظار",
+        "draft": "پیش نویس",
+        "auto-draft": "پیش نویس خودکار",
+        "future": "انتشار در آینده",
+        "inherit": "وراثتی",
+        "private": "خصوصی",
+        "trash": "زباله"
+      },
+      "comment-allowed": {
+        "allowed": "مجاز",
+        "not-allowed": "غیر مجاز"
+      },
+      "is-pinned": {
+        "pinned": "سنجاق شده",
+        "not-pinned": "سنجاق نشده"
+      },
+      "device": {
+        "desktop": "Desktop",
+        "tablet": "Tablet",
+        "mobile": "Mobile"
+      },
+      "os": {
+        "macos": "macOS",
+        "windows": "Windows",
+        "linux": "Linux",
+        "ipados": "iPadOS",
+        "iphoneos": "iPhoneOS",
+        "android": "Android"
+      },
+      "browser": {
+        "chrome": "Chrome",
+        "safari": "Safari",
+        "firefox": "Firefox",
+        "edge": "Edge",
+        "ie": "Internet Explorer",
+        "opera": "Opera"
+      }
+    },
+    "pagination": {
+      "show-total": {
+        "of": "از",
+        "items": "مورد"
+      }
+    }
+  }
+}

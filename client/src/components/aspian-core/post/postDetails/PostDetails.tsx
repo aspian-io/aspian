@@ -11,6 +11,7 @@ import {
   Spin,
   Avatar,
   Empty,
+  message,
 } from 'antd';
 import {
   EditFilled,
@@ -22,9 +23,9 @@ import Paragraph from 'antd/lib/typography/Paragraph';
 import { RouteComponentProps } from 'react-router-dom';
 import { LanguageActionTypeEnum } from '../../../../app/stores/aspian-core/locale/types';
 import { observer } from 'mobx-react-lite';
-import { withTranslation, WithTranslation } from 'react-i18next';
-import { e2p } from '../../../../utils/aspian-core/base/numberConverter';
-import { GetRoundedFileSize } from '../../../../utils/aspian-core/base/fileSize';
+import { useTranslation } from 'react-i18next';
+import { e2p, ConvertDigitsToCurrentLanguage } from '../../../../utils/aspian-core/base/NumberConverter';
+import { GetRoundedFileSize } from '../../../../utils/aspian-core/base/FileSize';
 import { v4 as uuidv4 } from 'uuid';
 import { UAParser } from 'ua-parser-js';
 import { history } from '../../../..';
@@ -32,16 +33,18 @@ import '../../../../scss/aspian-core/pages/posts/post-details/_post-details.scss
 import { TaxonomyTypeEnum } from '../../../../app/models/aspian-core/post';
 import agent from '../../../../app/api/aspian-core/agent';
 import { CoreRootStoreContext } from '../../../../app/stores/aspian-core/CoreRootStore';
+import GetRandomColor from '../../../../utils/aspian-core/base/GetRandomColor';
+import moment from 'moment';
+import jalaliMoment from 'jalali-moment';
 
 const { TabPane } = Tabs;
-
-type Props = WithTranslation & RouteComponentProps<DetailParams>;
 
 interface DetailParams {
   id: string;
 }
 
-const PostDetails: FC<Props> = ({ match, t }) => {
+const PostDetails: FC<RouteComponentProps<DetailParams>> = ({ match }) => {
+  const { t } = useTranslation('core_postDetails');
   /// Stores
   const coreRootStore = useContext(CoreRootStoreContext);
   const {
@@ -66,16 +69,14 @@ const PostDetails: FC<Props> = ({ match, t }) => {
     );
   }
 
-  // Gets random avatar colors from colors in the colors array
-  const getAvatarBgColor = () => {
-    const colors = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
-    const randomColorIndex = Math.floor(Math.random() * 3.9);
-    return colors[randomColorIndex];
-  };
-
   // To delete a post
   const ondDeleteBtnClick = async (id: string) => {
-    await deletePost(id);
+    try {
+      await deletePost(id);
+      message.success(t('messages.post-deleting-success'));
+    } catch (error) {
+      message.error(t('messages.post-deleting-error'));
+    }
   };
 
   // Initializing UA Parser
@@ -95,14 +96,14 @@ const PostDetails: FC<Props> = ({ match, t }) => {
           type="primary"
           icon={<EditFilled />}
         >
-          Edit
+          {t('buttons.edit')}
         </Button>,
         <Popconfirm
           key={uuidv4()}
-          title={t('post-list.button.delete.popConfirm.single-item-title')}
+          title={t('popconfirm.title')}
           onConfirm={() => ondDeleteBtnClick(post!.id)}
-          okText={t('post-list.button.delete.popConfirm.okText')}
-          cancelText={t('post-list.button.delete.popConfirm.cancelText')}
+          okText={t('popconfirm.ok-text')}
+          cancelText={t('popconfirm.cancel-text')}
           placement={lang === LanguageActionTypeEnum.en ? 'left' : 'right'}
           okButtonProps={{
             danger: true,
@@ -115,13 +116,13 @@ const PostDetails: FC<Props> = ({ match, t }) => {
             icon={<DeleteFilled />}
             danger
           >
-            Delete
+            {t('buttons.delete')}
           </Button>
         </Popconfirm>,
       ]}
       footer={
         <Tabs defaultActiveKey="1">
-          <TabPane tab="Attachments" key="1">
+          <TabPane tab={t('tabs.attachments.name')} key="1">
             <div style={{ margin: '1.5rem 0' }}>
               {post.postAttachments.length > 0 ? (
                 post!.postAttachments.map((value, i) => {
@@ -132,19 +133,27 @@ const PostDetails: FC<Props> = ({ match, t }) => {
                         bordered
                         column={{ sm: 1, xs: 1 }}
                       >
-                        <Descriptions.Item label="File Name">
+                        <Descriptions.Item
+                          label={t('tabs.attachments.content.file-name')}
+                        >
                           <a
-                            href="http://"
-                            target="_blank"
+                            href={agent.Attachments.getFileUrl(
+                              value.attachment.fileName
+                            )}
+                            target="_self"
                             rel="noopener noreferrer"
                           >
                             {value.attachment.fileName}
                           </a>
                         </Descriptions.Item>
-                        <Descriptions.Item label="File Type">
+                        <Descriptions.Item
+                          label={t('tabs.attachments.content.file-type')}
+                        >
                           <Tag color="error">{value.attachment.type}</Tag>
                         </Descriptions.Item>
-                        <Descriptions.Item label="Size">
+                        <Descriptions.Item
+                          label={t('tabs.attachments.content.file-size')}
+                        >
                           {GetRoundedFileSize(value.attachment.fileSize, lang)}
                         </Descriptions.Item>
                       </Descriptions>
@@ -157,24 +166,30 @@ const PostDetails: FC<Props> = ({ match, t }) => {
               )}
             </div>
           </TabPane>
-          <TabPane tab="Statistics" key="2">
+          <TabPane tab={t('tabs.statistics.name')} key="2">
             <div style={{ margin: '1.5rem 0' }}>
               <Descriptions
                 size="small"
                 bordered
                 column={{ md: 3, sm: 2, xs: 1 }}
               >
-                <Descriptions.Item label="View Count">
+                <Descriptions.Item
+                  label={t('tabs.statistics.content.view-count')}
+                >
                   {lang === LanguageActionTypeEnum.fa
                     ? e2p(post!.viewCount.toString())
                     : post!.viewCount}
                 </Descriptions.Item>
-                <Descriptions.Item label="Comments">
+                <Descriptions.Item
+                  label={t('tabs.statistics.content.comments')}
+                >
                   {lang === LanguageActionTypeEnum.fa
                     ? e2p(post!.comments.toString())
                     : post!.comments}
                 </Descriptions.Item>
-                <Descriptions.Item label="Child Posts">
+                <Descriptions.Item
+                  label={t('tabs.statistics.content.child-posts')}
+                >
                   {lang === LanguageActionTypeEnum.fa
                     ? e2p(post!.childPosts.toString())
                     : post!.childPosts}
@@ -182,20 +197,20 @@ const PostDetails: FC<Props> = ({ match, t }) => {
               </Descriptions>
             </div>
           </TabPane>
-          <TabPane tab="Author Info" key="3">
+          <TabPane tab={t('tabs.author-info.name')} key="3">
             <div style={{ margin: '1.5rem 0' }}>
               {post.createdBy ? (
                 <Card className="user-info-card" hoverable>
                   <Card.Meta
                     avatar={
                       <Avatar
-                        src={agent.Attachments.getImageUrl(
-                          post.createdBy?.profilePhoto.fileName
+                        src={agent.Attachments.getFileUrl(
+                          post.createdBy?.profilePhoto?.fileName
                         )}
                         style={
                           post.createdBy?.profilePhoto
                             ? { backgroundColor: 'initial' }
-                            : { backgroundColor: getAvatarBgColor() }
+                            : { backgroundColor: GetRandomColor() }
                         }
                         size="large"
                       >
@@ -209,13 +224,19 @@ const PostDetails: FC<Props> = ({ match, t }) => {
                   />
                   <br />
                   <Descriptions size="small" column={{ sm: 1, xs: 1 }}>
-                    <Descriptions.Item label="Username">
+                    <Descriptions.Item
+                      label={t('tabs.author-info.content.username')}
+                    >
                       {post.createdBy.userName}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Email Address">
+                    <Descriptions.Item
+                      label={t('tabs.author-info.content.email-address')}
+                    >
                       {post!.createdBy?.email}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Bio">
+                    <Descriptions.Item
+                      label={t('tabs.author-info.content.bio')}
+                    >
                       <Paragraph
                         ellipsis={{ rows: 4, expandable: true, symbol: 'more' }}
                       >
@@ -229,20 +250,20 @@ const PostDetails: FC<Props> = ({ match, t }) => {
               )}
             </div>
           </TabPane>
-          <TabPane tab="Editor Info" key="4">
+          <TabPane tab={t('tabs.editor-info.name')} key="4">
             <div style={{ margin: '1.5rem 0' }}>
               {post.modifiedBy ? (
                 <Card className="user-info-card" hoverable>
                   <Card.Meta
                     avatar={
                       <Avatar
-                        src={agent.Attachments.getImageUrl(
-                          post.modifiedBy?.profilePhoto.fileName
+                        src={agent.Attachments.getFileUrl(
+                          post.modifiedBy?.profilePhoto?.fileName
                         )}
                         style={
                           post.modifiedBy?.profilePhoto
                             ? { backgroundColor: 'initial' }
-                            : { backgroundColor: getAvatarBgColor() }
+                            : { backgroundColor: GetRandomColor() }
                         }
                         size="large"
                       >
@@ -256,13 +277,19 @@ const PostDetails: FC<Props> = ({ match, t }) => {
                   />
                   <br />
                   <Descriptions size="small" column={{ sm: 1, xs: 1 }}>
-                    <Descriptions.Item label="Username">
+                    <Descriptions.Item
+                      label={t('tabs.editor-info.content.username')}
+                    >
                       {post!.modifiedBy?.userName}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Email Address">
+                    <Descriptions.Item
+                      label={t('tabs.editor-info.content.email-address')}
+                    >
                       {post!.modifiedBy?.email}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Bio">
+                    <Descriptions.Item
+                      label={t('tabs.editor-info.content.bio')}
+                    >
                       <Paragraph
                         ellipsis={{ rows: 4, expandable: true, symbol: 'more' }}
                       >
@@ -276,23 +303,25 @@ const PostDetails: FC<Props> = ({ match, t }) => {
               )}
             </div>
           </TabPane>
-          <TabPane tab="User Agent" key="5">
+          <TabPane tab={t('tabs.user-agent.name')} key="5">
             <div style={{ margin: '1.5rem 0' }}>
               <Descriptions
                 size="small"
                 bordered
                 column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
               >
-                <Descriptions.Item label="Device">
+                <Descriptions.Item label={t('tabs.user-agent.content.device')}>
                   {ua.getDevice().type ?? 'Desktop'}
                 </Descriptions.Item>
-                <Descriptions.Item label="OS">
+                <Descriptions.Item label={t('tabs.user-agent.content.os')}>
                   {ua.getOS().name} {ua.getOS().version}
                 </Descriptions.Item>
-                <Descriptions.Item label="Browser">
+                <Descriptions.Item label={t('tabs.user-agent.content.browser')}>
                   {ua.getBrowser().name} {ua.getBrowser().version}
                 </Descriptions.Item>
-                <Descriptions.Item label="IP Address">
+                <Descriptions.Item
+                  label={t('tabs.user-agent.content.ip-address')}
+                >
                   {lang === LanguageActionTypeEnum.fa
                     ? e2p(post.userIPAddress)
                     : post.userIPAddress}
@@ -306,41 +335,57 @@ const PostDetails: FC<Props> = ({ match, t }) => {
       <div className="content">
         <div className="main">
           <Descriptions size="small" column={{ sm: 2, xs: 1 }}>
-            <Descriptions.Item label="Created By">
+            <Descriptions.Item label={t('header.created-by')}>
               {post.createdBy?.displayName}
             </Descriptions.Item>
-            <Descriptions.Item label="Created At">
-              {post.createdAt}
+            <Descriptions.Item label={t('header.created-at')}>
+              {lang === LanguageActionTypeEnum.fa
+                ? e2p(
+                    jalaliMoment(post.createdAt)
+                      .locale('fa')
+                      .format('YYYY-MM-DD HH:mm:ss')
+                  )
+                : moment(post.createdAt).format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
-            <Descriptions.Item label="Modified By">
+            <Descriptions.Item label={t('header.modified-by')}>
               {post.modifiedBy?.displayName}
             </Descriptions.Item>
-            <Descriptions.Item label="Modified At">
-              {post.modifiedAt}
+            <Descriptions.Item label={t('header.modified-at')}>
+              {lang === LanguageActionTypeEnum.fa && post.modifiedAt
+                ? e2p(
+                    jalaliMoment(post.modifiedAt)
+                      .locale('fa')
+                      .format('YYYY-MM-DD HH:mm:ss')
+                  )
+                : post.modifiedAt && moment(post.modifiedAt).format('YYYY-MM-DD HH:mm:ss')}
             </Descriptions.Item>
-            <Descriptions.Item label="Status">
+            <Descriptions.Item label={t('header.status')}>
               {post.postStatus}
             </Descriptions.Item>
-            <Descriptions.Item label="Slug">{post.slug}</Descriptions.Item>
-            <Descriptions.Item label="Is Pinned">
+            <Descriptions.Item label={t('header.slug')}>
+              {post.slug}
+            </Descriptions.Item>
+            <Descriptions.Item label={t('header.is-pinned')}>
               {post.isPinned ? (
                 <CheckOutlined style={{ color: '#52c41a' }} />
               ) : (
                 <CloseOutlined style={{ color: '#f5222d' }} />
               )}
             </Descriptions.Item>
-            <Descriptions.Item label="Pin Order">
-              {post.pinOrder}
+            <Descriptions.Item label={t('header.pin-order')}>
+              {ConvertDigitsToCurrentLanguage(post.pinOrder, LanguageActionTypeEnum.en, lang)}
             </Descriptions.Item>
-            <Descriptions.Item label="Order">1</Descriptions.Item>
-            <Descriptions.Item label="Comment Allowed">
+            <Descriptions.Item label={t('header.order')}>
+              {ConvertDigitsToCurrentLanguage(post.order, LanguageActionTypeEnum.en, lang)}
+            </Descriptions.Item>
+            <Descriptions.Item label={t('header.comment-allowed')}>
               {post.commentAllowed ? (
                 <CheckOutlined style={{ color: '#52c41a' }} />
               ) : (
                 <CloseOutlined style={{ color: '#f5222d' }} />
               )}
             </Descriptions.Item>
-            <Descriptions.Item label="Categories">
+            <Descriptions.Item label={t('header.categories')}>
               <div>
                 {post!.taxonomyPosts.map((tp, i) => {
                   if (tp.taxonomy.type === TaxonomyTypeEnum.category) {
@@ -355,7 +400,7 @@ const PostDetails: FC<Props> = ({ match, t }) => {
                 })}
               </div>
             </Descriptions.Item>
-            <Descriptions.Item label="Tags">
+            <Descriptions.Item label={t('header.tags')}>
               <div>
                 {post!.taxonomyPosts.map((tp, i) => {
                   if (tp.taxonomy.type === TaxonomyTypeEnum.tag) {
@@ -373,7 +418,7 @@ const PostDetails: FC<Props> = ({ match, t }) => {
           </Descriptions>
         </div>
         <div style={{ margin: '2rem 0' }}>
-          <Divider>Post Content</Divider>
+          <Divider>{t('post-content')}</Divider>
           <Paragraph ellipsis={{ rows: 4, expandable: true, symbol: 'more' }}>
             {post!.content}
           </Paragraph>
@@ -383,4 +428,4 @@ const PostDetails: FC<Props> = ({ match, t }) => {
   );
 };
 
-export default withTranslation()(observer(PostDetails));
+export default observer(PostDetails);

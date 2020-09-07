@@ -1,12 +1,8 @@
-import { observable, action, configure, runInAction, computed } from 'mobx';
+import { observable, action, runInAction, computed } from 'mobx';
 import { CoreRootStore } from '../CoreRootStore';
 import { IPost } from '../../../models/aspian-core/post';
 import agent from '../../../api/aspian-core/agent';
-import { ResultStatusEnum } from '../layout/resultStore/types';
 import { history } from '../../../..';
-import { AxiosError } from 'axios';
-
-configure({ enforceActions: 'observed' });
 
 export default class PostStore {
   coreRootStore: CoreRootStore;
@@ -83,19 +79,8 @@ export default class PostStore {
         ids.forEach((i) => this.postRegistry.delete(i));
       });
     } catch (error) {
-      const axiosError = error as AxiosError;
-      console.log(axiosError);
-      this.coreRootStore.resultStore.setResultPage(
-        ResultStatusEnum.Error,
-        'The operation faild!',
-        'Please check the following error message before trying again.',
-        'Back to Posts',
-        '/admin/posts',
-        'Back to Dashboard',
-        '/admin',
-        [axiosError.message]
-      );
-      history.push('/admin/post-deletion-result');
+      console.log(error);
+      throw error;
     } finally {
       runInAction('deletePosts action - remove loading - finally', () => {
         this.submitting = false;
@@ -110,28 +95,10 @@ export default class PostStore {
       runInAction('deletePost action - remove loading', () => {
         this.postRegistry.delete(id);
       });
-      this.coreRootStore.resultStore.setResultPage(
-        ResultStatusEnum.Success,
-        'The post deleted successfully!',
-        '',
-        'Back to Posts',
-        '/admin/posts'
-      );
-      history.push('/admin/post-deletion-result');
+      history.push('/admin/posts');
     } catch (error) {
-      const axiosError = error as AxiosError;
-      console.log(axiosError);
-      this.coreRootStore.resultStore.setResultPage(
-        ResultStatusEnum.Error,
-        'The operation faild!',
-        'Please check the following error message before trying again.',
-        'Back to the post',
-        `/admin/posts/details/${id}`,
-        'Back to Dashboard',
-        '/admin',
-        [axiosError.message]
-      );
-      history.push('/admin/post-deletion-result');
+      console.log(error);
+      throw error;
     } finally {
       runInAction('deletePost action - remove loading - finally', () => {
         this.submitting = false;

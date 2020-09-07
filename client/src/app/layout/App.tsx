@@ -1,13 +1,12 @@
 import React, { Fragment, useEffect, useContext } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
-import { I18nextProvider } from 'react-i18next';
 import i18n from '../../locales/i18n';
 import enUS from 'antd/es/locale/en_US';
 import faIR from 'antd/es/locale/fa_IR';
 import '../../scss/aspian-core/base/_font-fa.scss';
 
-import { Layout, ConfigProvider } from 'antd';
+import { Layout, ConfigProvider, Spin } from 'antd';
 import 'antd/dist/antd.css';
 
 import Dashboard from '../../components/aspian-core/dashboard/Dashboard';
@@ -24,6 +23,8 @@ import BadRequest from '../../components/aspian-core/layout/result/BadRequest';
 import NotFound from '../../components/aspian-core/layout/result/NotFound';
 import ServerError from '../../components/aspian-core/layout/result/ServerError';
 import NetworkProblem from '../../components/aspian-core/layout/result/NetworkProblem';
+import Unathorized401 from '../../components/aspian-core/layout/result/Unathorized401';
+import Unathorized403 from '../../components/aspian-core/layout/result/Unathorized403';
 
 import { observer } from 'mobx-react-lite';
 import {
@@ -36,10 +37,22 @@ const App = () => {
   // Stores
   const coreRootStore = useContext(CoreRootStoreContext);
   const { siderStore, localeStore } = coreRootStore;
+  const {
+    user,
+    getCurrentUser,
+    setAppLoaded,
+    isAppLoaded,
+    isLoggedIn
+  } = coreRootStore.userStore;
 
   const { Content } = Layout;
 
   useEffect(() => {
+    if (user === null) {
+      getCurrentUser().then(() => setAppLoaded());
+    } else {
+      setAppLoaded();
+    }
     if (window.innerWidth >= 992)
       siderStore.onLayoutBreakpoint(
         false,
@@ -51,73 +64,78 @@ const App = () => {
     siderStore.onLayoutBreakpoint,
     localeStore.dir,
     localeStore.lang,
+    getCurrentUser,
+    user,
+    setAppLoaded,
   ]);
 
   if (localeStore.lang === LanguageActionTypeEnum.fa) {
     document.body.style.fontFamily = 'Vazir';
   }
 
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ConfigProvider
-        direction={
-          localeStore.dir === DirectionActionTypeEnum.LTR ? 'ltr' : 'rtl'
-        }
-        locale={localeStore.lang === LanguageActionTypeEnum.en ? enUS : faIR}
-      >
-        <Layout className="aspian__layout" id="appLayout">
-          <Switch>
-            <Route exact path="/login" component={Login} />
-            <Route
-              path={'/(.+)'}
-              render={() => (
-                <Fragment>
-                  <AspianSider />
-                  <Layout
-                    className="aspian__layout--content"
-                    id="contentLayout"
-                  >
-                    <AspianHeader />
-                    <Content className="content">
-                      <AspianBreadcrumb />
-                      <div className="content-wrapper">
-                        <Switch>
-                          <Route exact path="/admin" component={Dashboard} />
-                          <Route exact path="/register" component={Register} />
-                          <Route
-                            exact
-                            path="/admin/posts"
-                            component={PostList}
-                          />
-                          <Route
-                            exact
-                            path="/admin/posts/details/:id"
-                            component={PostDetails}
-                          />
+  if (!isAppLoaded) {
+    return (
+      <div className="spinner-wrapper">
+        <Spin wrapperClassName="spinner-wrapper" />
+      </div>
+    );
+  }
 
-                          <Route path="/badrequest" component={BadRequest} />
-                          <Route path="/notfound" component={NotFound} />
-                          <Route path="/server-error" component={ServerError} />
-                          <Route
-                            path="/network-error"
-                            component={NetworkProblem}
-                          />
-                          <Route
-                            path={['/admin/post-deletion-result']}
-                            component={ResultPage}
-                          />
-                        </Switch>
-                      </div>
-                    </Content>
-                    <AspianFooter />
-                  </Layout>
-                </Fragment>
-              )}
-            />
-          </Switch>
-        </Layout>
-      </ConfigProvider>
-    </I18nextProvider>
+  return (
+    <ConfigProvider
+      direction={
+        localeStore.dir === DirectionActionTypeEnum.LTR ? 'ltr' : 'rtl'
+      }
+      locale={localeStore.lang === LanguageActionTypeEnum.en ? enUS : faIR}
+    >
+      <Layout className="aspian__layout" id="appLayout">
+        <Switch>
+          {!isLoggedIn && !user && <Route exact path="/login" component={Login} />}
+          {isLoggedIn && user && <Route exact path="/login" render={() => (<Redirect to="/admin" />)} />}
+          <Route exact path="/unathorized401" component={Unathorized401} />
+          <Route exact path="/unathorized403" component={Unathorized403} />
+          <Route
+            path={'/(.+)'}
+            render={() => (
+              <Fragment>
+                <AspianSider />
+                <Layout className="aspian__layout--content" id="contentLayout">
+                  <AspianHeader />
+                  <Content className="content">
+                    <AspianBreadcrumb />
+                    <div className="content-wrapper">
+                      <Switch>
+                        <Route exact path="/admin" component={Dashboard} />
+                        <Route exact path="/register" component={Register} />
+                        <Route exact path="/admin/posts" component={PostList} />
+                        <Route
+                          exact
+                          path="/admin/posts/details/:id"
+                          component={PostDetails}
+                        />
+
+                        <Route path="/badrequest" component={BadRequest} />
+                        <Route path="/notfound" component={NotFound} />
+                        <Route path="/server-error" component={ServerError} />
+                        <Route
+                          path="/network-error"
+                          component={NetworkProblem}
+                        />
+                        <Route
+                          path={['/admin/post-deletion-result']}
+                          component={ResultPage}
+                        />
+                      </Switch>
+                    </div>
+                  </Content>
+                  <AspianFooter />
+                </Layout>
+              </Fragment>
+            )}
+          />
+        </Switch>
+      </Layout>
+    </ConfigProvider>
   );
 };
 

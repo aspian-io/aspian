@@ -1,24 +1,61 @@
 import React, { useContext } from 'react';
-import { Layout, Row, Col, Select } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import { Layout, Row, Col, Select, Menu, Dropdown } from 'antd';
+import {
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+  DownOutlined,
+  ProfileOutlined,
+  SettingOutlined,
+  LogoutOutlined,
+} from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
 import {
   DirectionActionTypeEnum,
   LanguageActionTypeEnum,
 } from '../../../../app/stores/aspian-core/locale/types';
 import { CoreRootStoreContext } from '../../../../app/stores/aspian-core/CoreRootStore';
+import Avatar from 'antd/lib/avatar/avatar';
+import GetRandomColor from '../../../../utils/aspian-core/base/GetRandomColor';
+import agent from '../../../../app/api/aspian-core/agent';
+import { useTranslation } from 'react-i18next';
 
 const { Header } = Layout;
 
 const AspianHeader = () => {
+  const { t } = useTranslation('core_header');
   // Stores
   const coreRootStore = useContext(CoreRootStoreContext);
-  const {siderStore, localeStore} = coreRootStore;
+  const { siderStore, localeStore, userStore } = coreRootStore;
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="0" style={{ fontSize: '.7rem' }}>
+        <a href="#!">
+          <ProfileOutlined className="text primary-color" /> {t('user-menu.items.view-profile')}
+        </a>
+      </Menu.Item>
+      <Menu.Item key="1" style={{ fontSize: '.7rem' }}>
+        <a href="#!">
+          <SettingOutlined className="text primary-color" />{' '}
+          {t('user-menu.items.account-settings')}
+        </a>
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item
+        key="3"
+        style={{ fontSize: '.7rem' }}
+        onClick={() => userStore.logout()}
+      >
+        <LogoutOutlined className="text danger-color" />
+        {t('user-menu.items.logout')}
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <Header className="header">
       <Row>
-        <Col span={12}>
+        <Col span={4}>
           {localeStore.dir === DirectionActionTypeEnum.LTR &&
             React.createElement(
               siderStore.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
@@ -37,7 +74,7 @@ const AspianHeader = () => {
             )}
         </Col>
         <Col
-          span={12}
+          span={20}
           style={{
             textAlign:
               localeStore.dir === DirectionActionTypeEnum.LTR
@@ -45,6 +82,30 @@ const AspianHeader = () => {
                 : 'left',
           }}
         >
+          <Dropdown overlay={menu} trigger={['click']}>
+            <a
+              href="#!"
+              style={{ padding: '1.3rem 0' }}
+              onClick={(e) => e.preventDefault()}
+            >
+              <Avatar
+                className="header__profile-photo"
+                style={{
+                  backgroundColor: GetRandomColor(),
+                  verticalAlign: 'middle',
+                }}
+                src={agent.Attachments.getFileUrl(
+                  userStore.user!.profilePhotoName
+                )}
+              >
+                {userStore.user?.displayName}
+              </Avatar>
+              <span className="header__avatar-text">
+                {t('user-menu.user-greeting')} {userStore.user?.displayName}
+              </span>{' '}
+              <DownOutlined />
+            </a>
+          </Dropdown>
           <Select
             defaultValue={localeStore.lang}
             style={{ margin: '0 1rem' }}

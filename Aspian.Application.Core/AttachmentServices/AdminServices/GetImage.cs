@@ -13,6 +13,7 @@ using Aspian.Domain.UserModel;
 using Aspian.Domain.UserModel.Policy;
 using Aspian.Persistence;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,14 +30,20 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
         {
             private readonly DataContext _context;
             private readonly IUploadAccessor _uploadAccessor;
-            public Handler(DataContext context, IUploadAccessor uploadAccessor)
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(DataContext context, IUploadAccessor uploadAccessor, IHttpContextAccessor httpContextAccessor)
             {
+                _httpContextAccessor = httpContextAccessor;
                 _uploadAccessor = uploadAccessor;
                 _context = context;
             }
 
             public async Task<GetImageDto> Handle(Query request, CancellationToken cancellationToken)
             {
+                var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+                if (refreshToken == null)
+                    throw new RestException(HttpStatusCode.Unauthorized, new { User = "is unathorized!" });
+                    
                 var site = await _context.Sites.FirstOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
 
                 var image = await _context.Attachments.SingleOrDefaultAsync(x => x.FileName == request.FileName && x.Type == AttachmentTypeEnum.Photo);

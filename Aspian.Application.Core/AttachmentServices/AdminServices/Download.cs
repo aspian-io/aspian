@@ -12,6 +12,7 @@ using Aspian.Domain.UserModel;
 using Aspian.Domain.UserModel.Policy;
 using Aspian.Persistence;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,8 +30,10 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
             private readonly DataContext _context;
             private readonly IUploadAccessor _uploadAccessor;
             private readonly IActivityLogger _logger;
-            public Handler(DataContext context, IUploadAccessor uploadAccessor, IActivityLogger logger)
+            private readonly IHttpContextAccessor _httpContextAccessor;
+            public Handler(DataContext context, IUploadAccessor uploadAccessor, IHttpContextAccessor httpContextAccessor, IActivityLogger logger)
             {
+                _httpContextAccessor = httpContextAccessor;
                 _logger = logger;
                 _uploadAccessor = uploadAccessor;
                 _context = context;
@@ -38,19 +41,22 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
 
             public async Task<DownloadFileDto> Handle(Query request, CancellationToken cancellationToken)
             {
+                var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+                if (refreshToken == null)
+                    throw new RestException(HttpStatusCode.Unauthorized, new { User = "is unathorized!" });
+
                 var site = await _context.Sites.FirstOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
-                var file = _context.Attachments.SingleOrDefault(x => x.FileName == request.FileName && x.Type != AttachmentTypeEnum.Photo);
+                var file = _context.Attachments.SingleOrDefault(x => x.FileName == request.FileName);
                 if (file == null)
                     throw new RestException(HttpStatusCode.NotFound, new { File = "Not found" });
-
 
                 var fileMemoryStream = await _uploadAccessor.DownloadFileAsync(file.RelativePath, file.UploadLocation);
 
                 await _logger.LogActivity(
-                        site.Id, 
-                        ActivityCodeEnum.AttachmentDownload, 
-                        ActivitySeverityEnum.Information, 
-                        ActivityObjectEnum.Attachemnt, 
+                        site.Id,
+                        ActivityCodeEnum.AttachmentDownload,
+                        ActivitySeverityEnum.Information,
+                        ActivityObjectEnum.Attachemnt,
                         $"The {file.Type} with the name {file.FileName} downloaded");
 
                 return new DownloadFileDto

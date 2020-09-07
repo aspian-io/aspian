@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.UserServices.AdminServices.DTOs;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
 using MediatR;
@@ -41,11 +42,11 @@ namespace Aspian.Application.Core.UserServices.AdminServices
             {
                 var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
                 if (refreshToken == null)
-                    throw new RestException(HttpStatusCode.BadRequest, new { Token = "not found!" });
+                    throw new RestException(HttpStatusCode.Unauthorized, new { User = "is unathorized!" });
 
                 var user = await _context.Users.SingleOrDefaultAsync(u => u.Tokens.Any(t => t.RefreshToken == refreshToken));
                 if (user == null)
-                    throw new RestException(HttpStatusCode.BadRequest, new { User = "not found!" });
+                    throw new RestException(HttpStatusCode.NotFound, new { User = "not found!" });
 
                 var userClaims = await _userManager.GetClaimsAsync(user);
 
@@ -56,7 +57,8 @@ namespace Aspian.Application.Core.UserServices.AdminServices
                     DisplayName = user.DisplayName,
                     Token = refreshTokenDto.JWT,
                     UserName = user.UserName,
-                    Role = user.Role
+                    Role = user.Role,
+                    ProfilePhotoName = user.CreatedAttachments?.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain).FileName
                 };
             }
         }

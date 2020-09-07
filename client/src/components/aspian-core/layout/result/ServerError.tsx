@@ -1,20 +1,21 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Result, Button } from 'antd';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-const ServerError: FC<WithTranslation> = ({t}) => {
+const ServerError = () => {
+  const { t } = useTranslation('core_serverErrorPage');
   return (
     <Result
       status="500"
-      title={t("result-pages.500.title")}
-      subTitle={t("result-pages.500.subtitle")}
+      title={t('title')}
+      subTitle={t('subtitle')}
       extra={
         <Button type="primary" href="/admin">
-          {t("result-pages.500.button")}
+          {t('button')}
         </Button>
       }
     />
   );
 };
 
-export default withTranslation()(ServerError);
+export default ServerError;

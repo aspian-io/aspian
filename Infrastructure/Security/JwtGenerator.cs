@@ -2,19 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.UserServices.AdminServices.DTOs;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -48,7 +43,7 @@ namespace Infrastructure.Security
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(15),
+                Expires = DateTime.Now.AddMinutes(1),
                 SigningCredentials = creds,
             };
 
@@ -58,6 +53,7 @@ namespace Infrastructure.Security
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
             var newRefreshToken = generateRefreshToken(user);
@@ -82,7 +78,7 @@ namespace Infrastructure.Security
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(15),
+                Expires = DateTime.Now.AddMinutes(1),
                 SigningCredentials = creds
             };
 
@@ -92,6 +88,7 @@ namespace Infrastructure.Security
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
             var newRefreshToken = generateRefreshToken(user);
@@ -113,23 +110,22 @@ namespace Infrastructure.Security
             if (newRefreshToken == null)
                 throw new Exception("Problem generating new refresh token!");
 
-            refreshToken.RevokedAt = DateTime.UtcNow;
-            refreshToken.ReplacedByToken = newRefreshToken;
+            // generate new jwt
+            var jwtToken = generateJWT(user, newRefreshToken, claimRange);
 
-            var succeeded = _context.SaveChanges() > 0;
-
-            if (succeeded)
+            if (jwtToken != null)
             {
-                // generate new jwt
-                var jwtToken = generateJWT(user, newRefreshToken, claimRange);
-
-                return new RefreshTokenDto
-                {
-                    JWT = jwtToken,
-                    RefreshToken = newRefreshToken
-                };
+                refreshToken.RevokedAt = DateTime.UtcNow;
+                refreshToken.ReplacedByToken = newRefreshToken;
             }
-            throw new Exception("Problem refreshing token!");
+
+            _context.SaveChanges();
+
+            return new RefreshTokenDto
+            {
+                JWT = jwtToken,
+                RefreshToken = newRefreshToken
+            };
         }
 
         //
@@ -164,7 +160,7 @@ namespace Infrastructure.Security
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(15),
+                Expires = DateTime.Now.AddMinutes(1),
                 SigningCredentials = creds
             };
 
@@ -174,6 +170,7 @@ namespace Infrastructure.Security
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
             _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken, cookieOptions);

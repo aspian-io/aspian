@@ -1,0 +1,73 @@
+{
+  "header": {
+    "created-by": "ایجاد توسط",
+    "created-at": "تاریخ ایجاد",
+    "modified-by": "ویرایش توسط",
+    "modified-at": "تاریخ ویرایش",
+    "status": "وضعیت",
+    "slug": "پیوند سفارشی",
+    "is-pinned": "سنجاق شده",
+    "pin-order": "ترتیب سنجاق",
+    "order": "ترتیب",
+    "comment-allowed": "ارسال نظرات",
+    "categories": "دسته‌ها",
+    "tags": "برچسب‌ها"
+  },
+  "messages": {
+    "post-deleting-success": "نوشته با موفقیت حذف گردید!",
+    "post-deleting-error": "خطا! عملیات ناموفق بود. لطفا بعدا دوباره تلاش کنید."
+  },
+  "popconfirm": {
+    "title": "آیا از حذف دائمی این نوشته اطمینان دارید؟",
+    "ok-text": "تایید",
+    "cancel-text": "انصراف"
+  },
+  "post-content": "محتوای نوشته",
+  "buttons": {
+    "edit": "ویرایش",
+    "delete": "حذف"
+  },
+  "tabs": {
+    "attachments": {
+      "name": "رسانه ها",
+      "content": {
+        "file-name": "نام فایل",
+        "file-type": "نوع فایل",
+        "file-size": "حجم فایل"
+      }
+    },
+    "statistics": {
+      "name": "آمار",
+      "content": {
+        "view-count": "تعداد مشاهدات",
+        "comments": "تعداد نظرات",
+        "child-posts": "تعداد نوشته‌های وابسته"
+      }
+    },
+    "author-info": {
+      "name": "اطلاعات نویسنده",
+      "content": {
+        "username": "نام کاربری",
+        "email-address": "پست الکترونیک",
+        "bio": "درباره نویسنده"
+      }
+    },
+    "editor-info": {
+      "name": "اطلاعات ویراستار",
+      "content": {
+        "username": "نام کاربری",
+        "email-address": "پست الکترونیک",
+        "bio": "درباره ویراستار"
+      }
+    },
+    "user-agent": {
+      "name": "اطلاعات سیستمی",
+      "content": {
+        "device": "دستگاه",
+        "os": "سیستم عامل",
+        "browser": "مرورگر",
+        "ip-address": "نشانی آی پی"
+      }
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import React, {
   useState,
   ReactText,
-  FC,
   useEffect,
   Fragment,
   MouseEvent,
@@ -19,6 +18,7 @@ import {
   Input,
   DatePicker,
   Slider,
+  message,
 } from 'antd';
 import { TableRowSelection, ColumnsType } from 'antd/lib/table/interface';
 import { RangeValue, EventValue } from 'rc-picker/lib/interface';
@@ -40,7 +40,7 @@ import {
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import moment, { Moment } from 'moment';
 import jalaliMoment from 'jalali-moment';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import Title from 'antd/lib/typography/Title';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import Text from 'antd/lib/typography/Text';
@@ -58,7 +58,7 @@ import '../../../../scss/aspian-core/components/modern-calendar/_persian-datepic
 import {
   e2p,
   ConvertDigitsToCurrentLanguage,
-} from '../../../../utils/aspian-core/base/numberConverter';
+} from '../../../../utils/aspian-core/base/NumberConverter';
 import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 import { history } from '../../../..';
@@ -87,7 +87,8 @@ interface IPostAntdTable {
 
 const { RangePicker } = DatePicker;
 
-const PostList: FC<WithTranslation> = ({ t }) => {
+const PostList = () => {
+  const { t } = useTranslation('core_postList');
   // Constants
   /// Default page size
   const DFAULT_PAGE_SIZE = 10;
@@ -138,7 +139,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
 
   // Stores
   const coreRootStore = useContext(CoreRootStoreContext);
-  const {postStore, localeStore} = coreRootStore;
+  const { postStore, localeStore } = coreRootStore;
 
   // UseStates
   const [currentPage, setCurrentPage] = useState(1);
@@ -176,7 +177,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       Table.SELECTION_INVERT,
       {
         key: 'odd',
-        text: t('post-list.row-selection-menu.items.select-odd-row'),
+        text: t('row-selection-menu.items.select-odd-row'),
         onSelect: (changableRowKeys: ReactText[]) => {
           let newSelectedRowKeys = [];
           newSelectedRowKeys = changableRowKeys.filter((key, index) => {
@@ -190,7 +191,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       },
       {
         key: 'even',
-        text: t('post-list.row-selection-menu.items.select-even-row'),
+        text: t('row-selection-menu.items.select-even-row'),
         onSelect: (changableRowKeys: ReactText[]) => {
           let newSelectedRowKeys = [];
           newSelectedRowKeys = changableRowKeys.filter((key, index) => {
@@ -234,14 +235,14 @@ const PostList: FC<WithTranslation> = ({ t }) => {
                 size="small"
                 style={{ width: 90 }}
               >
-                {t('post-list.table.filters.buttons.filter')}
+                {t('table.filters.buttons.filter')}
               </Button>
               <Button
                 onClick={() => handleReset(clearFilters)}
                 size="small"
                 style={{ width: 90 }}
               >
-                {t('post-list.table.filters.buttons.reset')}
+                {t('table.filters.buttons.reset')}
               </Button>
             </Space>
           </div>
@@ -310,7 +311,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
                     size="small"
                     style={{ width: 90 }}
                   >
-                    {t('post-list.table.filters.buttons.search')}
+                    {t('table.filters.buttons.search')}
                   </Button>
                   <Button
                     onClick={() => {
@@ -321,7 +322,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
                     size="small"
                     style={{ width: 90 }}
                   >
-                    {t('post-list.table.filters.buttons.reset')}
+                    {t('table.filters.buttons.reset')}
                   </Button>
                 </Space>
               </div>
@@ -359,14 +360,14 @@ const PostList: FC<WithTranslation> = ({ t }) => {
                     size="small"
                     style={{ width: 90 }}
                   >
-                    {t('post-list.table.filters.buttons.search')}
+                    {t('table.filters.buttons.search')}
                   </Button>
                   <Button
                     onClick={() => handleReset(clearFilters)}
                     size="small"
                     style={{ width: 90 }}
                   >
-                    {t('post-list.table.filters.buttons.reset')}
+                    {t('table.filters.buttons.reset')}
                   </Button>
                 </Space>
               </div>
@@ -404,7 +405,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
           ref={(node) => {
             searchInput = node!;
           }}
-          placeholder={t('post-list.table.filters.inputs.search.placeholder')}
+          placeholder={t('table.filters.inputs.search.placeholder')}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
@@ -420,14 +421,14 @@ const PostList: FC<WithTranslation> = ({ t }) => {
             size="small"
             style={{ width: 90 }}
           >
-            {t('post-list.table.filters.buttons.search')}
+            {t('table.filters.buttons.search')}
           </Button>
           <Button
             onClick={() => handleReset(clearFilters)}
             size="small"
             style={{ width: 90 }}
           >
-            {t('post-list.table.filters.buttons.reset')}
+            {t('table.filters.buttons.reset')}
           </Button>
         </Space>
       </div>
@@ -474,7 +475,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
 
   const columns: ColumnsType<IPostAntdTable> = [
     {
-      title: t('post-list.table.thead.title'),
+      title: t('table.thead.title'),
       width: 200,
       dataIndex: TITLE,
       fixed: windowWidth > 576 ? 'left' : undefined,
@@ -482,7 +483,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ...getColumnSearchPropsForSearchFilter(TITLE),
     },
     {
-      title: t('post-list.table.thead.category'),
+      title: t('table.thead.category'),
       width: 200,
       dataIndex: CATEGORY,
       ellipsis: true,
@@ -490,7 +491,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ...getColumnSearchPropsForSearchFilter(CATEGORY),
     },
     {
-      title: t('post-list.table.thead.status'),
+      title: t('table.thead.status'),
       width: 100,
       dataIndex: STATUS,
       align: 'center',
@@ -498,41 +499,41 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       filterMultiple: false,
       filters: [
         {
-          text: t('post-list.table.filters.post-status.publish'),
+          text: t('table.filters.post-status.publish'),
           value: PostStatusEnum.Publish,
         },
         {
-          text: t('post-list.table.filters.post-status.pending'),
+          text: t('table.filters.post-status.pending'),
           value: PostStatusEnum.Pending,
         },
         {
-          text: t('post-list.table.filters.post-status.draft'),
+          text: t('table.filters.post-status.draft'),
           value: PostStatusEnum.Draft,
         },
         {
-          text: t('post-list.table.filters.post-status.auto-draft'),
+          text: t('table.filters.post-status.auto-draft'),
           value: PostStatusEnum.AutoDraft,
         },
         {
-          text: t('post-list.table.filters.post-status.future'),
+          text: t('table.filters.post-status.future'),
           value: PostStatusEnum.Future,
         },
         {
-          text: t('post-list.table.filters.post-status.inherit'),
+          text: t('table.filters.post-status.inherit'),
           value: PostStatusEnum.Inherit,
         },
         {
-          text: t('post-list.table.filters.post-status.private'),
+          text: t('table.filters.post-status.private'),
           value: PostStatusEnum.Private,
         },
         {
-          text: t('post-list.table.filters.post-status.trash'),
+          text: t('table.filters.post-status.trash'),
           value: PostStatusEnum.Trash,
         },
       ],
     },
     {
-      title: t('post-list.table.thead.attachments'),
+      title: t('table.thead.attachments'),
       width: 130,
       dataIndex: ATTACHMENTS,
       align: 'center',
@@ -543,7 +544,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ),
     },
     {
-      title: t('post-list.table.thead.comment-allowed'),
+      title: t('table.thead.comment-allowed'),
       width: 200,
       dataIndex: COMMENT_ALLOWED,
       align: 'center',
@@ -551,17 +552,17 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       filterMultiple: false,
       filters: [
         {
-          text: t('post-list.table.filters.comment-allowed.allowed'),
+          text: t('table.filters.comment-allowed.allowed'),
           value: true,
         },
         {
-          text: t('post-list.table.filters.comment-allowed.not-allowed'),
+          text: t('table.filters.comment-allowed.not-allowed'),
           value: false,
         },
       ],
     },
     {
-      title: t('post-list.table.thead.view-count'),
+      title: t('table.thead.view-count'),
       width: 200,
       dataIndex: VIEW_COUNT,
       align: 'center',
@@ -572,7 +573,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ),
     },
     {
-      title: t('post-list.table.thead.pinned'),
+      title: t('table.thead.pinned'),
       width: 100,
       dataIndex: PINNED,
       align: 'center',
@@ -580,17 +581,17 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       filterMultiple: false,
       filters: [
         {
-          text: t('post-list.table.filters.is-pinned.pinned'),
+          text: t('table.filters.is-pinned.pinned'),
           value: true,
         },
         {
-          text: t('post-list.table.filters.is-pinned.not-pinned'),
+          text: t('table.filters.is-pinned.not-pinned'),
           value: false,
         },
       ],
     },
     {
-      title: t('post-list.table.thead.comments'),
+      title: t('table.thead.comments'),
       width: 120,
       dataIndex: COMMENTS,
       align: 'center',
@@ -598,7 +599,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ...getColumnSearchPropsForSliderFilter(COMMENTS, postStore.maxComments),
     },
     {
-      title: t('post-list.table.thead.child-posts'),
+      title: t('table.thead.child-posts'),
       width: 150,
       dataIndex: CHILD_POSTS,
       align: 'center',
@@ -609,7 +610,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ),
     },
     {
-      title: t('post-list.table.thead.created-at'),
+      title: t('table.thead.created-at'),
       width: 200,
       dataIndex: CREATED_AT,
       align: 'center',
@@ -617,14 +618,14 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ...getColumnSearchPropsForDateRangeFilter(CREATED_AT),
     },
     {
-      title: t('post-list.table.thead.created-by'),
+      title: t('table.thead.created-by'),
       width: 150,
       dataIndex: CREATED_BY,
       sorter: true,
       ...getColumnSearchPropsForSearchFilter(CREATED_BY),
     },
     {
-      title: t('post-list.table.thead.modified-at'),
+      title: t('table.thead.modified-at'),
       width: 150,
       dataIndex: MODIFIED_AT,
       align: 'center',
@@ -632,20 +633,20 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ...getColumnSearchPropsForDateRangeFilter(MODIFIED_AT),
     },
     {
-      title: t('post-list.table.thead.modified-by'),
+      title: t('table.thead.modified-by'),
       width: 150,
       dataIndex: MODIFIED_BY,
       sorter: true,
       ...getColumnSearchPropsForSearchFilter(MODIFIED_BY),
     },
     {
-      title: t('post-list.table.thead.user-agent.name'),
+      title: t('table.thead.user-agent.name'),
 
       dataIndex: USER_AGENT,
       ellipsis: true,
       children: [
         {
-          title: t('post-list.table.thead.user-agent.sub-items.device'),
+          title: t('table.thead.user-agent.sub-items.device'),
           dataIndex: USER_AGENT_DEVICE,
           align: 'center',
           width: 100,
@@ -666,7 +667,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
           ],
         },
         {
-          title: t('post-list.table.thead.user-agent.sub-items.os'),
+          title: t('table.thead.user-agent.sub-items.os'),
           dataIndex: USER_AGENT_OS,
           align: 'center',
           width: 150,
@@ -699,7 +700,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
           ],
         },
         {
-          title: t('post-list.table.thead.user-agent.sub-items.browser'),
+          title: t('table.thead.user-agent.sub-items.browser'),
           dataIndex: USER_AGENT_BROWSER,
           align: 'center',
           width: 170,
@@ -734,21 +735,21 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       ],
     },
     {
-      title: t('post-list.table.thead.ip-address'),
+      title: t('table.thead.ip-address'),
       width: 150,
       dataIndex: IP_ADDRESS,
       sorter: true,
       ...getColumnSearchPropsForSearchFilter(IP_ADDRESS),
     },
     {
-      title: t('post-list.table.thead.actions'),
+      title: t('table.thead.actions'),
       key: ACTIONS,
       fixed: windowWidth > 576 ? 'right' : undefined,
       width: 150,
       align: 'center',
       render: (text, record, index) => (
         <Space>
-          <Tooltip title={t('post-list.table.tooltip.view-post')} color="gray">
+          <Tooltip title={t('table.tooltip.view-post')} color="gray">
             <Button
               onClick={() => history.push(`/admin/posts/details/${record.key}`)}
               type="text"
@@ -757,7 +758,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
               className="text primary-color"
             />
           </Tooltip>
-          <Tooltip title={t('post-list.table.tooltip.edit-post')} color="gray">
+          <Tooltip title={t('table.tooltip.edit-post')} color="gray">
             <Button
               type="text"
               size="middle"
@@ -766,14 +767,14 @@ const PostList: FC<WithTranslation> = ({ t }) => {
             />
           </Tooltip>
           <Tooltip
-            title={t('post-list.table.tooltip.delete-post')}
+            title={t('table.tooltip.delete-post')}
             color="gray"
           >
             <Popconfirm
-              title={t('post-list.button.delete.popConfirm.single-item-title')}
+              title={t('button.delete.popConfirm.single-item-title')}
               onConfirm={() => onSingleRecordDeleteBtnClick(record)}
-              okText={t('post-list.button.delete.popConfirm.okText')}
-              cancelText={t('post-list.button.delete.popConfirm.cancelText')}
+              okText={t('button.delete.popConfirm.okText')}
+              cancelText={t('button.delete.popConfirm.cancelText')}
               placement={
                 localeStore.lang === LanguageActionTypeEnum.en
                   ? 'left'
@@ -800,7 +801,13 @@ const PostList: FC<WithTranslation> = ({ t }) => {
   ];
 
   const onSingleRecordDeleteBtnClick = async (record: IPostAntdTable) => {
-    await postStore.deletePosts([record.key]);
+    try {
+      await postStore.deletePosts([record.key]);
+      message.success(t("messages.post-deleting-success"));
+    } catch (error) {
+      message.success(t("messages.post-deleting-error"));
+    }
+    
     const existedSelectedRowKeys = selectedRowKeys.filter(
       (value, index, arr) => {
         return value !== record.key;
@@ -836,30 +843,30 @@ const PostList: FC<WithTranslation> = ({ t }) => {
     // Setting localized value for postStatus through the following switch statement
     switch (post.postStatus) {
       case PostStatusEnum.Publish:
-        localizedPostStatus = t('post-list.table.filters.post-status.publish');
+        localizedPostStatus = t('table.filters.post-status.publish');
         break;
       case PostStatusEnum.Pending:
-        localizedPostStatus = t('post-list.table.filters.post-status.pending');
+        localizedPostStatus = t('table.filters.post-status.pending');
         break;
       case PostStatusEnum.Inherit:
-        localizedPostStatus = t('post-list.table.filters.post-status.inherit');
+        localizedPostStatus = t('table.filters.post-status.inherit');
         break;
       case PostStatusEnum.AutoDraft:
         localizedPostStatus = t(
-          'post-list.table.filters.post-status.auto-draft'
+          'table.filters.post-status.auto-draft'
         );
         break;
       case PostStatusEnum.Draft:
-        localizedPostStatus = t('post-list.table.filters.post-status.draft');
+        localizedPostStatus = t('table.filters.post-status.draft');
         break;
       case PostStatusEnum.Private:
-        localizedPostStatus = t('post-list.table.filters.post-status.private');
+        localizedPostStatus = t('table.filters.post-status.private');
         break;
       case PostStatusEnum.Future:
-        localizedPostStatus = t('post-list.table.filters.post-status.future');
+        localizedPostStatus = t('table.filters.post-status.future');
         break;
       case PostStatusEnum.Trash:
-        localizedPostStatus = t('post-list.table.filters.post-status.trash');
+        localizedPostStatus = t('table.filters.post-status.trash');
         break;
       default:
         localizedPostStatus = '';
@@ -924,20 +931,20 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       createdAt:
         localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(
-              jalaliMoment(post.createdAt, 'YYYY-MM-DD HH:m:s')
+              jalaliMoment(post.createdAt, 'YYYY-MM-DD HH:mm:ss')
                 .locale('fa')
-                .format('YYYY-MM-DD HH:m:s')
+                .format('YYYY-MM-DD HH:mm:ss')
             )
-          : moment(post.createdAt).format('YYYY-MM-DD HH:m:s'),
+          : moment(post.createdAt).format('YYYY-MM-DD HH:mm:ss'),
       createdBy: post.createdBy?.userName,
       modifiedAt: post.modifiedAt
         ? localeStore.lang === LanguageActionTypeEnum.fa
           ? e2p(
-              jalaliMoment(post.modifiedAt, 'YYYY-MM-DD HH:m:s')
+              jalaliMoment(post.modifiedAt, 'YYYY-MM-DD HH:mm:ss')
                 .locale('fa')
-                .format('YYYY-MM-DD HH:m:s')
+                .format('YYYY-MM-DD HH:mm:ss')
             )
-          : moment(post.modifiedAt).format('YYYY-MM-DD HH:m:s')
+          : moment(post.modifiedAt).format('YYYY-MM-DD HH:mm:ss')
         : '',
       modifiedBy: post.modifiedBy?.userName,
       //userAgent: post.userAgent,
@@ -953,7 +960,13 @@ const PostList: FC<WithTranslation> = ({ t }) => {
   });
 
   const confirm = async (e: MouseEvent | undefined) => {
-    await postStore.deletePosts(selectedRowKeys as string[]);
+    try {
+      await postStore.deletePosts(selectedRowKeys as string[]);
+      message.success(t("messages.posts-deleting-success"));
+    } catch (error) {
+      message.success(t("messages.posts-deleting-error"));
+    }
+    
     setSelectedRowKeys([]);
     await postStore.loadPosts(DFAULT_PAGE_SIZE, currentPage - 1);
   };
@@ -963,9 +976,9 @@ const PostList: FC<WithTranslation> = ({ t }) => {
       <Row align="bottom">
         <Col span={12}>
           <Typography>
-            <Title level={4}>{t('post-list.title')}</Title>
+            <Title level={4}>{t('title')}</Title>
             <Paragraph ellipsis>
-              <Text type="secondary">{t('post-list.text')}</Text>
+              <Text type="secondary">{t('text')}</Text>
             </Paragraph>
           </Typography>
         </Col>
@@ -979,10 +992,10 @@ const PostList: FC<WithTranslation> = ({ t }) => {
           }}
         >
           <Popconfirm
-            title={t('post-list.button.delete.popConfirm.title')}
+            title={t('button.delete.popConfirm.title')}
             onConfirm={confirm}
-            okText={t('post-list.button.delete.popConfirm.okText')}
-            cancelText={t('post-list.button.delete.popConfirm.cancelText')}
+            okText={t('button.delete.popConfirm.okText')}
+            cancelText={t('button.delete.popConfirm.cancelText')}
             placement={
               localeStore.lang === LanguageActionTypeEnum.en ? 'left' : 'right'
             }
@@ -999,7 +1012,7 @@ const PostList: FC<WithTranslation> = ({ t }) => {
               size="small"
               style={{ marginBottom: '1rem' }}
             >
-              {t('post-list.button.delete.name')}
+              {t('button.delete.name')}
             </Button>
           </Popconfirm>
         </Col>
@@ -1030,8 +1043,8 @@ const PostList: FC<WithTranslation> = ({ t }) => {
                 localeStore.lang === LanguageActionTypeEnum.fa
                   ? e2p(total.toString())
                   : total;
-              const of = t('post-list.table.pagination.show-total.of');
-              const items = t('post-list.table.pagination.show-total.items');
+              const of = t('table.pagination.show-total.of');
+              const items = t('table.pagination.show-total.items');
               return `${localizedRangeZero}-${localizedRangeOne} ${of} ${localizedTotal} ${items}`;
             },
             total: postStore.postCount,
@@ -1081,4 +1094,4 @@ const PostList: FC<WithTranslation> = ({ t }) => {
   );
 };
 
-export default withTranslation()(observer(PostList));
+export default observer(PostList);

@@ -19,7 +19,7 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("refresh-token")]
+        [HttpGet("refresh-token")]
         public async Task<ActionResult<UserDto>> RefreshToken()
         {
             return await Mediator.Send(new RefreshToken.Command());
@@ -75,6 +75,12 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         public async Task<ActionResult<Unit>> ChangePassword(ChangePassword.Command command)
         {
             return await Mediator.Send(command);
+        }
+
+        [HttpPost("logout")]
+        public void Logout()
+        {
+            Response.Cookies.Delete("refreshToken");
         }
     }
 }

@@ -4,10 +4,12 @@ import { CloseCircleOutlined } from '@ant-design/icons';
 import { CoreRootStoreContext } from '../../../../app/stores/aspian-core/CoreRootStore';
 import { history } from '../../../..';
 import { v4 as uuidv4 } from 'uuid';
+import { useTranslation } from 'react-i18next';
 
 const { Paragraph, Text } = Typography;
 
 const ResultPage = () => {
+  const { t } = useTranslation('core_resultPage');
   /// Stores
   const coreRootStore = useContext(CoreRootStoreContext);
   const {
@@ -57,7 +59,7 @@ const ResultPage = () => {
                 fontSize: 16,
               }}
             >
-              The content you submitted has the following error:
+              {t('description')}
             </Text>
           </Paragraph>
           {errorMsgList.map((msg, i) => {

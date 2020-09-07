@@ -1,20 +1,21 @@
-import React, { FC, ReactElement, Fragment } from 'react';
+import React, { ReactElement, Fragment } from 'react';
 import { Breadcrumb } from 'antd';
 import { Link } from 'react-router-dom';
 import { history } from '../../../..';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
     DashboardOutlined,
     PushpinOutlined,
     EyeOutlined
   } from '@ant-design/icons';
 
-const AspianBreadcrumb: FC<WithTranslation> = ({ t }) => {
+const AspianBreadcrumb = () => {
+  const { t } = useTranslation('core_breadcrumb');
   // Existing routes to define
   const breadcrumbNameMap: { [key: string]: ReactElement } = {
-    '/admin': <Fragment><DashboardOutlined /> {t('breadcrumb.items.dashboard')}</Fragment>,
-    '/admin/posts': <Fragment><PushpinOutlined /> {t('breadcrumb.items.all-posts')}</Fragment>,
-    '/admin/posts/details': <Fragment><EyeOutlined /> {t('breadcrumb.items.view-post')}</Fragment>,
+    '/admin': <Fragment><DashboardOutlined /> {t('items.dashboard')}</Fragment>,
+    '/admin/posts': <Fragment><PushpinOutlined /> {t('items.all-posts')}</Fragment>,
+    '/admin/posts/details': <Fragment><EyeOutlined /> {t('items.view-post')}</Fragment>,
   };
 
   const pathSnippets = history.location.pathname.split('/').filter((i) => i);
@@ -28,7 +29,7 @@ const AspianBreadcrumb: FC<WithTranslation> = ({ t }) => {
     );
   });
 
-  return <Breadcrumb separator=" > " className="breadcrumb">{breadcrumbItems}</Breadcrumb>;
+  return <Breadcrumb className="breadcrumb">{breadcrumbItems}</Breadcrumb>;
 };
 
-export default withTranslation()(AspianBreadcrumb);
+export default AspianBreadcrumb;

@@ -1,0 +1,10 @@
+{
+  "user-menu": {
+    "user-greeting": "درود، ",
+    "items": {
+      "view-profile": "مشاهده نمایه ",
+      "account-settings": "تنظیمات حساب کاربری",
+      "logout": "خروج"
+    }
+  }
+}

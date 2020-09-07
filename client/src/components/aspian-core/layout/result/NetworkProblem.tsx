@@ -1,20 +1,21 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Result, Button } from 'antd';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-const NetworkProblem: FC<WithTranslation> = ({t}) => {
+const NetworkProblem = () => {
+  const { t } = useTranslation('core_networkProblemPage');
   return (
     <Result
       status="500"
-      title={t("result-pages.network-problem.title")}
-      subTitle={t("result-pages.network-problem.subtitle")}
+      title={t("title")}
+      subTitle={t("subtitle")}
       extra={
         <Button type="primary" href="/admin">
-          {t("result-pages.network-problem.button")}
+          {t("button")}
         </Button>
       }
     />
   );
 };
 
-export default withTranslation()(NetworkProblem);
+export default NetworkProblem;

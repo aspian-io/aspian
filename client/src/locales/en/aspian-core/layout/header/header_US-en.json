@@ -1,0 +1,11 @@
+{
+    "user-menu": {
+      "user-greeting": "Hello, ",
+      "items": {
+        "view-profile": "View Profile",
+        "account-settings": "Account Settings",
+        "logout": "Logout"
+      }
+    }
+  }
+  
