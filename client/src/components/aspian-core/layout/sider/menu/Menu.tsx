@@ -60,16 +60,12 @@ const AspianMenu: FC<RouteComponentProps> = ({ location }) => {
         title={t('items.posts.name')}
       >
         <Menu.Item key="/admin/posts">
-          <Link to="/admin/posts">
-            {t('items.posts.items.all-posts')}
-          </Link>
+          <Link to="/admin/posts">{t('items.posts.items.all-posts')}</Link>
         </Menu.Item>
-        <Menu.Item key="3">
-          {t('items.posts.items.add-new')}
+        <Menu.Item key="/admin/posts/add-new">
+          <Link to="/admin/posts/add-new">{t('items.posts.items.add-new')}</Link>
         </Menu.Item>
-        <Menu.Item key="4">
-          {t('items.posts.items.categories')}
-        </Menu.Item>
+        <Menu.Item key="4">{t('items.posts.items.categories')}</Menu.Item>
         <Menu.Item key="5">{t('items.posts.items.tags')}</Menu.Item>
       </SubMenu>
       <SubMenu
@@ -77,24 +73,16 @@ const AspianMenu: FC<RouteComponentProps> = ({ location }) => {
         icon={<CloudServerOutlined className="sider__menu-icon" />}
         title={t('items.media.name')}
       >
-        <Menu.Item key="6">
-          {t('items.media.items.library')}
-        </Menu.Item>
-        <Menu.Item key="7">
-          {t('items.media.items.add-new')}
-        </Menu.Item>
+        <Menu.Item key="6">{t('items.media.items.library')}</Menu.Item>
+        <Menu.Item key="7">{t('items.media.items.add-new')}</Menu.Item>
       </SubMenu>
       <SubMenu
         key="sub3"
         icon={<DiffOutlined className="sider__menu-icon" />}
         title={t('items.pages.name')}
       >
-        <Menu.Item key="8">
-          {t('items.pages.items.all-pages')}
-        </Menu.Item>
-        <Menu.Item key="9">
-          {t('items.pages.items.add-new')}
-        </Menu.Item>
+        <Menu.Item key="8">{t('items.pages.items.all-pages')}</Menu.Item>
+        <Menu.Item key="9">{t('items.pages.items.add-new')}</Menu.Item>
       </SubMenu>
       <Menu.Item
         key="10"
@@ -107,51 +95,29 @@ const AspianMenu: FC<RouteComponentProps> = ({ location }) => {
         icon={<FormatPainterOutlined className="sider__menu-icon" />}
         title={t('items.appearance.name')}
       >
-        <Menu.Item key="11">
-          {t('items.appearance.items.customize')}
-        </Menu.Item>
-        <Menu.Item key="12">
-          {t('items.appearance.items.menus')}
-        </Menu.Item>
+        <Menu.Item key="11">{t('items.appearance.items.customize')}</Menu.Item>
+        <Menu.Item key="12">{t('items.appearance.items.menus')}</Menu.Item>
       </SubMenu>
       <SubMenu
         key="sub5"
         icon={<TeamOutlined className="sider__menu-icon" />}
         title={t('items.users.name')}
       >
-        <Menu.Item key="13">
-          {t('items.users.items.all-users')}
-        </Menu.Item>
-        <Menu.Item key="14">
-          {t('items.users.items.add-new')}
-        </Menu.Item>
-        <Menu.Item key="15">
-          {t('items.users.items.your-profile')}
-        </Menu.Item>
+        <Menu.Item key="13">{t('items.users.items.all-users')}</Menu.Item>
+        <Menu.Item key="14">{t('items.users.items.add-new')}</Menu.Item>
+        <Menu.Item key="15">{t('items.users.items.your-profile')}</Menu.Item>
       </SubMenu>
       <SubMenu
         key="sub6"
         icon={<ControlOutlined className="sider__menu-icon" />}
         title={t('items.settings.name')}
       >
-        <Menu.Item key="16">
-          {t('items.settings.items.general')}
-        </Menu.Item>
-        <Menu.Item key="17">
-          {t('items.settings.items.writing')}
-        </Menu.Item>
-        <Menu.Item key="18">
-          {t('items.settings.items.reading')}
-        </Menu.Item>
-        <Menu.Item key="19">
-          {t('items.settings.items.discussion')}
-        </Menu.Item>
-        <Menu.Item key="20">
-          {t('items.settings.items.media')}
-        </Menu.Item>
-        <Menu.Item key="21">
-          {t('items.settings.items.permalinks')}
-        </Menu.Item>
+        <Menu.Item key="16">{t('items.settings.items.general')}</Menu.Item>
+        <Menu.Item key="17">{t('items.settings.items.writing')}</Menu.Item>
+        <Menu.Item key="18">{t('items.settings.items.reading')}</Menu.Item>
+        <Menu.Item key="19">{t('items.settings.items.discussion')}</Menu.Item>
+        <Menu.Item key="20">{t('items.settings.items.media')}</Menu.Item>
+        <Menu.Item key="21">{t('items.settings.items.permalinks')}</Menu.Item>
       </SubMenu>
       <SubMenu
         key="sub7"

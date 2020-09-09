@@ -9,6 +9,7 @@ using Aspian.Domain.BaseModel;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.OptionModel;
 using Aspian.Domain.PostModel;
+using Aspian.Domain.ScheduleModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Domain.UserModel;
@@ -29,6 +30,7 @@ namespace Aspian.Persistence
         }
 
         public DbSet<Activity> Activities { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<CommentHistory> CommentHistories { get; set; }
         public DbSet<Option> Options { get; set; }
@@ -54,6 +56,7 @@ namespace Aspian.Persistence
             // Model configurations
             builder.ApplyConfiguration(new SiteConfig());
             builder.ApplyConfiguration(new ActivityConfig());
+            builder.ApplyConfiguration(new ScheduleConfig());
             builder.ApplyConfiguration(new UserConfig());
             builder.ApplyConfiguration(new UsermetaConfig());
             builder.ApplyConfiguration(new CommentConfig());

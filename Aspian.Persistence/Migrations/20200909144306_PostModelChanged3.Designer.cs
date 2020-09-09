@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200827232302_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200909144306_PostModelChanged3")]
+    partial class PostModelChanged3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -432,6 +432,9 @@ namespace Aspian.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ScheduledFor")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("SiteId")
                         .HasColumnType("uniqueidentifier");
 
@@ -518,63 +521,6 @@ namespace Aspian.Persistence.Migrations
                     b.ToTable("PostAttachments");
                 });
 
-            modelBuilder.Entity("Aspian.Domain.PostModel.PostHistory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("CommentAllowed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Excerpt")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("PostStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Slug")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Subtitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserAgent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserIPAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("PostHistories");
-                });
-
             modelBuilder.Entity("Aspian.Domain.PostModel.Postmeta", b =>
                 {
                     b.Property<Guid>("Id")
@@ -588,6 +534,7 @@ namespace Aspian.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MetaKey")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MetaValue")
@@ -617,6 +564,27 @@ namespace Aspian.Persistence.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("Postmetas");
+                });
+
+            modelBuilder.Entity("Aspian.Domain.ScheduleModel.Schedule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ScheduleType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ScheduledFor")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ScheduledItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("Aspian.Domain.SiteModel.Site", b =>
@@ -1356,19 +1324,6 @@ namespace Aspian.Persistence.Migrations
                         .WithMany("PostAttachments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Aspian.Domain.PostModel.PostHistory", b =>
-                {
-                    b.HasOne("Aspian.Domain.UserModel.User", "CreatedBy")
-                        .WithMany("CreatedPostHistories")
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Aspian.Domain.PostModel.Post", "Post")
-                        .WithMany("PostHistories")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

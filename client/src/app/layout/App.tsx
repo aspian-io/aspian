@@ -16,6 +16,7 @@ import AspianSider from '../../components/aspian-core/layout/sider/Sider';
 import AspianFooter from '../../components/aspian-core/layout/footer/Footer';
 import PostList from '../../components/aspian-core/post/postList/PostList';
 import PostDetails from '../../components/aspian-core/post/postDetails/PostDetails';
+import PostCreate from '../../components/aspian-core/post/postCreate/PostCreate';
 import Login from '../../components/aspian-core/user/Login';
 import Register from '../../components/aspian-core/user/Register';
 import ResultPage from '../../components/aspian-core/layout/result/ResultPage';
@@ -90,6 +91,7 @@ const App = () => {
     >
       <Layout className="aspian__layout" id="appLayout">
         <Switch>
+        {!isLoggedIn && !user && <Route exact path="/" render={() => (<Redirect to="/admin" />)} />}
           {!isLoggedIn && !user && <Route exact path="/login" component={Login} />}
           {isLoggedIn && user && <Route exact path="/login" render={() => (<Redirect to="/admin" />)} />}
           <Route exact path="/unathorized401" component={Unathorized401} />
@@ -113,7 +115,7 @@ const App = () => {
                           path="/admin/posts/details/:id"
                           component={PostDetails}
                         />
-
+                        <Route path="/admin/posts/add-new" component={PostCreate} />
                         <Route path="/badrequest" component={BadRequest} />
                         <Route path="/notfound" component={NotFound} />
                         <Route path="/server-error" component={ServerError} />

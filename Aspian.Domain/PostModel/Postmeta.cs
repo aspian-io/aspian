@@ -6,7 +6,7 @@ namespace Aspian.Domain.PostModel
     public class Postmeta : Entitymeta, IPostmeta
     {
         
-        public string MetaKey { get; set; }
+        public PostMetaKeyEnum MetaKey { get; set; }
         public string MetaValue { get; set; }
 
         #region Navigation Properties

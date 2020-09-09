@@ -31,7 +31,8 @@ const AspianHeader = () => {
     <Menu>
       <Menu.Item key="0" style={{ fontSize: '.7rem' }}>
         <a href="#!">
-          <ProfileOutlined className="text primary-color" /> {t('user-menu.items.view-profile')}
+          <ProfileOutlined className="text primary-color" />{' '}
+          {t('user-menu.items.view-profile')}
         </a>
       </Menu.Item>
       <Menu.Item key="1" style={{ fontSize: '.7rem' }}>
@@ -94,9 +95,13 @@ const AspianHeader = () => {
                   backgroundColor: GetRandomColor(),
                   verticalAlign: 'middle',
                 }}
-                src={agent.Attachments.getFileUrl(
-                  userStore.user!.profilePhotoName
-                )}
+                src={
+                  userStore.user?.profilePhotoName
+                    ? agent.Attachments.getFileUrl(
+                        userStore.user!.profilePhotoName
+                      )
+                    : ''
+                }
               >
                 {userStore.user?.displayName}
               </Avatar>

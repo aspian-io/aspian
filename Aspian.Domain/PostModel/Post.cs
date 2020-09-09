@@ -16,6 +16,7 @@ namespace Aspian.Domain.PostModel
         public string Content { get; set; }
         public string Slug { get; set; }
         public PostStatusEnum PostStatus { get; set; }
+        public DateTime? ScheduledFor { get; set; }
         public bool CommentAllowed { get; set; }
         public int Order { get; set; }
         public int ViewCount { get; set; }

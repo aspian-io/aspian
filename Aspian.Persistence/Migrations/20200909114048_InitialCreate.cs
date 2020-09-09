@@ -62,6 +62,19 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Schedules",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ScheduleType = table.Column<string>(nullable: false),
+                    ScheduledFor = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schedules", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -258,6 +271,25 @@ namespace Aspian.Persistence.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ScheduledItems",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ScheduledItemId = table.Column<Guid>(nullable: false),
+                    ScheduleId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ScheduledItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ScheduledItems_Schedules_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -623,43 +655,6 @@ namespace Aspian.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PostHistories",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(nullable: true),
-                    Subtitle = table.Column<string>(nullable: true),
-                    Excerpt = table.Column<string>(nullable: true),
-                    Content = table.Column<string>(nullable: true),
-                    Slug = table.Column<string>(nullable: true),
-                    ParentId = table.Column<Guid>(nullable: true),
-                    PostStatus = table.Column<int>(nullable: false),
-                    CommentAllowed = table.Column<bool>(nullable: false),
-                    Order = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    CreatedById = table.Column<string>(nullable: true),
-                    UserAgent = table.Column<string>(nullable: true),
-                    UserIPAddress = table.Column<string>(nullable: true),
-                    PostId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PostHistories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PostHistories_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PostHistories_Posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Postmetas",
                 columns: table => new
                 {
@@ -670,7 +665,7 @@ namespace Aspian.Persistence.Migrations
                     ModifiedById = table.Column<string>(nullable: true),
                     UserAgent = table.Column<string>(nullable: true),
                     UserIPAddress = table.Column<string>(nullable: true),
-                    MetaKey = table.Column<string>(nullable: true),
+                    MetaKey = table.Column<string>(nullable: false),
                     MetaValue = table.Column<string>(nullable: true),
                     PostId = table.Column<Guid>(nullable: false)
                 },
@@ -1057,16 +1052,6 @@ namespace Aspian.Persistence.Migrations
                 column: "ModifiedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostHistories_CreatedById",
-                table: "PostHistories",
-                column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PostHistories_PostId",
-                table: "PostHistories",
-                column: "PostId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Postmetas_CreatedById",
                 table: "Postmetas",
                 column: "CreatedById");
@@ -1114,6 +1099,11 @@ namespace Aspian.Persistence.Migrations
                 column: "Title",
                 unique: true,
                 filter: "[Title] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ScheduledItems_ScheduleId",
+                table: "ScheduledItems",
+                column: "ScheduleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sites_ModifiedById",
@@ -1258,10 +1248,10 @@ namespace Aspian.Persistence.Migrations
                 name: "PostAttachments");
 
             migrationBuilder.DropTable(
-                name: "PostHistories");
+                name: "Postmetas");
 
             migrationBuilder.DropTable(
-                name: "Postmetas");
+                name: "ScheduledItems");
 
             migrationBuilder.DropTable(
                 name: "TaxonomyPosts");
@@ -1286,6 +1276,9 @@ namespace Aspian.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Attachments");
+
+            migrationBuilder.DropTable(
+                name: "Schedules");
 
             migrationBuilder.DropTable(
                 name: "Terms");

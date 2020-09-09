@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Domain.ActivityModel;
-using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.PostModel;
+using Aspian.Domain.ScheduleModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Persistence;
@@ -30,6 +28,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices
             public string Content { get; set; }
             public string Slug { get; set; }
             public PostStatusEnum PostStatus { get; set; }
+            public string ScheduledFor { get; set; }
             public bool CommentAllowed { get; set; }
             public int Order { get; set; }
             public int ViewCount { get; set; }
@@ -61,8 +60,10 @@ namespace Aspian.Application.Core.PostServices.AdminServices
             private readonly IMapper _mapper;
             private readonly ISlugGenerator _slugGenerator;
             private readonly IActivityLogger _logger;
-            public Handler(DataContext context, IMapper mapper, ISlugGenerator slugGenerator, IActivityLogger logger)
+            private readonly IScheduler _scheduler;
+            public Handler(DataContext context, IMapper mapper, ISlugGenerator slugGenerator, IScheduler scheduler, IActivityLogger logger)
             {
+                _scheduler = scheduler;
                 _logger = logger;
                 _slugGenerator = slugGenerator;
                 _mapper = mapper;
@@ -81,15 +82,22 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                                 _slugGenerator.GenerateSlug(request.Title) :
                                 _slugGenerator.GenerateSlug(request.Slug);
 
-
                 var post = _mapper.Map<Post>(request);
                 post.Site = site;
-                _context.Posts.Add(post);
+                post.ScheduledFor = request.PostStatus == PostStatusEnum.Future ? Convert.ToDateTime(request.ScheduledFor) : DateTime.UtcNow;
 
+                _context.Posts.Add(post);
 
                 var success = await _context.SaveChangesAsync() > 0;
 
-                if (success) 
+                if (request.PostStatus == PostStatusEnum.Future && post.ScheduledFor != null && post.Id != null)
+                {
+                    await _scheduler.SetAndQueueTaskAsync(ScheduleTypeEnum.ScheduledPost, post.ScheduledFor ?? DateTime.UtcNow, post.Id);
+                } else {
+                    throw new RestException(HttpStatusCode.BadRequest, new { post = "publish date is required!" });
+                }
+
+                if (success)
                 {
                     var postTruncatedContent = post.Title.Length > 30 ? post.Title.Substring(0, 30) + "..." : post.Title;
                     var postAuthorUsername = post.CreatedBy.UserName;

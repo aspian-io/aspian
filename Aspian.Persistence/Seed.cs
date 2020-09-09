@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Aspian.Domain.CommentModel;
 using Aspian.Domain.OptionModel;
 using Aspian.Domain.PostModel;
+using Aspian.Domain.ScheduleModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Domain.TaxonomyModel;
 using Aspian.Domain.UserModel;
@@ -69,7 +70,7 @@ namespace Aspian.Persistence
                 }
             }
 
-            // Sedding Sites
+            // Seeding Sites
             if (!context.Sites.Any())
             {
                 var sites = new List<Site>

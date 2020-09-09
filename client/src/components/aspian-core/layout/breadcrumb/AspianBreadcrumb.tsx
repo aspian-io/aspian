@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import {
     DashboardOutlined,
     PushpinOutlined,
-    EyeOutlined
   } from '@ant-design/icons';
 
 const AspianBreadcrumb = () => {
@@ -14,8 +13,9 @@ const AspianBreadcrumb = () => {
   // Existing routes to define
   const breadcrumbNameMap: { [key: string]: ReactElement } = {
     '/admin': <Fragment><DashboardOutlined /> {t('items.dashboard')}</Fragment>,
-    '/admin/posts': <Fragment><PushpinOutlined /> {t('items.all-posts')}</Fragment>,
-    '/admin/posts/details': <Fragment><EyeOutlined /> {t('items.view-post')}</Fragment>,
+    '/admin/posts': <Fragment><PushpinOutlined /> {t('items.posts')}</Fragment>,
+    '/admin/posts/details': <Fragment>{t('items.view-post')}</Fragment>,
+    '/admin/posts/add-new': <Fragment>{t('items.add-new')}</Fragment>,
   };
 
   const pathSnippets = history.location.pathname.split('/').filter((i) => i);

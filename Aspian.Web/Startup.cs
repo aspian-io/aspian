@@ -23,10 +23,7 @@ using Infrastructure.Option;
 using Aspian.Domain.UserModel.Policy;
 using Infrastructure.Utility;
 using Infrastructure.Logger;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Threading.Tasks;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+using Infrastructure.Schedule;
 
 namespace Aspian.Web
 {
@@ -42,6 +39,12 @@ namespace Aspian.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Registered services for Scheduling functionalities
+            services.AddHostedService<QueuedHostedService>();
+            services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+            services.AddSingleton<IScheduler, ScheduleTask>();
+
+            // Adding data context
             services.AddDbContext<DataContext>(options =>
             {
                 // Providing Lazy Loading service for Entity Framework models
@@ -50,6 +53,7 @@ namespace Aspian.Web
                 options.UseSqlServer(Configuration.GetConnectionString("AspianConnection"));
             });
 
+            // CORS services and policies
             services.AddCors(OptionAccessor =>
             {
                 OptionAccessor.AddPolicy("CorsPolicy", policy =>
