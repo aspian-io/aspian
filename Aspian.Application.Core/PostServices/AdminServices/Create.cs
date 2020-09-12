@@ -92,7 +92,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices
 
                 if (request.PostStatus == PostStatusEnum.Future && post.ScheduledFor != null && post.Id != null)
                 {
-                    await _scheduler.SetAndQueueTaskAsync(ScheduleTypeEnum.ScheduledPost, post.ScheduledFor ?? DateTime.UtcNow, post.Id);
+                    await _scheduler.SetAndQueueTaskAsync(ScheduleTypeEnum.Post, post.ScheduledFor ?? DateTime.UtcNow, post.Id);
                 } else {
                     throw new RestException(HttpStatusCode.BadRequest, new { post = "publish date is required!" });
                 }

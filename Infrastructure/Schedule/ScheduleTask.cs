@@ -26,7 +26,6 @@ namespace Infrastructure.Schedule
 
         private IBackgroundTaskQueue TaskQueue { get; }
         private IServiceProvider Services { get; }
-        //private DateTime ScheduleFor { get; set; }
         private List<Aspian.Domain.ScheduleModel.Schedule> Schedules = new List<Aspian.Domain.ScheduleModel.Schedule>();
 
         // Set task to schedule for a specific date and time
@@ -97,7 +96,7 @@ namespace Infrastructure.Schedule
             {
                 foreach (var item in Schedules)
                 {
-                    _logger.LogInformation($"Post scheduled for: {item.ScheduledFor}.");
+                    _logger.LogInformation($"{item.ScheduleType} scheduled for: {item.ScheduledFor}.");
 
                     if ((item.ScheduledFor - DateTime.UtcNow) <= TimeSpan.Zero)
                     {
@@ -115,8 +114,7 @@ namespace Infrastructure.Schedule
 
         private void DoWork(object state)
         {
-            var utcDateTimeNow = DateTime.UtcNow;
-            ScheduledItemChangeState(utcDateTimeNow).Wait();
+            ScheduledItemChangeState(DateTime.UtcNow).Wait();
         }
 
         // Changes after the scheduled time comes
@@ -133,7 +131,7 @@ namespace Infrastructure.Schedule
                 {
                     switch (scheduledItem.ScheduleType)
                     {
-                        case ScheduleTypeEnum.ScheduledPost:
+                        case ScheduleTypeEnum.Post:
                             var post = await context.Posts.FindAsync(scheduledItem.ScheduledItemId);
                             if (post != null)
                             {

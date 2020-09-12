@@ -43,7 +43,7 @@ const App = () => {
     getCurrentUser,
     setAppLoaded,
     isAppLoaded,
-    isLoggedIn
+    isLoggedIn,
   } = coreRootStore.userStore;
 
   const { Content } = Layout;
@@ -91,9 +91,27 @@ const App = () => {
     >
       <Layout className="aspian__layout" id="appLayout">
         <Switch>
-        {!isLoggedIn && !user && <Route exact path="/" render={() => (<Redirect to="/admin" />)} />}
-          {!isLoggedIn && !user && <Route exact path="/login" component={Login} />}
-          {isLoggedIn && user && <Route exact path="/login" render={() => (<Redirect to="/admin" />)} />}
+          <Route
+            exact
+            path="/"
+            render={() =>
+              isLoggedIn && user ? (
+                <Redirect to="/admin" />
+              ) : (
+                <Redirect to="/login" />
+              )
+            }
+          />
+          {!isLoggedIn && !user && (
+            <Route exact path="/login" component={Login} />
+          )}
+          {isLoggedIn && user && (
+            <Route
+              exact
+              path="/login"
+              render={() => <Redirect to="/admin" />}
+            />
+          )}
           <Route exact path="/unathorized401" component={Unathorized401} />
           <Route exact path="/unathorized403" component={Unathorized403} />
           <Route
@@ -115,7 +133,10 @@ const App = () => {
                           path="/admin/posts/details/:id"
                           component={PostDetails}
                         />
-                        <Route path="/admin/posts/add-new" component={PostCreate} />
+                        <Route
+                          path="/admin/posts/add-new"
+                          component={PostCreate}
+                        />
                         <Route path="/badrequest" component={BadRequest} />
                         <Route path="/notfound" component={NotFound} />
                         <Route path="/server-error" component={ServerError} />

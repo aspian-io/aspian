@@ -5,7 +5,6 @@ import {
   LanguageActionTypeEnum,
   DirectionActionTypeEnum,
 } from './types';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 configure({ enforceActions: 'observed' });
 
@@ -37,34 +36,12 @@ export default class LocaleStore {
 
   @observable lang: LanguageActionTypeEnum = this.initialLang;
   @observable dir: DirectionActionTypeEnum = this.initialDir;
-  @observable ckEditorInstance: any = null;
+  
 
   @action handleChangeLanguage = (
     lang: LanguageActionTypeEnum = LanguageActionTypeEnum.en
   ) => {
     localStorage.setItem(LocaleVariableEnum.ASPIAN_CMS_LANG, lang);
-    const ckEditorInstance = this.ckEditorInstance;
-    if (ckEditorInstance !== null) {
-      // ckEditorInstance.destroy().then(() => {
-      //   ClassicEditor.replace('editor', {language: this.lang})
-      // });
-      ckEditorInstance.destroy().then(() => {
-        ClassicEditor
-          .create( document.querySelector( '#addPostCkEditor' ), {
-            language: this.lang
-          } )
-          .then( (editor: any) => {
-            editor.model.document.on( 'change:data', () => {
-              const data = editor.getData();
-              console.log( data );
-          } );
-            runInAction('change language and dir to LTR', () => {
-              this.ckEditorInstance = editor;
-            });
-          } )
-      })
-      
-    }
 
     // For English language
     if (lang === LanguageActionTypeEnum.en) {
@@ -92,8 +69,4 @@ export default class LocaleStore {
       });
     }
   };
-
-  @action storeCkEditorInstance = (editor: any) => {
-    this.ckEditorInstance = editor;
-  }
 }

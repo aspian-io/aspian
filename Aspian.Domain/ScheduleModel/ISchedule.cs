@@ -12,6 +12,6 @@ namespace Aspian.Domain.ScheduleModel
 
     public enum ScheduleTypeEnum
     {
-        ScheduledPost
+        Post
     }
 }
