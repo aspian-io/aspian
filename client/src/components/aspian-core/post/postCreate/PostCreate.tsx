@@ -19,7 +19,7 @@ const PostCreate = () => {
       </Row>
       <Row>
         <Col xs={24} sm={18}>
-          <div id="addPostCkEditor"></div>
+          <div id="addPostEditor"></div>
         </Col>
         <Col xs={24} sm={6}></Col>
       </Row>
