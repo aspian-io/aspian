@@ -12,11 +12,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aspian.Application.Core.AttachmentServices.AdminServices
 {
-    public class Delete
+    public class TusDelete
     {
         public class Command : IRequest
         {
-            public Guid Id { get; set; }
+            public string FileTusId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -33,7 +33,7 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var attachment = await _context.Attachments.SingleOrDefaultAsync(x => x.Id == request.Id);
+                var attachment = await _context.Attachments.SingleOrDefaultAsync(x => x.FileTusId == request.FileTusId);
 
                 if (attachment == null)
                     throw new RestException(HttpStatusCode.NotFound, new { Attachment = "Not found" });
@@ -49,7 +49,7 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
                 if (success)
                 {
                     await _logger.LogActivity(
-                        attachment.SiteId,
+                        attachment.SiteId, 
                         ActivityCodeEnum.AttachmentDelete,
                         ActivitySeverityEnum.Low,
                         ActivityObjectEnum.Attachemnt,

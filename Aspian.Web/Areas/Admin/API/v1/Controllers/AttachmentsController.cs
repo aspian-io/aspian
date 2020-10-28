@@ -34,6 +34,13 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
             return await Mediator.Send(new Delete.Command { Id = id });
         }
 
+        [Authorize(Policy = AspianCorePolicy.AdminAttachmentDeletePolicy)]
+        [HttpDelete("deletetusfile/{id}")]
+        public async Task<ActionResult<Unit>> TusDelete(string id)
+        {
+            return await Mediator.Send(new TusDelete.Command { FileTusId = id });
+        }
+
         [HttpPost("setmainphoto/{id}")]
         public async Task<ActionResult<Unit>> SetMainPhoto(Guid id)
         {

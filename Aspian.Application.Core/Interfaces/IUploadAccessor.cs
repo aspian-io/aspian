@@ -2,6 +2,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Aspian.Application.Core.AttachmentServices.AdminServices;
 using Aspian.Domain.AttachmentModel;
+using Aspian.Domain.SiteModel;
 using Microsoft.AspNetCore.Http;
 
 namespace Aspian.Application.Core.Interfaces
@@ -15,7 +16,7 @@ namespace Aspian.Application.Core.Interfaces
         /// FileUploadResultDto class which will be containing uploaded file.
         /// </returns>
         /// <param name="file" >The file you want to upload which must be an IFormFile type.</param>
-        Task<FileUploadResult> AddFileAsync(IFormFile file, UploadLocationEnum uploadLocation);
+        Task<FileUploadResult> AddFileAsync(IFormFile file);
 
         /// <summary>
         /// Delete file by using <paramref name="filePath"/>.
@@ -46,5 +47,6 @@ namespace Aspian.Application.Core.Interfaces
         /// <param name="fileRelativePath" >Relative path of the file.</param>
         /// <param name="uploadLocation" >The location of a requested file which could be LocalHost or FtpServer.</param>
         Task<MemoryStream> DownloadFileAsync(string fileRelativePath, UploadLocationEnum uploadLocation);
+
     }
 }

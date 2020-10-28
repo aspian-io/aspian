@@ -42,7 +42,12 @@ namespace Aspian.Web
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel((context, options) =>
+                    {
+                        // Handle requests up to 2 GB
+                        options.Limits.MaxRequestBodySize = 2147483648;
+                    })
+                    .UseStartup<Startup>();
                 });
     }
 }

@@ -24,6 +24,17 @@ using Aspian.Domain.UserModel.Policy;
 using Infrastructure.Utility;
 using Infrastructure.Logger;
 using Infrastructure.Schedule;
+using tusdotnet;
+using tusdotnet.Models;
+using tusdotnet.Stores;
+using tusdotnet.Models.Configuration;
+using tusdotnet.Interfaces;
+using System.IO;
+using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Aspian.Domain.SiteModel;
 
 namespace Aspian.Web
 {
@@ -58,7 +69,7 @@ namespace Aspian.Web
             {
                 OptionAccessor.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000").WithExposedHeaders(tusdotnet.Helpers.CorsHelper.GetExposedHeaders());
                 });
             });
 
@@ -154,6 +165,7 @@ namespace Aspian.Web
             services.AddScoped<IActivityLogger, ActivityLogger>();
             services.AddScoped<ISlugGenerator, SlugGenerator>();
 
+            services.AddSingleton<ITusUploadUtils, TusUploadUtils>();
             services.AddScoped<IUploadAccessor, UploadAccessor>();
             services.AddScoped<IOptionAccessor, OptionAccessor>();
             services.Configure<FtpServerSettings>(Configuration.GetSection("FtpServer"));
@@ -166,7 +178,7 @@ namespace Aspian.Web
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor, ILogger<Startup> logger, ITusUploadUtils tusUploadUtils)
         {
 
             if (env.IsDevelopment())
@@ -216,6 +228,92 @@ namespace Aspian.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            //
+            string tempPath = Path.Combine(env.ContentRootPath, "uploads/temp");
+            app.UseTus(httpContext => new DefaultTusConfiguration
+            {
+                // c:\tusfiles is where to store files
+                Store = new TusDiskStore(tempPath, true),
+                // On what url should we listen for uploads?
+                UrlPath = "/api/v1/post/add-media",
+                Events = new Events
+                {
+                    OnAuthorizeAsync = eventContext =>
+                    {
+                        var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+
+                        if (refreshToken == null)
+                        {
+                            eventContext.FailRequest(HttpStatusCode.Unauthorized);
+                            return Task.CompletedTask;
+                        }
+
+                        // Do other verification on the user; claims, roles, etc. In this case, check the username.
+                        // if (eventContext.HttpContext.User.Identity.Name != "test")
+                        // {
+                        //     eventContext.FailRequest(HttpStatusCode.Forbidden, "'test' is the only allowed user");
+                        //     return Task.CompletedTask;
+                        // }
+
+                        // Verify different things depending on the intent of the request.
+                        // E.g.:
+                        //   Does the file about to be written belong to this user?
+                        //   Is the current user allowed to create new files or have they reached their quota?
+                        //   etc etc
+                        switch (eventContext.Intent)
+                        {
+                            case IntentType.CreateFile:
+                                break;
+                            case IntentType.ConcatenateFiles:
+                                break;
+                            case IntentType.WriteFile:
+                                break;
+                            case IntentType.DeleteFile:
+                                break;
+                            case IntentType.GetFileInfo:
+                                break;
+                            case IntentType.GetOptions:
+                                break;
+                            default:
+                                break;
+                        }
+
+                        return Task.CompletedTask;
+                    },
+
+                    OnBeforeCreateAsync = ctx =>
+                    {
+                        // Create temp directory if it does not exist...
+                        Directory.CreateDirectory(tempPath);
+
+                        if (!ctx.Metadata.ContainsKey("name"))
+                        {
+                            ctx.FailRequest("name metadata must be specified. ");
+                        }
+
+                        if (!ctx.Metadata.ContainsKey("type"))
+                        {
+                            ctx.FailRequest("filetype metadata must be specified. ");
+                        }
+
+                        return Task.CompletedTask;
+                    },
+
+                    OnFileCompleteAsync = async eventContext =>
+                    {
+                        ITusFile file = await eventContext.GetFileAsync();
+
+                        var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+
+                        // Adding file to permanent path and saving its information into database
+                        await tusUploadUtils.TusAddFileAsync(file, SiteTypeEnum.Blog, refreshToken, eventContext.CancellationToken);
+                        // Deleting temp files related to the uploaded tus file from temp folder
+                        await tusUploadUtils.TusDeleteTempFileAsync(file.Id, tempPath);
+                    },
+                }
+            });
+
 
             app.UseEndpoints(endpoints =>
             {

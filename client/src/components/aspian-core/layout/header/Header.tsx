@@ -15,7 +15,7 @@ import {
 } from '../../../../app/stores/aspian-core/locale/types';
 import { CoreRootStoreContext } from '../../../../app/stores/aspian-core/CoreRootStore';
 import Avatar from 'antd/lib/avatar/avatar';
-import GetRandomColor from '../../../../utils/aspian-core/base/GetRandomColor';
+import GetRandomColor from '../../../../js-ts/aspian-core/base/GetRandomColor';
 import agent from '../../../../app/api/aspian-core/agent';
 import { useTranslation } from 'react-i18next';
 

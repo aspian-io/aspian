@@ -621,8 +621,8 @@ namespace Aspian.Persistence
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
                         Optionmetas = new List<Optionmeta> {
                             new Optionmeta {
-                                PublicKeyName = "Comment Blog",
-                                Key = KeyEnum.Comment_Blog,
+                                PublicKeyName = "Blog Comment",
+                                Key = KeyEnum.Blog__Comment,
                                 KeyDescription = "Approved/NotApproved Blog Comments",
                                 Value = ValueEnum.Comment_Approved,
                                 ValueDescription = "Approved",

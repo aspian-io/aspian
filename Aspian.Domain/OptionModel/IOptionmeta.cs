@@ -56,7 +56,7 @@ namespace Aspian.Domain.OptionModel
         Attachment__Compressed_Rar,
         Attachment__Compressed_7z,
 
-        Comment_Blog,
+        Blog__Comment,
     }
 
     public enum ValueEnum

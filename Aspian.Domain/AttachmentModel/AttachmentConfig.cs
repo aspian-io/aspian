@@ -19,6 +19,10 @@ namespace Aspian.Domain.AttachmentModel
                 .HasConversion(UploadLocationConverter);
 
             builder
+                .HasIndex(a => a.FileTusId)
+                .IsUnique();
+
+            builder
                 .HasOne(a => a.CreatedBy)
                 .WithMany(u => u.CreatedAttachments)
                 .HasForeignKey(a => a.CreatedById);

@@ -58,7 +58,7 @@ namespace Aspian.Application.Core.UserServices.AdminServices
                     Token = refreshTokenDto.JWT,
                     UserName = user.UserName,
                     Role = user.Role,
-                    ProfilePhotoName = user.CreatedAttachments?.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain).FileName
+                    //ProfilePhotoName = user.CreatedAttachments?.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain)?.FileName
                 };
             }
         }

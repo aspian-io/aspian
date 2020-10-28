@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.Interfaces;
@@ -15,7 +16,10 @@ namespace Aspian.Application.Core.TaxonomyServices.AdminServices
 {
     public class List
     {
-        public class Query : IRequest<List<TaxonomyDto>> { }
+        public class Query : IRequest<List<TaxonomyDto>>
+        {
+            public TaxonomyTypeEnum? TaxonomyType { get; set; }
+        }
 
         public class Handler : IRequestHandler<Query, List<TaxonomyDto>>
         {
@@ -33,7 +37,9 @@ namespace Aspian.Application.Core.TaxonomyServices.AdminServices
             public async Task<List<TaxonomyDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var site = await _context.Sites.FirstOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
-                var taxonomies = await _context.Taxonomies.ToListAsync();
+                var taxonomies = request.TaxonomyType == null ?
+                                 await _context.Taxonomies.ToListAsync() :
+                                 await _context.Taxonomies.Where(x => x.Type == request.TaxonomyType).ToListAsync();
 
                 await _logger.LogActivity(
                     site.Id,

@@ -4,14 +4,16 @@ using Aspian.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201007110119_attachmendSizeFieldTypeChangedToLong")]
+    partial class attachmendSizeFieldTypeChangedToLong
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,9 +86,6 @@ namespace Aspian.Persistence.Migrations
                     b.Property<long>("FileSize")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("FileTusId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
 
@@ -122,10 +121,6 @@ namespace Aspian.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("FileTusId")
-                        .IsUnique()
-                        .HasFilter("[FileTusId] IS NOT NULL");
 
                     b.HasIndex("ModifiedById");
 

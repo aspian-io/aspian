@@ -53,7 +53,7 @@ namespace Aspian.Application.Core.CommentServices.AdminServices
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
                 var site = await _context.Sites.FirstOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
-                var option = await _optionAccessor.GetOptionByKeyAsync(KeyEnum.Comment_Blog);
+                var option = await _optionAccessor.GetOptionByKeyAsync(KeyEnum.Blog__Comment);
 
                 var comment = _mapper.Map<Comment>(request);
                 comment.Site = await _context.Sites.SingleOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);

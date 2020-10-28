@@ -15,7 +15,7 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
     {
         [Authorize(Policy = AspianCorePolicy.AdminPostListPolicy)]
         [HttpGet]
-        public async Task<ActionResult<List.PostsEnvelope>> List([FromQuery]List.Query query)
+        public async Task<ActionResult<List.PostsEnvelope>> List([FromQuery] List.Query query)
         {
             return await Mediator.Send(query);
         }

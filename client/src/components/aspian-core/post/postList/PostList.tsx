@@ -58,7 +58,7 @@ import '../../../../scss/aspian-core/components/modern-calendar/_persian-datepic
 import {
   e2p,
   ConvertDigitsToCurrentLanguage,
-} from '../../../../utils/aspian-core/base/NumberConverter';
+} from '../../../../js-ts/aspian-core/base/NumberConverter';
 import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 import { history } from '../../../..';

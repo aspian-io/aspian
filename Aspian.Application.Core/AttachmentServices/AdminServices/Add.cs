@@ -41,9 +41,8 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
             public async Task<AttachmentDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 var site = await _context.Sites.FirstOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
-                // Upload location specified here
-                var uploadLocation = UploadLocationEnum.LocalHost;
-                var fileUploadResult = await _uploadAccessor.AddFileAsync(request.File, uploadLocation);
+
+                var fileUploadResult = await _uploadAccessor.AddFileAsync(request.File);
 
                 var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername());
 
@@ -51,7 +50,6 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
                     fileUploadResult.IsMain = true;
 
                 var userAttachment = _mapper.Map<FileUploadResult, Attachment>(fileUploadResult);
-                userAttachment.UploadLocation = uploadLocation;
                 userAttachment.Site = site;
 
                 user.CreatedAttachments.Add(userAttachment);

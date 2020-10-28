@@ -28,7 +28,6 @@ namespace Aspian.Application.Core.TaxonomyServices.AdminServices
 
             public Guid? ParentId { get; set; }
             public Term Term { get; set; }
-            public Guid SiteId { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -63,6 +62,7 @@ namespace Aspian.Application.Core.TaxonomyServices.AdminServices
                                     _slugGenerator.GenerateSlug(request.Term.Name) :
                                     _urlEncoder.Encode(request.Term.Slug.Trim().Replace(" ", "-"));
                 var taxonomy = _mapper.Map<Create.Command, Taxonomy>(request);
+                taxonomy.SiteId = site.Id;
 
                 if (await _context.Terms.Where(x => x.Name == taxonomy.Term.Name).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { TermName = "Term name is already exists. Please change it and try again." });
@@ -74,7 +74,7 @@ namespace Aspian.Application.Core.TaxonomyServices.AdminServices
 
                 var success = await _context.SaveChangesAsync() > 0;
 
-                if (success) 
+                if (success)
                 {
                     await _logger.LogActivity(
                         site.Id,

@@ -19,7 +19,7 @@ namespace Aspian.Application.Core.TaxonomyServices.AdminServices.DTOs
         public string Description { get; set; }
         public virtual TermDto Term { get; set; }
         public Guid? ParentId { get; set; }
-        public virtual TaxonomyDto Parent { get; set; }
+        //public virtual TaxonomyDto Parent { get; set; }
         public virtual ICollection<TaxonomyDto> ChildTaxonomies { get; set; }
         [JsonPropertyName("posts")]
         public virtual ICollection<TaxonomyPostDto> TaxonomyPosts { get; set; }

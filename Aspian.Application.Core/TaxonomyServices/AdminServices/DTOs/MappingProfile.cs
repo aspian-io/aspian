@@ -27,6 +27,12 @@ namespace Aspian.Application.Core.TaxonomyServices.AdminServices.DTOs
                 .ForPath(d => d.Term.Name, o => o.MapFrom(s => s.Term.Name))
                 .ForPath(d => d.Term.Slug, o => o.MapFrom(s => s.Term.Slug));
             CreateMap<User, UserDto>();
+
+            CreateMap<Taxonomy, AntdCategoryTreeSelectDto>()
+                .ForMember(d => d.Title, o => o.MapFrom(s => s.Term.Name))
+                .ForMember(d => d.Value, o => o.MapFrom(s => s.Id))
+                .ForMember(d => d.Key, o => o.MapFrom(s => s.Id))
+                .ForMember(d => d.Children, o => o.MapFrom(s => s.ChildTaxonomies));
         }
     }
 }

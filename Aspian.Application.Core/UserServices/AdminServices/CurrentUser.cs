@@ -39,7 +39,7 @@ namespace Aspian.Application.Core.UserServices.AdminServices
                     DisplayName = user.DisplayName,
                     UserName = user.UserName,
                     Role = user.Role,
-                    ProfilePhotoName = user.CreatedAttachments?.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain).FileName
+                    //ProfilePhotoName = user.CreatedAttachments?.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain)?.FileName
                 };
             }
         }

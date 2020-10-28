@@ -60,6 +60,6 @@ namespace Aspian.Domain.PostModel
 
     public enum PostMetaKeyEnum
     {
-        ScheduledFor
+
     }
 }

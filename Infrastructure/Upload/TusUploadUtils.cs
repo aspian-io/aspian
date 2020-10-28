@@ -1,49 +1,40 @@
 using System;
-using System.IO;
-using Aspian.Application.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
-using System.Threading.Tasks;
-using Aspian.Domain.AttachmentModel;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Aspian.Domain.OptionModel;
-using Microsoft.Extensions.Options;
-using FluentFTP;
-using Aspian.Application.Core.AttachmentServices.AdminServices;
-using Aspian.Persistence;
-using Microsoft.EntityFrameworkCore;
-using Aspian.Domain.SiteModel;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Aspian.Application.Core.Interfaces;
 using Aspian.Domain.ActivityModel;
+using Aspian.Domain.AttachmentModel;
+using Aspian.Domain.SiteModel;
+using Aspian.Persistence;
+using FluentFTP;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using tusdotnet.Interfaces;
 
 namespace Infrastructure.Upload
 {
-    public class UploadAccessor : IUploadAccessor
+    public class TusUploadUtils : ITusUploadUtils
     {
         //
         private readonly IWebHostEnvironment _env;
-        private readonly IUserAccessor _userAccessor;
-        private readonly IOptionAccessor _optionAccessor;
-        private readonly DataContext _context;
-        private readonly IActivityLogger _logger;
         private readonly string _baseUri;
         private readonly int _port;
         private readonly string _username;
         private readonly string _password;
         private readonly bool _isActive;
-        public UploadAccessor(
+        public TusUploadUtils(
             IWebHostEnvironment env,
-            IUserAccessor userAccessor,
-            IOptionAccessor optionAccessor,
             IOptions<FtpServerSettings> config,
-            DataContext context,
-            IActivityLogger logger
+            IServiceProvider services
             )
         {
-            _optionAccessor = optionAccessor;
-            _context = context;
-            _logger = logger;
-            _userAccessor = userAccessor;
+            Services = services;
             _env = env;
 
             _baseUri = config.Value.ServerUri;
@@ -53,23 +44,40 @@ namespace Infrastructure.Upload
             _isActive = config.Value.IsActive;
         }
 
-        public async Task<FileUploadResult> AddFileAsync(IFormFile file)
+        private IServiceProvider Services { get; }
+
+        public async Task TusAddFileAsync(ITusFile file, SiteTypeEnum siteType, string refreshToken, CancellationToken cancellationToken)
         {
-            var uploadFolderName = "uploads";
-            var userUploadSubFolderName = _userAccessor.GetCurrentUsername();
-            var userUploadSubFolderByDateName = DateTime.UtcNow.ToString("yyyy-MM-dd");
-            var extension = Path.GetExtension(file.FileName);
-            var fileName = $"{DateTime.UtcNow.ToString("H:mm:ss")}__{Path.GetRandomFileName()}{extension}";
-            var mimeType = file.ContentType;
-            var size = file.Length;
-            var option = await _optionAccessor.GetOptionByKeyDescriptionAsync(mimeType);
+            var metadata = await file.GetMetadataAsync(cancellationToken);
+            string name = metadata["name"].GetString(Encoding.UTF8);
+            string type = metadata["type"].GetString(Encoding.UTF8);
 
-            if (option.Value == ValueEnum.Attachments__NotAllowed)
-                throw new Exception("You are not allowed to upload this type of file!");
 
-            if (size > 0)
+            using (var scope = Services.CreateScope())
             {
-                var fileType = CheckFileType(file);
+                var context =
+                scope.ServiceProvider
+                    .GetRequiredService<DataContext>();
+
+                var logger =
+                scope.ServiceProvider
+                    .GetRequiredService<IActivityLogger>();
+
+
+                var token = await context.Tokens.SingleOrDefaultAsync(x => x.RefreshToken == refreshToken);
+                var user = token.CreatedBy;
+
+                var uploadFolderName = "uploads";
+                var userUploadSubFolderName = user != null ? user.UserName : null;
+                var userUploadSubFolderByDateName = DateTime.UtcNow.ToString("yyyy-MM-dd");
+                var extension = Path.GetExtension(name);
+                var fileTusId = file.Id;
+                var fileName = $"{DateTime.UtcNow.ToString("H:mm:ss")}__{Path.GetRandomFileName()}{extension}";
+                var mimeType = type;
+                long size = 0;
+
+
+                var fileType = TusCheckFileType(type);
                 string fileRelativePath = null;
 
                 if (!_isActive)
@@ -79,16 +87,19 @@ namespace Infrastructure.Upload
                     fileRelativePath = $"/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
                     var fileAbsolutePath = $"{root}{fileRelativePath}";
 
-                    using (var stream = File.Create(fileAbsolutePath))
+                    var isFileVerified = await TusIsFileTypeVerifiedAsync(file, name, cancellationToken);
+                    if (isFileVerified)
                     {
-                        if (IsFileTypeVerified(file))
+                        using (var targetStream = File.Create(fileAbsolutePath))
+                        using (var stream = await file.GetContentAsync(cancellationToken))
                         {
-                            await file.CopyToAsync(stream);
+                            size = stream.Length;
+                            await stream.CopyToAsync(targetStream);
                         }
-                        else
-                        {
-                            throw new Exception("Problem uploading the file!");
-                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Problem uploading the file!");
                     }
                 }
                 if (_isActive)
@@ -103,10 +114,12 @@ namespace Infrastructure.Upload
                     if (!await client.DirectoryExistsAsync(path))
                         await client.CreateDirectoryAsync(path);
 
-                    using (var stream = file.OpenReadStream())
+                    var isFileVerified = await TusIsFileTypeVerifiedAsync(file, name, cancellationToken);
+                    if (isFileVerified)
                     {
-                        if (IsFileTypeVerified(file))
+                        using (var stream = await file.GetContentAsync(cancellationToken))
                         {
+                            size = stream.Length;
                             // Upload file
                             var ftpStatus = await client.UploadAsync(stream, fileRelativePath);
 
@@ -117,167 +130,108 @@ namespace Infrastructure.Upload
                             }
                         }
                     }
+                    else
+                    {
+                        throw new Exception("Problem uploading the file!");
+                    }
+
                     // disconnect!
                     await client.DisconnectAsync();
                 }
 
-                return new FileUploadResult
+                var site = await context.Sites.SingleOrDefaultAsync(x => x.SiteType == siteType);
+
+                user.CreatedAttachments.Add(new Attachment
                 {
-                    Type = fileType,
+                    FileTusId = fileTusId,
+                    SiteId = site.Id,
                     UploadLocation = _isActive ? UploadLocationEnum.FtpServer : UploadLocationEnum.LocalHost,
+                    Type = fileType,
                     RelativePath = fileRelativePath,
                     MimeType = mimeType,
                     FileName = fileName,
                     FileExtension = extension,
-                    FileSize = size,
-                };
+                    FileSize = size
+                });
+
+                var success = await context.SaveChangesAsync() > 0;
+
+                if (success)
+                {
+                    await logger.LogActivity(
+                        site.Id,
+                        ActivityCodeEnum.AttachmentAdd,
+                        ActivitySeverityEnum.Medium,
+                        ActivityObjectEnum.Attachemnt,
+                        $"The {fileType} file with the name {fileName} uploaded");
+                }
+                else
+                {
+                    throw new Exception("Problem uploading the file and saving its information in database!");
+                }
             }
 
-            throw new Exception("Problem uploading the file!");
         }
 
         //
-        public async Task<MemoryStream> GetImageAsync(string imageRelativePath, UploadLocationEnum uploadLocation)
+        public async Task TusDeleteTempFileAsync(string tusFileId, string absoluteTusTempPath)
         {
-            if (uploadLocation == UploadLocationEnum.LocalHost)
-            {
-                var root = _env.ContentRootPath;
-                var imageAbsolutePath = $"{root}{imageRelativePath}";
-                if (File.Exists(imageAbsolutePath))
-                {
-                    var memory = new MemoryStream();
-                    using (var stream = new FileStream(imageAbsolutePath, FileMode.Open))
-                    {
-                        await stream.CopyToAsync(memory);
-                    }
+            var filesToDeletePaths = new List<string>{
+                Path.Combine(absoluteTusTempPath, tusFileId),
+                Path.Combine(absoluteTusTempPath, $"{tusFileId}.chunkstart"),
+                Path.Combine(absoluteTusTempPath, $"{tusFileId}.chunkcomplete"),
+                Path.Combine(absoluteTusTempPath, $"{tusFileId}.metadata"),
+                Path.Combine(absoluteTusTempPath, $"{tusFileId}.uploadlength")
+            };
 
-                    memory.Position = 0;
-                    return memory;
+            if (!_isActive)
+            {
+                foreach (var filePath in filesToDeletePaths)
+                {
+                    try
+                    {
+                        if (File.Exists(filePath))
+                        {
+                            File.Delete(filePath);
+                        }
+                        else
+                        {
+                            throw new Exception("File not found!");
+                        }
+                    }
+                    catch (IOException ioexception)
+                    {
+                        throw new IOException(ioexception.Message);
+                    }
                 }
-                throw new Exception("The requested image does not exist!");
             }
 
-            if (uploadLocation == UploadLocationEnum.FtpServer)
+            if (_isActive)
             {
                 // create an FTP client
                 FtpClient client = new FtpClient(_baseUri, _port, _username, _password);
                 // begin connecting to the server
                 await client.ConnectAsync();
-                if (await client.FileExistsAsync(imageRelativePath))
+
+                foreach (var filePath in filesToDeletePaths)
                 {
-                    var memory = new MemoryStream();
-                    using (var stream = await client.OpenReadAsync(imageRelativePath))
+                    // check if a file exists
+                    if (await client.FileExistsAsync(filePath))
                     {
-                        await stream.CopyToAsync(memory);
-                    }
-
-                    memory.Position = 0;
-                    // disconnect!
-                    await client.DisconnectAsync();
-
-                    return memory;
-                }
-                throw new Exception("The requested image does not exist!");
-            }
-
-            throw new Exception("Problem getting the requested image!");
-        }
-
-        //
-        public async Task<MemoryStream> DownloadFileAsync(string fileRelativePath, UploadLocationEnum uploadLocation)
-        {
-            if (uploadLocation == UploadLocationEnum.LocalHost)
-            {
-                var root = _env.ContentRootPath;
-                var fileAbsolutePath = $"{root}{fileRelativePath}";
-                if (File.Exists(fileAbsolutePath))
-                {
-                    var memory = new MemoryStream();
-                    using (var stream = new FileStream(fileAbsolutePath, FileMode.Open))
-                    {
-                        await stream.CopyToAsync(memory);
-                    }
-
-                    memory.Position = 0;
-                    return memory;
-                }
-                throw new Exception("The requested file does not exist!");
-            }
-
-            if (uploadLocation == UploadLocationEnum.FtpServer)
-            {
-                // create an FTP client
-                FtpClient client = new FtpClient(_baseUri, _port, _username, _password);
-                // begin connecting to the server
-                await client.ConnectAsync();
-                if (await client.FileExistsAsync(fileRelativePath))
-                {
-                    var memory = new MemoryStream();
-                    using (var stream = await client.OpenReadAsync(fileRelativePath))
-                    {
-                        await stream.CopyToAsync(memory);
-                    }
-
-                    memory.Position = 0;
-                    // disconnect!
-                    await client.DisconnectAsync();
-
-                    return memory;
-                }
-                throw new Exception("The requested file does not exist!");
-            }
-
-            throw new Exception("Problem downloading the requested file!");
-        }
-
-        //
-        public async Task<string> DeleteFileAsync(string fileRelativePath, UploadLocationEnum uploadLocation)
-        {
-            if (uploadLocation == UploadLocationEnum.LocalHost)
-            {
-                var filePath = $"{_env.ContentRootPath}{fileRelativePath}";
-
-                try
-                {
-                    if (File.Exists(filePath))
-                    {
-                        File.Delete(filePath);
-                        return "ok";
+                        // delete the file
+                        await client.DeleteFileAsync(filePath);
                     }
                     else
                     {
                         throw new Exception("File not found!");
                     }
                 }
-                catch (IOException ioexception)
-                {
-
-                    throw new IOException(ioexception.Message);
-                }
             }
-
-            if (uploadLocation == UploadLocationEnum.FtpServer)
-            {
-                // create an FTP client
-                FtpClient client = new FtpClient(_baseUri, _port, _username, _password);
-                // begin connecting to the server
-                await client.ConnectAsync();
-
-                // check if a file exists
-                if (await client.FileExistsAsync(fileRelativePath))
-                {
-                    // delete the file
-                    await client.DeleteFileAsync(fileRelativePath);
-                    return "ok";
-                }
-            }
-
-            throw new Exception("Problem deleting the file!");
         }
 
-        private AttachmentTypeEnum CheckFileType(IFormFile file)
+        private AttachmentTypeEnum TusCheckFileType(string type)
         {
-            var contentType = file.ContentType;
+            var contentType = type;
 
             var photoMimeTypes = new List<string>
             {
@@ -354,13 +308,13 @@ namespace Infrastructure.Upload
             throw new Exception("Problem determining AttachmentType!");
         }
 
-        private bool IsFileTypeVerified(IFormFile file)
+        private async Task<bool> TusIsFileTypeVerifiedAsync(ITusFile file, string fileName, CancellationToken cancellationToken)
         {
             // If you require a check on specific characters in the IsValidFileExtensionAndSignature
             // method, supply the characters in the _allowedChars field.
             byte[] _allowedChars = { };
 
-            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+            var ext = Path.GetExtension(fileName).ToLowerInvariant();
             if (string.IsNullOrEmpty(ext))
             {
                 return false;
@@ -468,7 +422,8 @@ namespace Infrastructure.Upload
                 { ".rar", new List<byte[]> { new byte[] { 0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00 } } },
                 { ".7z", new List<byte[]> { new byte[] { 0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C } } },
             };
-            using (var stream = file.OpenReadStream())
+
+            using (var stream = await file.GetContentAsync(cancellationToken))
             using (var reader = new BinaryReader(stream))
             {
                 if (ext.Equals(".txt") || ext.Equals(".csv") || ext.Equals(".prn") || ext.Equals(".svg"))
@@ -520,13 +475,14 @@ namespace Infrastructure.Upload
                 // With the file signatures provided in the _fileSignature
                 // dictionary, the following code tests the input content's
                 // file signature.
-                var signatures = _fileSignature[ext];
-                var headerBytes = reader.ReadBytes(signatures.Max(m => m.Length));
+                List<byte[]> signatures = _fileSignature.TryGetValue(ext, out signatures) ? _fileSignature[ext] : null;
+                if (signatures == null)
+                    return false;
 
+                var headerBytes = reader.ReadBytes(signatures.Max(m => m.Length));
                 return signatures.Any(signature =>
                     headerBytes.Take(signature.Length).SequenceEqual(signature));
             }
         }
-
     }
 }
