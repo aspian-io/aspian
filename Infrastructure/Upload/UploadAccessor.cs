@@ -13,8 +13,9 @@ using FluentFTP;
 using Aspian.Application.Core.AttachmentServices.AdminServices;
 using Aspian.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Aspian.Domain.SiteModel;
-using Aspian.Domain.ActivityModel;
+using System.Threading;
+using System.Net.Http;
+using System.Net;
 
 namespace Infrastructure.Upload
 {
@@ -184,22 +185,19 @@ namespace Infrastructure.Upload
         }
 
         //
-        public async Task<MemoryStream> DownloadFileAsync(string fileRelativePath, UploadLocationEnum uploadLocation)
+        public async Task<Stream> DownloadFileAsync(string fileRelativePath, long fileSize, UploadLocationEnum uploadLocation)
         {
+            var root = _env.ContentRootPath;
+            var fileAbsolutePath = Path.Combine(root, fileRelativePath);
+
             if (uploadLocation == UploadLocationEnum.LocalHost)
             {
-                var root = _env.ContentRootPath;
-                var fileAbsolutePath = $"{root}{fileRelativePath}";
+
+
                 if (File.Exists(fileAbsolutePath))
                 {
-                    var memory = new MemoryStream();
-                    using (var stream = new FileStream(fileAbsolutePath, FileMode.Open))
-                    {
-                        await stream.CopyToAsync(memory);
-                    }
-
-                    memory.Position = 0;
-                    return memory;
+                    var fileStream = new FileStream(fileAbsolutePath, FileMode.Open);
+                    return fileStream;
                 }
                 throw new Exception("The requested file does not exist!");
             }
@@ -210,19 +208,14 @@ namespace Infrastructure.Upload
                 FtpClient client = new FtpClient(_baseUri, _port, _username, _password);
                 // begin connecting to the server
                 await client.ConnectAsync();
-                if (await client.FileExistsAsync(fileRelativePath))
+                if (await client.FileExistsAsync(Path.Combine("public_html", fileRelativePath)))
                 {
-                    var memory = new MemoryStream();
-                    using (var stream = await client.OpenReadAsync(fileRelativePath))
-                    {
-                        await stream.CopyToAsync(memory);
-                    }
+                    var stream = await client.OpenReadAsync(fileRelativePath);
 
-                    memory.Position = 0;
                     // disconnect!
                     await client.DisconnectAsync();
 
-                    return memory;
+                    return stream;
                 }
                 throw new Exception("The requested file does not exist!");
             }

@@ -20,6 +20,13 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
             return await Mediator.Send(query);
         }
 
+        [Authorize(Policy = AspianCorePolicy.AdminPostListPolicy)]
+        [HttpGet("antd-parent-post-treeselect")]
+        public async Task<ActionResult<List<AntParentPostTreeSelectDto>>> PostsTreeSelectForAntd()
+        {
+            return await Mediator.Send(new ParentPostTreeSelectAntd.Query());
+        }
+
         [Authorize(Policy = AspianCorePolicy.AdminPostCreatePolicy)]
         [HttpPost("create")]
         public async Task<ActionResult<Unit>> Create(Create.Command command)

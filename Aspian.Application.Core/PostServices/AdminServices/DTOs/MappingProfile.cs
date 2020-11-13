@@ -74,6 +74,12 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
             CreateMap<Termmeta, TermmetaDto>();
             CreateMap<Site, SiteDto>();
 
+            CreateMap<Post, AntParentPostTreeSelectDto>()
+                .ForMember(d => d.Title, o => o.MapFrom(s => s.Title))
+                .ForMember(d => d.Value, o => o.MapFrom(s => s.Id))
+                .ForMember(d => d.Key, o => o.MapFrom(s => s.Id))
+                .ForMember(d => d.Children, o => o.MapFrom(s => s.ChildPosts));
+
         }
     }
 }

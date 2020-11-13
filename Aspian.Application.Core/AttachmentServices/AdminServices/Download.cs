@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -41,16 +42,14 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
 
             public async Task<DownloadFileDto> Handle(Query request, CancellationToken cancellationToken)
             {
-                var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
-                if (refreshToken == null)
-                    throw new RestException(HttpStatusCode.Unauthorized, new { User = "is unathorized!" });
+                // var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+                // if (refreshToken == null)
+                //     throw new RestException(HttpStatusCode.Unauthorized, new { User = "is unathorized!" });
 
                 var site = await _context.Sites.FirstOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
-                var file = _context.Attachments.SingleOrDefault(x => x.FileName == request.FileName);
+                var file = _context.Attachments.SingleOrDefault(x => x.FileName == Path.GetFileNameWithoutExtension(request.FileName));
                 if (file == null)
                     throw new RestException(HttpStatusCode.NotFound, new { File = "Not found" });
-
-                var fileMemoryStream = await _uploadAccessor.DownloadFileAsync(file.RelativePath, file.UploadLocation);
 
                 await _logger.LogActivity(
                         site.Id,
@@ -61,8 +60,8 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
 
                 return new DownloadFileDto
                 {
-                    FileName = file.FileName,
-                    Memory = fileMemoryStream,
+                    FileName = file.PublicFileName,
+                    Stream = await _uploadAccessor.DownloadFileAsync(file.RelativePath, file.FileSize, file.UploadLocation),
                     MimeType = file.MimeType
                 };
             }

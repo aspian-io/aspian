@@ -14,6 +14,7 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices.DTOs
                 .ForMember(d => d.CreatedAt, o => o.UseDestinationValue())
                 .ForMember(d => d.CreatedById, o => o.UseDestinationValue());
             CreateMap<Attachment, AttachmentDto>();
+            CreateMap<Attachment, FileBrowserDto>();
             CreateMap<FileUploadResult, Attachment>();
             CreateMap<FileUploadResult, AttachmentDto>();
             CreateMap<User, UserDto>();

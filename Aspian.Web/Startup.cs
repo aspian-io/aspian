@@ -24,17 +24,21 @@ using Aspian.Domain.UserModel.Policy;
 using Infrastructure.Utility;
 using Infrastructure.Logger;
 using Infrastructure.Schedule;
-using tusdotnet;
-using tusdotnet.Models;
-using tusdotnet.Stores;
-using tusdotnet.Models.Configuration;
-using tusdotnet.Interfaces;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using tusdotnet;
+using tusdotnet.Models;
+using tusdotnet.Models.Configuration;
+using tusdotnet.Interfaces;
+using Microsoft.Extensions.Options;
+using tusdotnet.Stores;
 using Aspian.Domain.SiteModel;
+using Infrastructure.Upload.Tus.Stores;
+using FluentFTP;
+using Aspian.Domain.AttachmentModel;
 
 namespace Aspian.Web
 {
@@ -178,7 +182,7 @@ namespace Aspian.Web
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor, ILogger<Startup> logger, ITusUploadUtils tusUploadUtils)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor, ILogger<Startup> logger, ITusUploadUtils tusUploadUtils, IOptions<FtpServerSettings> config)
         {
 
             if (env.IsDevelopment())
@@ -229,14 +233,15 @@ namespace Aspian.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //
-            string tempPath = Path.Combine(env.ContentRootPath, "uploads/temp");
+            // To use FTPServer as the storage you must use TusDiskStore instead of CustomTusDiskStore 
+            // if you want to use localhost as the storage without config param
+            var uploadLocation = UploadLocationEnum.FtpServer;
             app.UseTus(httpContext => new DefaultTusConfiguration
             {
-                // c:\tusfiles is where to store files
-                Store = new TusDiskStore(tempPath, true),
+                // Use TusDiskStore instead of CustomTusDiskStore if you want to use localhost as the storage without config param
+                Store = new CustomTusDiskStore(tusUploadUtils.GetStorePath("uploads", uploadLocation), true, new TusDiskBufferSize(1024 * 1024 * 5, 1024 * 1024 * 5), config),
                 // On what url should we listen for uploads?
-                UrlPath = "/api/v1/post/add-media",
+                UrlPath = "/api/v1/attachments/add-private-media",
                 Events = new Events
                 {
                     OnAuthorizeAsync = eventContext =>
@@ -248,7 +253,6 @@ namespace Aspian.Web
                             eventContext.FailRequest(HttpStatusCode.Unauthorized);
                             return Task.CompletedTask;
                         }
-
                         // Do other verification on the user; claims, roles, etc. In this case, check the username.
                         // if (eventContext.HttpContext.User.Identity.Name != "test")
                         // {
@@ -282,10 +286,28 @@ namespace Aspian.Web
                         return Task.CompletedTask;
                     },
 
-                    OnBeforeCreateAsync = ctx =>
+                    OnBeforeCreateAsync = async ctx =>
                     {
-                        // Create temp directory if it does not exist...
-                        Directory.CreateDirectory(tempPath);
+                        var storePath = tusUploadUtils.GetStorePath("uploads");
+                        // If localhost is the storage
+                        if (uploadLocation == UploadLocationEnum.LocalHost)
+                        {
+                            // Create temp directory if it does not exist...
+                            Directory.CreateDirectory(storePath);
+                        }
+
+                        // If FTP server is the storage
+                        if (uploadLocation == UploadLocationEnum.FtpServer)
+                        {
+                            // create an FTP client
+                            FtpClient client = new FtpClient(config.Value.ServerUri, config.Value.ServerPort, config.Value.ServerUsername, config.Value.ServerPassword);
+                            // Connecting to the server
+                            await client.ConnectAsync();
+
+                            // check if a folder doesn't exist
+                            if (!await client.DirectoryExistsAsync(storePath))
+                                await client.CreateDirectoryAsync(storePath);
+                        }
 
                         if (!ctx.Metadata.ContainsKey("name"))
                         {
@@ -296,8 +318,6 @@ namespace Aspian.Web
                         {
                             ctx.FailRequest("filetype metadata must be specified. ");
                         }
-
-                        return Task.CompletedTask;
                     },
 
                     OnFileCompleteAsync = async eventContext =>
@@ -306,10 +326,123 @@ namespace Aspian.Web
 
                         var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
 
-                        // Adding file to permanent path and saving its information into database
-                        await tusUploadUtils.TusAddFileAsync(file, SiteTypeEnum.Blog, refreshToken, eventContext.CancellationToken);
-                        // Deleting temp files related to the uploaded tus file from temp folder
-                        await tusUploadUtils.TusDeleteTempFileAsync(file.Id, tempPath);
+                        // Saving file information into database
+                        await tusUploadUtils.SaveTusFileInfoAsync(file, SiteTypeEnum.Blog, refreshToken, uploadLocation, eventContext.CancellationToken);
+
+                        // create an FTP client
+                        FtpClient client = new FtpClient(config.Value.ServerUri, config.Value.ServerPort, config.Value.ServerUsername, config.Value.ServerPassword);
+                        // Connecting to the server
+                        await client.DisconnectAsync();
+                    },
+                }
+            });
+
+            app.UseTus(httpContext => new DefaultTusConfiguration
+            {
+                // Use TusDiskStore instead of CustomTusDiskStore if you want to use localhost as the storage without config param
+                Store = new CustomTusDiskStore(
+                    tusUploadUtils.GetStorePath("uploads",
+                    uploadLocation, UploadLinkAccessibilityEnum.Public),
+                    true,
+                    new TusDiskBufferSize(1024 * 1024 * 5, 1024 * 1024 * 5),
+                    config),
+
+                // On what url should we listen for uploads?
+                UrlPath = "/api/v1/attachments/add-public-media",
+                Events = new Events
+                {
+                    OnAuthorizeAsync = eventContext =>
+                    {
+                        var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+
+                        if (refreshToken == null)
+                        {
+                            eventContext.FailRequest(HttpStatusCode.Unauthorized);
+                            return Task.CompletedTask;
+                        }
+                        // Do other verification on the user; claims, roles, etc. In this case, check the username.
+                        // if (eventContext.HttpContext.User.Identity.Name != "test")
+                        // {
+                        //     eventContext.FailRequest(HttpStatusCode.Forbidden, "'test' is the only allowed user");
+                        //     return Task.CompletedTask;
+                        // }
+
+                        // Verify different things depending on the intent of the request.
+                        // E.g.:
+                        //   Does the file about to be written belong to this user?
+                        //   Is the current user allowed to create new files or have they reached their quota?
+                        //   etc etc
+                        switch (eventContext.Intent)
+                        {
+                            case IntentType.CreateFile:
+                                break;
+                            case IntentType.ConcatenateFiles:
+                                break;
+                            case IntentType.WriteFile:
+                                break;
+                            case IntentType.DeleteFile:
+                                break;
+                            case IntentType.GetFileInfo:
+                                break;
+                            case IntentType.GetOptions:
+                                break;
+                            default:
+                                break;
+                        }
+
+                        return Task.CompletedTask;
+                    },
+
+                    OnBeforeCreateAsync = async ctx =>
+                    {
+                        var storePath = tusUploadUtils.GetStorePath(
+                            "uploads",
+                            uploadLocation,
+                            UploadLinkAccessibilityEnum.Public);
+                        // If localhost is the storage
+                        if (uploadLocation == UploadLocationEnum.LocalHost)
+                        {
+                            // Create temp directory if it does not exist...
+                            Directory.CreateDirectory(storePath);
+                        }
+
+                        // If FTP server is the storage
+                        if (uploadLocation == UploadLocationEnum.FtpServer)
+                        {
+                            // create an FTP client
+                            FtpClient client = new FtpClient(config.Value.ServerUri, config.Value.ServerPort, config.Value.ServerUsername, config.Value.ServerPassword);
+                            // Connecting to the server
+                            await client.ConnectAsync();
+
+                            // check if a folder doesn't exist
+                            if (!await client.DirectoryExistsAsync(storePath))
+                                await client.CreateDirectoryAsync(storePath);
+                        }
+
+                        if (!ctx.Metadata.ContainsKey("name"))
+                        {
+                            ctx.FailRequest("name metadata must be specified. ");
+                        }
+
+                        if (!ctx.Metadata.ContainsKey("type"))
+                        {
+                            ctx.FailRequest("filetype metadata must be specified. ");
+                        }
+                    },
+
+                    OnFileCompleteAsync = async eventContext =>
+                    {
+                        ITusFile file = await eventContext.GetFileAsync();
+
+                        var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+
+                        // Saving file information into database
+                        await tusUploadUtils.SaveTusFileInfoAsync(file, SiteTypeEnum.Blog, refreshToken, uploadLocation, eventContext.CancellationToken);
+
+                        // create an FTP client
+                        FtpClient client = new FtpClient(config.Value.ServerUri, config.Value.ServerPort, config.Value.ServerUsername, config.Value.ServerPassword);
+                        // Connecting to the server
+                        await client.DisconnectAsync();
                     },
                 }
             });

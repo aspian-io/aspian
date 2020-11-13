@@ -46,7 +46,7 @@ namespace Aspian.Application.Core.Interfaces
         /// </returns>
         /// <param name="fileRelativePath" >Relative path of the file.</param>
         /// <param name="uploadLocation" >The location of a requested file which could be LocalHost or FtpServer.</param>
-        Task<MemoryStream> DownloadFileAsync(string fileRelativePath, UploadLocationEnum uploadLocation);
+        Task<Stream> DownloadFileAsync(string fileRelativePath, long fileSize, UploadLocationEnum uploadLocation);
 
     }
 }

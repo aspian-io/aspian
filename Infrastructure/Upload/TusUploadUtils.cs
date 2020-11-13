@@ -2,16 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.AttachmentModel;
 using Aspian.Domain.SiteModel;
+using Aspian.Domain.UserModel;
 using Aspian.Persistence;
 using FluentFTP;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -45,8 +49,62 @@ namespace Infrastructure.Upload
         }
 
         private IServiceProvider Services { get; }
+        private string UploadFolderName { get; set; }
 
-        public async Task TusAddFileAsync(ITusFile file, SiteTypeEnum siteType, string refreshToken, CancellationToken cancellationToken)
+        public string GetStorePath(string uploadForlderName,
+            UploadLocationEnum uploadLocation = UploadLocationEnum.LocalHost,
+            UploadLinkAccessibilityEnum linkAccessibility = UploadLinkAccessibilityEnum.Private)
+        {
+            UploadFolderName = uploadForlderName;
+            using (var scope = Services.CreateScope())
+            {
+                var httpContextAccessor =
+                scope.ServiceProvider
+                    .GetRequiredService<IHttpContextAccessor>();
+
+                var context =
+                scope.ServiceProvider
+                    .GetRequiredService<DataContext>();
+
+                User user = null;
+
+                var refreshToken = httpContextAccessor.HttpContext?.Request.Cookies["refreshToken"];
+
+                if (refreshToken != null)
+                {
+                    var token = context.Tokens.SingleOrDefault(x => x.RefreshToken == refreshToken);
+                    user = token != null ? token.CreatedBy : null;
+                }
+
+                var userUploadSubFolderName = user != null ? user.UserName : "unknown";
+
+                if (linkAccessibility == UploadLinkAccessibilityEnum.Public)
+                {
+                    if (uploadLocation == UploadLocationEnum.LocalHost)
+                    {
+                        var localPublicStorePath = user != null ? 
+                            Path.Combine("wwwroot", uploadForlderName, user.UserName) :
+                            Path.Combine("wwwroot", uploadForlderName, "unknown");
+                        return localPublicStorePath;
+                    }
+
+                    if (uploadLocation == UploadLocationEnum.FtpServer)
+                    {
+                        var ftpPublicStorePath = user != null ? 
+                            Path.Combine("public_html", uploadForlderName, user.UserName) :
+                            Path.Combine("public_html", uploadForlderName, "unknown");
+                        return ftpPublicStorePath;
+                    }
+                        
+                }
+
+                var storePath = Path.Combine(uploadForlderName, userUploadSubFolderName);
+
+                return storePath;
+            }
+        }
+
+        public async Task SaveTusFileInfoAsync(ITusFile file, SiteTypeEnum siteType, string refreshToken, UploadLocationEnum location, CancellationToken cancellationToken)
         {
             var metadata = await file.GetMetadataAsync(cancellationToken);
             string name = metadata["name"].GetString(Encoding.UTF8);
@@ -55,6 +113,10 @@ namespace Infrastructure.Upload
 
             using (var scope = Services.CreateScope())
             {
+                var httpContextAccessor =
+                scope.ServiceProvider
+                    .GetRequiredService<IHttpContextAccessor>();
+
                 var context =
                 scope.ServiceProvider
                     .GetRequiredService<DataContext>();
@@ -63,93 +125,48 @@ namespace Infrastructure.Upload
                 scope.ServiceProvider
                     .GetRequiredService<IActivityLogger>();
 
-
-                var token = await context.Tokens.SingleOrDefaultAsync(x => x.RefreshToken == refreshToken);
+                var token = context.Tokens.SingleOrDefault(x => x.RefreshToken == refreshToken);
                 var user = token.CreatedBy;
 
-                var uploadFolderName = "uploads";
-                var userUploadSubFolderName = user != null ? user.UserName : null;
-                var userUploadSubFolderByDateName = DateTime.UtcNow.ToString("yyyy-MM-dd");
+                var storePath = Path.Combine(UploadFolderName, user.UserName);
                 var extension = Path.GetExtension(name);
-                var fileTusId = file.Id;
-                var fileName = $"{DateTime.UtcNow.ToString("H:mm:ss")}__{Path.GetRandomFileName()}{extension}";
+                var fileName = file.Id;
+                var filePublicName = name;
                 var mimeType = type;
+                var fileRelativePath = Path.Combine(storePath, fileName);
                 long size = 0;
 
-
-                var fileType = TusCheckFileType(type);
-                string fileRelativePath = null;
-
-                if (!_isActive)
+                if (location == UploadLocationEnum.LocalHost)
                 {
-                    var root = _env.ContentRootPath;
-                    Directory.CreateDirectory($"{_env.ContentRootPath}/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}");
-                    fileRelativePath = $"/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
-                    var fileAbsolutePath = $"{root}{fileRelativePath}";
-
-                    var isFileVerified = await TusIsFileTypeVerifiedAsync(file, name, cancellationToken);
-                    if (isFileVerified)
-                    {
-                        using (var targetStream = File.Create(fileAbsolutePath))
-                        using (var stream = await file.GetContentAsync(cancellationToken))
-                        {
-                            size = stream.Length;
-                            await stream.CopyToAsync(targetStream);
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Problem uploading the file!");
-                    }
+                    size = new FileInfo($"{storePath}/{fileName}").Length;
                 }
-                if (_isActive)
+                if (location == UploadLocationEnum.FtpServer)
                 {
-                    var path = $"/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}";
-                    fileRelativePath = $"/{uploadFolderName}/{userUploadSubFolderName}/{userUploadSubFolderByDateName}/{fileType.ToString().ToLowerInvariant()}/{fileName}";
                     // create an FTP client
                     FtpClient client = new FtpClient(_baseUri, _port, _username, _password);
                     // begin connecting to the server
                     await client.ConnectAsync();
-                    // check if a folder doesn't exist
-                    if (!await client.DirectoryExistsAsync(path))
-                        await client.CreateDirectoryAsync(path);
 
-                    var isFileVerified = await TusIsFileTypeVerifiedAsync(file, name, cancellationToken);
-                    if (isFileVerified)
-                    {
-                        using (var stream = await file.GetContentAsync(cancellationToken))
-                        {
-                            size = stream.Length;
-                            // Upload file
-                            var ftpStatus = await client.UploadAsync(stream, fileRelativePath);
+                    size = await client.GetFileSizeAsync($"{storePath}/{fileName}");
 
-                            if (ftpStatus.IsFailure())
-                            {
-                                await client.DisconnectAsync();
-                                throw new Exception("Uploading file failed!");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Problem uploading the file!");
-                    }
-
-                    // disconnect!
+                    //
                     await client.DisconnectAsync();
                 }
+
+
+                var fileType = TusCheckFileType(type);
 
                 var site = await context.Sites.SingleOrDefaultAsync(x => x.SiteType == siteType);
 
                 user.CreatedAttachments.Add(new Attachment
                 {
-                    FileTusId = fileTusId,
                     SiteId = site.Id,
-                    UploadLocation = _isActive ? UploadLocationEnum.FtpServer : UploadLocationEnum.LocalHost,
+                    UploadLocation = location,
                     Type = fileType,
                     RelativePath = fileRelativePath,
                     MimeType = mimeType,
                     FileName = fileName,
+                    PublicFileName = filePublicName,
                     FileExtension = extension,
                     FileSize = size
                 });
@@ -163,25 +180,25 @@ namespace Infrastructure.Upload
                         ActivityCodeEnum.AttachmentAdd,
                         ActivitySeverityEnum.Medium,
                         ActivityObjectEnum.Attachemnt,
-                        $"The {fileType} file with the name {fileName} uploaded");
+                        $"The {fileType} file with the name {fileName} has been uploaded");
                 }
                 else
                 {
-                    throw new Exception("Problem uploading the file and saving its information in database!");
+                    throw new Exception("Problem saving file information in database!");
                 }
             }
 
         }
 
         //
-        public async Task TusDeleteTempFileAsync(string tusFileId, string absoluteTusTempPath)
+        public async Task DeleteTusFileAsync(string tusFileId, string fileRelativePath)
         {
             var filesToDeletePaths = new List<string>{
-                Path.Combine(absoluteTusTempPath, tusFileId),
-                Path.Combine(absoluteTusTempPath, $"{tusFileId}.chunkstart"),
-                Path.Combine(absoluteTusTempPath, $"{tusFileId}.chunkcomplete"),
-                Path.Combine(absoluteTusTempPath, $"{tusFileId}.metadata"),
-                Path.Combine(absoluteTusTempPath, $"{tusFileId}.uploadlength")
+                fileRelativePath,
+                $"{fileRelativePath}.chunkstart",
+                $"{fileRelativePath}.chunkcomplete",
+                $"{fileRelativePath}.metadata",
+                $"{fileRelativePath}.uploadlength"
             };
 
             if (!_isActive)

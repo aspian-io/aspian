@@ -18,8 +18,13 @@ namespace Aspian.Domain.AttachmentModel
                 .Property(a => a.UploadLocation)
                 .HasConversion(UploadLocationConverter);
 
+            var uploadLinkAccessibilityConverter = new EnumToStringConverter<UploadLinkAccessibilityEnum>();
             builder
-                .HasIndex(a => a.FileTusId)
+                .Property(a => a.LinkAccessibility)
+                .HasConversion(uploadLinkAccessibilityConverter);
+
+            builder
+                .HasIndex(a => a.FileName)
                 .IsUnique();
 
             builder

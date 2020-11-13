@@ -9,12 +9,13 @@ namespace Aspian.Domain.AttachmentModel
 {
     public interface IAttachment : IEntitymeta
     {
-        string FileTusId { get; set; }
         AttachmentTypeEnum Type { get; set; }
         string FileName { get; set; }
+        string PublicFileName { get; set; }
         string FileExtension { get; set; }
         long FileSize { get; set; }
         string MimeType { get; set; }
+        UploadLinkAccessibilityEnum LinkAccessibility { get; set; }
         UploadLocationEnum UploadLocation { get; set; }
         string RelativePath { get; set; }
         bool IsMain { get; set; }
@@ -43,5 +44,11 @@ namespace Aspian.Domain.AttachmentModel
     {
         LocalHost,
         FtpServer
+    }
+
+    public enum UploadLinkAccessibilityEnum
+    {
+        Public,
+        Private
     }
 }

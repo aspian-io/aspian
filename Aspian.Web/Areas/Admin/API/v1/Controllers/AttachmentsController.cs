@@ -8,6 +8,8 @@ using Aspian.Domain.UserModel.Policy;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FluentFTP;
+using Microsoft.Net.Http.Headers;
 
 namespace Aspian.Web.Areas.Admin.API.v1.Controllers
 {
@@ -18,6 +20,13 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         public async Task<ActionResult<List<AttachmentDto>>> List()
         {
             return await Mediator.Send(new List.Query());
+        }
+
+        [Authorize(Policy = AspianCorePolicy.AdminAttachmentListPolicy)]
+        [HttpGet("filebrowser")]
+        public async Task<ActionResult<List<FileBrowserDto>>> FileBrowser()
+        {
+            return await Mediator.Send(new FileBrowser.Query());
         }
 
         [Authorize(Policy = AspianCorePolicy.AdminAttachmentAddPolicy)]
@@ -50,7 +59,7 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         //[Authorize(Policy = AspianCorePolicy.AdminAttachmentGetImagePolicy)]
         [AllowAnonymous]
         [HttpGet("images/{filename}")]
-        public async Task<ActionResult> GetImage(string filename)
+        public async Task<FileStreamResult> GetImage(string filename)
         {
             var imageDto = await Mediator.Send(new GetImage.Query { FileName = filename });
             return File(imageDto.Memory, imageDto.MimeType, imageDto.FileName);
@@ -59,10 +68,10 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         //[Authorize(Policy = AspianCorePolicy.AdminAttachmentDownloadPolicy)]
         [AllowAnonymous]
         [HttpGet("download/{filename}")]
-        public async Task<ActionResult> Download(string filename)
+        public async Task<FileStreamResult> Download(string filename)
         {
             var downloadFileDto = await Mediator.Send(new Download.Query { FileName = filename });
-            return File(downloadFileDto.Memory, downloadFileDto.MimeType, downloadFileDto.FileName);
+            return File(downloadFileDto.Stream, downloadFileDto.MimeType, downloadFileDto.FileName, true);
         }
     }
 }

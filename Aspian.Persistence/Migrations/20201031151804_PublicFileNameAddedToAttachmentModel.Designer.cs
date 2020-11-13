@@ -4,14 +4,16 @@ using Aspian.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201031151804_PublicFileNameAddedToAttachmentModel")]
+    partial class PublicFileNameAddedToAttachmentModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,17 +81,16 @@ namespace Aspian.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("FileSize")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("FileTusId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
-
-                    b.Property<string>("LinkAccessibility")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MimeType")
                         .HasColumnType("nvarchar(max)");
@@ -127,9 +128,9 @@ namespace Aspian.Persistence.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("FileName")
+                    b.HasIndex("FileTusId")
                         .IsUnique()
-                        .HasFilter("[FileName] IS NOT NULL");
+                        .HasFilter("[FileTusId] IS NOT NULL");
 
                     b.HasIndex("ModifiedById");
 

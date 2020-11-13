@@ -9,12 +9,13 @@ namespace Aspian.Domain.AttachmentModel
 {
     public class Attachment : Entitymeta, IAttachment
     {
-        public string FileTusId { get; set; }
         public AttachmentTypeEnum Type { get; set; }
         public string FileName { get; set; }
+        public string PublicFileName { get; set; }
         public string FileExtension { get; set; }
         public long FileSize { get; set; }
         public string MimeType { get; set; }
+        public UploadLinkAccessibilityEnum LinkAccessibility { get; set; }
         public UploadLocationEnum UploadLocation { get; set; }
         public string RelativePath { get; set; }
         public bool IsMain { get; set; }
