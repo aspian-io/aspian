@@ -15,6 +15,7 @@ namespace Aspian.Domain.UserModel.Policy
         public const string AdminAttachmentDownloadPolicy = "AdminAttachmentDownloadPolicy";
         public const string AdminAttachmentGetImagePolicy = "AdminAttachmentGetImagePolicy";
         public const string AdminAttachmentListPolicy = "AdminAttachmentListPolicy";
+        public const string AdminAttachmentSettingsPolicy = "AdminAttachmentSettingsPolicy";
 
         // Comment Policies
         // Admin services

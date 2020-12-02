@@ -42,7 +42,7 @@ namespace Aspian.Application.Core.UserServices.AdminServices
             {
                 var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
                 if (refreshToken == null)
-                    throw new RestException(HttpStatusCode.Unauthorized, new { User = "is unathorized!" });
+                    throw new RestException(HttpStatusCode.Unauthorized, new { User = "is unauthorized!" });
 
                 var user = await _context.Users.SingleOrDefaultAsync(u => u.Tokens.Any(t => t.RefreshToken == refreshToken));
                 if (user == null)
@@ -50,7 +50,7 @@ namespace Aspian.Application.Core.UserServices.AdminServices
 
                 var userClaims = await _userManager.GetClaimsAsync(user);
 
-                var refreshTokenDto = _jwtGenerator.RefreshToken(user, refreshToken, userClaims.ToList());
+                var refreshTokenDto = await _jwtGenerator.RefreshTokenAsync(user, refreshToken, userClaims.ToList());
 
                 return new UserDto
                 {

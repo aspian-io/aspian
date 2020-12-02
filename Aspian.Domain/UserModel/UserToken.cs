@@ -10,7 +10,7 @@ namespace Aspian.Domain.UserModel
         public DateTime ExpiresAt { get; set; }
         public bool IsExpired => DateTime.UtcNow >= ExpiresAt;
         public DateTime? RevokedAt { get; set; }
-        public bool IsActive => RevokedAt == null && !IsExpired;
+        public bool IsActive => (RevokedAt == null && !IsExpired) || (DateTime.UtcNow <= RevokedAt && !IsExpired);
         public string ReplacedByToken { get; set; }
         public string UserAgent { get; set; }
         public string UserIPAddress { get; set; }

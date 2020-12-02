@@ -584,7 +584,7 @@ namespace Aspian.Persistence
                 var options = new List<Option>
                 {
                     new Option {
-                        Section = SectionEnum.Activity,
+                        Section = SectionEnum.AdminActivity,
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
                         Optionmetas = new List<Optionmeta> {
                             new Optionmeta {
@@ -632,227 +632,278 @@ namespace Aspian.Persistence
                         }
                     },
                     new Option {
-                        Section = SectionEnum.Attachment,
+                        Section = SectionEnum.AdminAttachment,
+                        SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
+                        Optionmetas = new List<Optionmeta> {
+                            new Optionmeta {
+                                PublicKeyName = "Attachment Multiple Upload",
+                                Key = KeyEnum.Attachment__Multiple_Upload,
+                                KeyDescription = "Allowed/NotAllowed Multiple Upload",
+                                Value = ValueEnum.Attachment__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachment__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = "Attachment Upload Auto Proceed",
+                                Key = KeyEnum.Attachment__Upload_Auto_Proceed,
+                                KeyDescription = "Allowed/NotAllowed Upload Auto Proceed",
+                                Value = ValueEnum.Attachment__Allowed,
+                                ValueDescription = "Allowed",
+                                DefaultValue = ValueEnum.Attachment__Allowed,
+                                DefaultValueDescription = "Allowed"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = "Attachment Upload Max File Size",
+                                Key = KeyEnum.Attachment__Upload_Max_FileSize,
+                                KeyDescription = "Upload Max File Size",
+                                Value = ValueEnum.Attachment__Specified,
+                                ValueDescription = (100 * 1024 * 1024).ToString(),
+                                DefaultValue = ValueEnum.Attachment__Specified,
+                                DefaultValueDescription = (100 * 1024 * 1024).ToString()
+                            },
+                            new Optionmeta {
+                                PublicKeyName = "Attachment Upload Max Number Of File",
+                                Key = KeyEnum.Attachment__Upload_Max_NumberOfFile,
+                                KeyDescription = "Upload Max Number Of File",
+                                Value = ValueEnum.Attachment__Specified,
+                                ValueDescription = "3",
+                                DefaultValue = ValueEnum.Attachment__Specified,
+                                DefaultValueDescription = "3"
+                            },
+                            new Optionmeta {
+                                PublicKeyName = "Attachment Upload Min Number Of File",
+                                Key = KeyEnum.Attachment__Upload_Min_NumberOfFile,
+                                KeyDescription = "Upload Min Number Of File",
+                                Value = ValueEnum.Attachment__Specified,
+                                ValueDescription = "1",
+                                DefaultValue = ValueEnum.Attachment__Specified,
+                                DefaultValueDescription = "1"
+                            }
+                        }
+                    },
+                    new Option {
+                        Section = SectionEnum.AdminAttachmentFileTypes,
                         SiteId = Guid.Parse("B613403D-3C49-4263-F13B-08D80310CDEE"),
                         Optionmetas = new List<Optionmeta> {
                             new Optionmeta {
                                 PublicKeyName = ".mp3",
-                                Key = KeyEnum.Attachment__Audio_Mp3,
+                                Key = KeyEnum.AttachmentFileType__Audio_Mp3,
                                 KeyDescription = "audio/mpeg",
-                                Value = ValueEnum.Attachments__Allowed,
+                                Value = ValueEnum.AttachmentFileType__Allowed,
                                 ValueDescription = "Allowed",
-                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__Allowed,
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".wma",
-                                Key = KeyEnum.Attachment__Audio_Wma,
+                                Key = KeyEnum.AttachmentFileType__Audio_Wma,
                                 KeyDescription = "audio/x-ms-wma",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
 
                             new Optionmeta {
                                 PublicKeyName = ".bmp",
-                                Key = KeyEnum.Attachment__Photo_Bmp,
+                                Key = KeyEnum.AttachmentFileType__Photo_Bmp,
                                 KeyDescription = "image/bmp",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".gif",
-                                Key = KeyEnum.Attachment__Photo_Gif,
+                                Key = KeyEnum.AttachmentFileType__Photo_Gif,
                                 KeyDescription = "image/gif",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".jpg/.jpeg",
-                                Key = KeyEnum.Attachment__Photo_Jpg,
+                                Key = KeyEnum.AttachmentFileType__Photo_Jpg,
                                 KeyDescription = "image/jpeg",
-                                Value = ValueEnum.Attachments__Allowed,
+                                Value = ValueEnum.AttachmentFileType__Allowed,
                                 ValueDescription = "Allowed",
-                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__Allowed,
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".png",
-                                Key = KeyEnum.Attachment__Photo_Png,
+                                Key = KeyEnum.AttachmentFileType__Photo_Png,
                                 KeyDescription = "image/png",
-                                Value = ValueEnum.Attachments__Allowed,
+                                Value = ValueEnum.AttachmentFileType__Allowed,
                                 ValueDescription = "Allowed",
-                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__Allowed,
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".svg",
-                                Key = KeyEnum.Attachment__Photo_Svg,
+                                Key = KeyEnum.AttachmentFileType__Photo_Svg,
                                 KeyDescription = "image/svg+xml",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
 
                             new Optionmeta {
                                 PublicKeyName = ".doc",
-                                Key = KeyEnum.Attachment__Text_Doc,
+                                Key = KeyEnum.AttachmentFileType__Text_Doc,
                                 KeyDescription = "application/msword",
-                                Value = ValueEnum.Attachments__Allowed,
+                                Value = ValueEnum.AttachmentFileType__Allowed,
                                 ValueDescription = "Allowed",
-                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__Allowed,
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".docx",
-                                Key = KeyEnum.Attachment__Text_Docx,
+                                Key = KeyEnum.AttachmentFileType__Text_Docx,
                                 KeyDescription = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                Value = ValueEnum.Attachments__Allowed,
+                                Value = ValueEnum.AttachmentFileType__Allowed,
                                 ValueDescription = "Allowed",
-                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__Allowed,
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".pdf",
-                                Key = KeyEnum.Attachment__Text_Pdf,
+                                Key = KeyEnum.AttachmentFileType__Text_Pdf,
                                 KeyDescription = "application/pdf",
-                                Value = ValueEnum.Attachments__Allowed,
+                                Value = ValueEnum.AttachmentFileType__Allowed,
                                 ValueDescription = "Allowed",
-                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__Allowed,
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".rtf",
-                                Key = KeyEnum.Attachment__Text_Rtf,
+                                Key = KeyEnum.AttachmentFileType__Text_Rtf,
                                 KeyDescription = "application/rtf",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".txt",
-                                Key = KeyEnum.Attachment__Text_Txt,
+                                Key = KeyEnum.AttachmentFileType__Text_Txt,
                                 KeyDescription = "text/plain",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".xls",
-                                Key = KeyEnum.Attachment__Text_Xls,
+                                Key = KeyEnum.AttachmentFileType__Text_Xls,
                                 KeyDescription = "application/vnd.ms-excel",
-                                Value = ValueEnum.Attachments__Allowed,
+                                Value = ValueEnum.AttachmentFileType__Allowed,
                                 ValueDescription = "Allowed",
-                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__Allowed,
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".xlsx",
-                                Key = KeyEnum.Attachment__Text_Xlsx,
+                                Key = KeyEnum.AttachmentFileType__Text_Xlsx,
                                 KeyDescription = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                                Value = ValueEnum.Attachments__Allowed,
+                                Value = ValueEnum.AttachmentFileType__Allowed,
                                 ValueDescription = "Allowed",
-                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__Allowed,
                                 DefaultValueDescription = "Allowed"
                             },
 
                             new Optionmeta {
                                 PublicKeyName = ".3gp",
-                                Key = KeyEnum.Attachment__Video_3gp,
+                                Key = KeyEnum.AttachmentFileType__Video_3gp,
                                 KeyDescription = "video/3gpp",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".avi",
-                                Key = KeyEnum.Attachment__Video_Avi,
+                                Key = KeyEnum.AttachmentFileType__Video_Avi,
                                 KeyDescription = "video/x-msvideo",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".flv",
-                                Key = KeyEnum.Attachment__Video_Flv,
+                                Key = KeyEnum.AttachmentFileType__Video_Flv,
                                 KeyDescription = "video/x-flv",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".mp4",
-                                Key = KeyEnum.Attachment__Video_Mp4,
+                                Key = KeyEnum.AttachmentFileType__Video_Mp4,
                                 KeyDescription = "video/mp4",
-                                Value = ValueEnum.Attachments__Allowed,
+                                Value = ValueEnum.AttachmentFileType__Allowed,
                                 ValueDescription = "Allowed",
-                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__Allowed,
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".mpeg/.mpg",
-                                Key = KeyEnum.Attachment__Video_Mpeg,
+                                Key = KeyEnum.AttachmentFileType__Video_Mpeg,
                                 KeyDescription = "video/mpeg",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".wmv",
-                                Key = KeyEnum.Attachment__Video_Wmv,
+                                Key = KeyEnum.AttachmentFileType__Video_Wmv,
                                 KeyDescription = "video/x-ms-wmv",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".mkv",
-                                Key = KeyEnum.Attachment__Video_Mkv,
+                                Key = KeyEnum.AttachmentFileType__Video_Mkv,
                                 KeyDescription = "video/x-matroska",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
 
                             new Optionmeta {
                                 PublicKeyName = ".zip",
-                                Key = KeyEnum.Attachment__Compressed_Zip,
+                                Key = KeyEnum.AttachmentFileType__Compressed_Zip,
                                 KeyDescription = "application/zip",
-                                Value = ValueEnum.Attachments__Allowed,
+                                Value = ValueEnum.AttachmentFileType__Allowed,
                                 ValueDescription = "Allowed",
-                                DefaultValue = ValueEnum.Attachments__Allowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__Allowed,
                                 DefaultValueDescription = "Allowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".rar",
-                                Key = KeyEnum.Attachment__Compressed_Rar,
-                                KeyDescription = "application/vnd.rar",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Key = KeyEnum.AttachmentFileType__Compressed_Rar,
+                                KeyDescription = "application/x-rar-compressed",
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             },
                             new Optionmeta {
                                 PublicKeyName = ".7z",
-                                Key = KeyEnum.Attachment__Compressed_7z,
+                                Key = KeyEnum.AttachmentFileType__Compressed_7z,
                                 KeyDescription = "application/x-7z-compressed",
-                                Value = ValueEnum.Attachments__NotAllowed,
+                                Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
-                                DefaultValue = ValueEnum.Attachments__NotAllowed,
+                                DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
                                 DefaultValueDescription = "NotAllowed"
                             }
                         }

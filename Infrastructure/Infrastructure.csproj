@@ -3,12 +3,12 @@
     <ProjectReference Include="..\Aspian.Application.Core\Aspian.Application.Core.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.6.0"/>
-    <PackageReference Include="CloudinaryDotNet" Version="1.11.0"/>
-    <PackageReference Include="FluentFTP" Version="32.4.3"/>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0"/>
+    <PackageReference Include="FluentFTP" Version="33.0.2"/>
     <PackageReference Include="tusdotnet" Version="2.3.0"/>
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.2"/>
   </ItemGroup>
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 </Project>

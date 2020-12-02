@@ -63,9 +63,9 @@ namespace Infrastructure.Upload
             var fileName = $"{DateTime.UtcNow.ToString("H:mm:ss")}__{Path.GetRandomFileName()}{extension}";
             var mimeType = file.ContentType;
             var size = file.Length;
-            var option = await _optionAccessor.GetOptionByKeyDescriptionAsync(mimeType);
+            var option = await _optionAccessor.GetOptionmetaByKeyDescriptionAsync(mimeType);
 
-            if (option.Value == ValueEnum.Attachments__NotAllowed)
+            if (option.Value == ValueEnum.AttachmentFileType__NotAllowed)
                 throw new Exception("You are not allowed to upload this type of file!");
 
             if (size > 0)

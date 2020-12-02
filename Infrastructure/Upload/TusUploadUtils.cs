@@ -10,6 +10,7 @@ using Aspian.Application.Core.Errors;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Domain.ActivityModel;
 using Aspian.Domain.AttachmentModel;
+using Aspian.Domain.OptionModel;
 using Aspian.Domain.SiteModel;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
@@ -19,6 +20,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using tusdotnet.Interfaces;
 
 namespace Infrastructure.Upload
@@ -82,20 +85,20 @@ namespace Infrastructure.Upload
                 {
                     if (uploadLocation == UploadLocationEnum.LocalHost)
                     {
-                        var localPublicStorePath = user != null ? 
+                        var relativePath = user != null ?
                             Path.Combine("wwwroot", uploadForlderName, user.UserName) :
                             Path.Combine("wwwroot", uploadForlderName, "unknown");
-                        return localPublicStorePath;
+                        return relativePath;
                     }
 
                     if (uploadLocation == UploadLocationEnum.FtpServer)
                     {
-                        var ftpPublicStorePath = user != null ? 
+                        var relativePath = user != null ?
                             Path.Combine("public_html", uploadForlderName, user.UserName) :
                             Path.Combine("public_html", uploadForlderName, "unknown");
-                        return ftpPublicStorePath;
+                        return relativePath;
                     }
-                        
+
                 }
 
                 var storePath = Path.Combine(uploadForlderName, userUploadSubFolderName);
@@ -104,7 +107,24 @@ namespace Infrastructure.Upload
             }
         }
 
-        public async Task SaveTusFileInfoAsync(ITusFile file, SiteTypeEnum siteType, string refreshToken, UploadLocationEnum location, CancellationToken cancellationToken)
+        public async Task<bool> IsFileTypeAllowed(string fileType, SiteTypeEnum siteType)
+        {
+            using (var scope = Services.CreateScope())
+            {
+                var optionAccessor =
+                scope.ServiceProvider
+                    .GetRequiredService<IOptionAccessor>();
+
+                var optionmetaFileTypes = await optionAccessor.GetOptionValuesBySectionAsync(SectionEnum.AdminAttachmentFileTypes, siteType);
+                var isFileTypeAllowed = optionmetaFileTypes
+                        .SingleOrDefault(x => x.KeyDescription == fileType)?
+                        .Value == ValueEnum.AttachmentFileType__Allowed;
+
+                return isFileTypeAllowed;
+            }
+        }
+
+        public async Task SaveTusFileInfoAsync(ITusFile file, SiteTypeEnum siteType, string refreshToken, UploadLocationEnum location, UploadLinkAccessibilityEnum linkAccessibility, CancellationToken cancellationToken)
         {
             var metadata = await file.GetMetadataAsync(cancellationToken);
             string name = metadata["name"].GetString(Encoding.UTF8);
@@ -135,10 +155,13 @@ namespace Infrastructure.Upload
                 var mimeType = type;
                 var fileRelativePath = Path.Combine(storePath, fileName);
                 long size = 0;
+                string fileThumbnailPath = "";
+                var fileType = TusCheckFileType(type);
 
                 if (location == UploadLocationEnum.LocalHost)
                 {
-                    size = new FileInfo($"{storePath}/{fileName}").Length;
+                    size = new FileInfo(Path.Combine(UploadFolderName, user.UserName, fileName)).Length;
+                    fileThumbnailPath = fileType == AttachmentTypeEnum.Photo ? await GenerateImageThumbnailAsync(file, extension, storePath, user.UserName, cancellationToken) : "";
                 }
                 if (location == UploadLocationEnum.FtpServer)
                 {
@@ -153,9 +176,6 @@ namespace Infrastructure.Upload
                     await client.DisconnectAsync();
                 }
 
-
-                var fileType = TusCheckFileType(type);
-
                 var site = await context.Sites.SingleOrDefaultAsync(x => x.SiteType == siteType);
 
                 user.CreatedAttachments.Add(new Attachment
@@ -164,11 +184,13 @@ namespace Infrastructure.Upload
                     UploadLocation = location,
                     Type = fileType,
                     RelativePath = fileRelativePath,
+                    ThumbnailPath = fileThumbnailPath,
                     MimeType = mimeType,
                     FileName = fileName,
                     PublicFileName = filePublicName,
                     FileExtension = extension,
-                    FileSize = size
+                    FileSize = size,
+                    LinkAccessibility = linkAccessibility
                 });
 
                 var success = await context.SaveChangesAsync() > 0;
@@ -243,6 +265,31 @@ namespace Infrastructure.Upload
                         throw new Exception("File not found!");
                     }
                 }
+            }
+        }
+
+        // Generates thumbnail from an image and returns its relative path
+        private async Task<string> GenerateImageThumbnailAsync(
+            ITusFile file,
+            string fileExtension,
+            string storePath,
+            string userName,
+            CancellationToken ct,
+            int height = 400,
+            int width = 400)
+        {
+            var thumbnailDirectory = Path.Combine(storePath, "thumbnails");
+            var thumbnailFilePath = Path.Combine(storePath, "thumbnails", $"{file.Id}_{width}x{height}_thumbnail{fileExtension}");
+            // Creates directory if it does not exist...
+            Directory.CreateDirectory(thumbnailDirectory);
+
+            using (Image image = Image.Load(await file.GetContentAsync(ct)))
+            {
+                image.Mutate(x => x.Resize(width, height));
+
+                image.Save(thumbnailFilePath);
+
+                return thumbnailFilePath;
             }
         }
 

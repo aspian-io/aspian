@@ -18,6 +18,14 @@ namespace Aspian.Application.Core.Interfaces
         string GetStorePath(string uploadForlderName, 
             UploadLocationEnum uploadLocation = UploadLocationEnum.LocalHost,
             UploadLinkAccessibilityEnum linkAccessibility = UploadLinkAccessibilityEnum.Private);
+
+        /// <summary>
+        /// Checks if uploading file type is allowed.
+        /// </summary>
+        /// <param name="fileType" >Mime type of the uploading file.</param>
+        /// <param name="siteType" >Site type which is a SiteTypeEnum.</param>
+        Task<bool> IsFileTypeAllowed(string fileType, SiteTypeEnum siteType);
+
         /// <summary>
         /// Save uploaded Tus file info into database after upload is complete.
         /// </summary>
@@ -25,8 +33,9 @@ namespace Aspian.Application.Core.Interfaces
         /// <param name="siteType" >Site type.</param>
         /// <param name="refreshToken" >Refresh token.</param>
         /// <param name="location" >LocalHost or FTPServer.</param>
+        /// <param name="linkAccessibility" >Private or Public.</param>
         /// <param name="cancellationToken" >Cancelation Token.</param>
-        Task SaveTusFileInfoAsync(ITusFile file, SiteTypeEnum siteType, string refreshToken, UploadLocationEnum location, CancellationToken cancellationToken);
+        Task SaveTusFileInfoAsync(ITusFile file, SiteTypeEnum siteType, string refreshToken, UploadLocationEnum location, UploadLinkAccessibilityEnum linkAccessibility, CancellationToken cancellationToken);
 
         /// <summary>
         /// Delete uploaded file and its chunks by Tus from database and storage.

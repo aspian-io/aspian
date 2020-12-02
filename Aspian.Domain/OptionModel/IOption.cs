@@ -20,11 +20,12 @@ namespace Aspian.Domain.OptionModel
 
     public enum SectionEnum
     {
-        Activity,
+        AdminActivity,
         Comment,
-        Post,
-        Taxonomy,
+        AdminPost,
+        AdminTaxonomy,
         User,
-        Attachment
+        AdminAttachment,
+        AdminAttachmentFileTypes
     }
 }

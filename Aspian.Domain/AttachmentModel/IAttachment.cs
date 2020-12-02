@@ -18,6 +18,7 @@ namespace Aspian.Domain.AttachmentModel
         UploadLinkAccessibilityEnum LinkAccessibility { get; set; }
         UploadLocationEnum UploadLocation { get; set; }
         string RelativePath { get; set; }
+        string ThumbnailPath { get; set; }
         bool IsMain { get; set; }
 
         #region Navigation Properties
@@ -31,13 +32,13 @@ namespace Aspian.Domain.AttachmentModel
 
     public enum AttachmentTypeEnum
     {
-        Photo,
-        Video,
-        Audio,
-        PDF,
-        TextFile,
-        Compressed,
-        Other
+        Photo = 0,
+        Video = 1,
+        Audio = 2,
+        PDF = 3,
+        TextFile = 4,
+        Compressed = 5,
+        Other = 6
     }
 
     public enum UploadLocationEnum

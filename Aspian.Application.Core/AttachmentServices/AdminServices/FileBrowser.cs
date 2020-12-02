@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspian.Application.Core.AttachmentServices.AdminServices.DTOs;
+using Aspian.Domain.AttachmentModel;
 using Aspian.Persistence;
 using AutoMapper;
 using MediatR;
@@ -11,7 +13,10 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
 {
     public class FileBrowser
     {
-        public class Query : IRequest<List<FileBrowserDto>> { }
+        public class Query : IRequest<List<FileBrowserDto>>
+        {
+            public AttachmentTypeEnum? Type { get; set; }
+        }
 
         public class Handler : IRequestHandler<Query, List<FileBrowserDto>>
         {
@@ -25,9 +30,26 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices
 
             public async Task<List<FileBrowserDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var files = await _context.Attachments.ToListAsync();
+                List<Attachment> attachments;
+                if (request.Type == null)
+                {
+                    attachments = await _context.Attachments.ToListAsync();
+                }
+                else
+                {
+                    if (request.Type == AttachmentTypeEnum.Video || request.Type == AttachmentTypeEnum.Photo)
+                    {
+                        attachments = await _context.Attachments.Where(a => a.Type == request.Type).ToListAsync();
+                    }
+                    else
+                    {
+                        attachments = await _context.Attachments
+                            .Where(a => a.Type != AttachmentTypeEnum.Video && a.Type != AttachmentTypeEnum.Photo)
+                            .ToListAsync();
+                    }
+                }
 
-                return _mapper.Map<List<FileBrowserDto>>(files);
+                return _mapper.Map<List<FileBrowserDto>>(attachments);
             }
         }
     }

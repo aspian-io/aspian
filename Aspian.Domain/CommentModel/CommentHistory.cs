@@ -9,7 +9,7 @@ namespace Aspian.Domain.CommentModel
         public string LastContent { get; set; }
         public DateTime CreatedAt { get; set; }
         public string CreatedById { get; set; }
-        public User CreatedBy { get; set; }
+        public virtual User CreatedBy { get; set; }
         public string UserAgent { get; set; }
         public string UserIPAddress { get; set; }
 

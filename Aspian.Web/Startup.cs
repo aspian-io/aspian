@@ -129,6 +129,7 @@ namespace Aspian.Web
                 options.AddPolicy(AspianCorePolicy.AdminAttachmentDownloadPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminAttachmentDownloadClaim));
                 options.AddPolicy(AspianCorePolicy.AdminAttachmentGetImagePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminAttachmentGetImageClaim));
                 options.AddPolicy(AspianCorePolicy.AdminAttachmentListPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminAttachmentListClaim));
+                options.AddPolicy(AspianCorePolicy.AdminAttachmentSettingsPolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminAttachmentSettingsClaim));
                 // Admin Comment Policies
                 options.AddPolicy(AspianCorePolicy.AdminCommentApprovePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminCommentApproveClaim));
                 options.AddPolicy(AspianCorePolicy.AdminCommentCreatePolicy, policy => policy.RequireClaim(AspianClaimType.Claim, AspianCoreClaimValue.Admin, AspianCoreClaimValue.AdminCommentCreateClaim));
@@ -235,11 +236,11 @@ namespace Aspian.Web
 
             // To use FTPServer as the storage you must use TusDiskStore instead of CustomTusDiskStore 
             // if you want to use localhost as the storage without config param
-            var uploadLocation = UploadLocationEnum.FtpServer;
+            var uploadLocation = UploadLocationEnum.LocalHost;
             app.UseTus(httpContext => new DefaultTusConfiguration
             {
                 // Use TusDiskStore instead of CustomTusDiskStore if you want to use localhost as the storage without config param
-                Store = new CustomTusDiskStore(tusUploadUtils.GetStorePath("uploads", uploadLocation), true, new TusDiskBufferSize(1024 * 1024 * 5, 1024 * 1024 * 5), config),
+                Store = new TusDiskStore(tusUploadUtils.GetStorePath("uploads", uploadLocation), true, new TusDiskBufferSize(1024 * 1024 * 5, 1024 * 1024 * 5)),
                 // On what url should we listen for uploads?
                 UrlPath = "/api/v1/attachments/add-private-media",
                 Events = new Events
@@ -288,7 +289,7 @@ namespace Aspian.Web
 
                     OnBeforeCreateAsync = async ctx =>
                     {
-                        var storePath = tusUploadUtils.GetStorePath("uploads");
+                        var storePath = tusUploadUtils.GetStorePath("uploads", uploadLocation);
                         // If localhost is the storage
                         if (uploadLocation == UploadLocationEnum.LocalHost)
                         {
@@ -318,6 +319,11 @@ namespace Aspian.Web
                         {
                             ctx.FailRequest("filetype metadata must be specified. ");
                         }
+
+                        if (!await tusUploadUtils.IsFileTypeAllowed(ctx.Metadata["type"].GetString(Encoding.UTF8), SiteTypeEnum.Blog))
+                        {
+                            ctx.FailRequest("Filetype is not allowed!");
+                        }
                     },
 
                     OnFileCompleteAsync = async eventContext =>
@@ -327,7 +333,7 @@ namespace Aspian.Web
                         var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
 
                         // Saving file information into database
-                        await tusUploadUtils.SaveTusFileInfoAsync(file, SiteTypeEnum.Blog, refreshToken, uploadLocation, eventContext.CancellationToken);
+                        await tusUploadUtils.SaveTusFileInfoAsync(file, SiteTypeEnum.Blog, refreshToken, uploadLocation, UploadLinkAccessibilityEnum.Private, eventContext.CancellationToken);
 
                         // create an FTP client
                         FtpClient client = new FtpClient(config.Value.ServerUri, config.Value.ServerPort, config.Value.ServerUsername, config.Value.ServerPassword);
@@ -340,12 +346,11 @@ namespace Aspian.Web
             app.UseTus(httpContext => new DefaultTusConfiguration
             {
                 // Use TusDiskStore instead of CustomTusDiskStore if you want to use localhost as the storage without config param
-                Store = new CustomTusDiskStore(
+                Store = new TusDiskStore(
                     tusUploadUtils.GetStorePath("uploads",
-                    uploadLocation, UploadLinkAccessibilityEnum.Public),
+                    uploadLocation, UploadLinkAccessibilityEnum.Private),
                     true,
-                    new TusDiskBufferSize(1024 * 1024 * 5, 1024 * 1024 * 5),
-                    config),
+                    new TusDiskBufferSize(1024 * 1024 * 5, 1024 * 1024 * 5)),
 
                 // On what url should we listen for uploads?
                 UrlPath = "/api/v1/attachments/add-public-media",
@@ -398,7 +403,7 @@ namespace Aspian.Web
                         var storePath = tusUploadUtils.GetStorePath(
                             "uploads",
                             uploadLocation,
-                            UploadLinkAccessibilityEnum.Public);
+                            UploadLinkAccessibilityEnum.Private);
                         // If localhost is the storage
                         if (uploadLocation == UploadLocationEnum.LocalHost)
                         {
@@ -428,6 +433,11 @@ namespace Aspian.Web
                         {
                             ctx.FailRequest("filetype metadata must be specified. ");
                         }
+
+                        if (!await tusUploadUtils.IsFileTypeAllowed(ctx.Metadata["type"].GetString(Encoding.UTF8), SiteTypeEnum.Blog))
+                        {
+                            ctx.FailRequest("Filetype is not allowed!");
+                        }
                     },
 
                     OnFileCompleteAsync = async eventContext =>
@@ -437,7 +447,7 @@ namespace Aspian.Web
                         var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
 
                         // Saving file information into database
-                        await tusUploadUtils.SaveTusFileInfoAsync(file, SiteTypeEnum.Blog, refreshToken, uploadLocation, eventContext.CancellationToken);
+                        await tusUploadUtils.SaveTusFileInfoAsync(file, SiteTypeEnum.Blog, refreshToken, uploadLocation, UploadLinkAccessibilityEnum.Public, eventContext.CancellationToken);
 
                         // create an FTP client
                         FtpClient client = new FtpClient(config.Value.ServerUri, config.Value.ServerPort, config.Value.ServerUsername, config.Value.ServerPassword);

@@ -18,6 +18,7 @@ namespace Aspian.Domain.AttachmentModel
         public UploadLinkAccessibilityEnum LinkAccessibility { get; set; }
         public UploadLocationEnum UploadLocation { get; set; }
         public string RelativePath { get; set; }
+        public string ThumbnailPath { get; set; }
         public bool IsMain { get; set; }
 
         #region Navigation Properties

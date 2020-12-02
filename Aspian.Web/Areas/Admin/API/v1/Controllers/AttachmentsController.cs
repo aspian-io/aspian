@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FluentFTP;
 using Microsoft.Net.Http.Headers;
+using Aspian.Domain.AttachmentModel;
 
 namespace Aspian.Web.Areas.Admin.API.v1.Controllers
 {
@@ -17,16 +18,23 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
     {
         [Authorize(Policy = AspianCorePolicy.AdminAttachmentListPolicy)]
         [HttpGet]
-        public async Task<ActionResult<List<AttachmentDto>>> List()
+        public async Task<ActionResult<List<AttachmentDto>>> List([FromQuery] AttachmentTypeEnum? type)
         {
-            return await Mediator.Send(new List.Query());
+            return await Mediator.Send(new List.Query { Type = type });
         }
 
         [Authorize(Policy = AspianCorePolicy.AdminAttachmentListPolicy)]
         [HttpGet("filebrowser")]
-        public async Task<ActionResult<List<FileBrowserDto>>> FileBrowser()
+        public async Task<ActionResult<List<FileBrowserDto>>> FileBrowser([FromQuery] AttachmentTypeEnum? type)
         {
-            return await Mediator.Send(new FileBrowser.Query());
+            return await Mediator.Send(new FileBrowser.Query { Type = type });
+        }
+
+        [Authorize(Policy = AspianCorePolicy.AdminAttachmentListPolicy)]
+        [HttpGet("filebrowser-filedetails/{filename}")]
+        public async Task<ActionResult<FileBrowserDto>> FileBrowserFileDetails(string fileName)
+        {
+            return await Mediator.Send(new FileBrowserFileDetails.Query { FileName = fileName });
         }
 
         [Authorize(Policy = AspianCorePolicy.AdminAttachmentAddPolicy)]
@@ -43,6 +51,13 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
             return await Mediator.Send(new Delete.Command { Id = id });
         }
 
+        [Authorize(Policy = AspianCorePolicy.AdminAttachmentSettingsPolicy)]
+        [HttpGet("upload-settings")]
+        public async Task<ActionResult<AttachmentUploadSettingsDto>> UploadSettings()
+        {
+            return await Mediator.Send(new GetUploadSettings.Query());
+        }
+
         [Authorize(Policy = AspianCorePolicy.AdminAttachmentDeletePolicy)]
         [HttpDelete("deletetusfile/{id}")]
         public async Task<ActionResult<Unit>> TusDelete(string id)
@@ -50,11 +65,11 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
             return await Mediator.Send(new TusDelete.Command { FileTusId = id });
         }
 
-        [HttpPost("setmainphoto/{id}")]
-        public async Task<ActionResult<Unit>> SetMainPhoto(Guid id)
-        {
-            return await Mediator.Send(new SetMainPhoto.Command { Id = id });
-        }
+        // [HttpPost("setmainphoto/{id}")]
+        // public async Task<ActionResult<Unit>> SetMainPhoto(Guid id)
+        // {
+        //     return await Mediator.Send(new SetMainPhoto.Command { Id = id });
+        // }
 
         //[Authorize(Policy = AspianCorePolicy.AdminAttachmentGetImagePolicy)]
         [AllowAnonymous]

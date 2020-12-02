@@ -4,12 +4,12 @@
     <ProjectReference Include="..\Aspian.Persistence\Aspian.Persistence.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0"/>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0"/>
-    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2"/>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0"/>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0"/>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="9.3.0"/>
     <PackageReference Include="tusdotnet" Version="2.3.0"/>
   </ItemGroup>
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 </Project>

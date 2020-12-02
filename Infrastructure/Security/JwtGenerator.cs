@@ -5,11 +5,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using Aspian.Application.Core.Interfaces;
 using Aspian.Application.Core.UserServices.AdminServices.DTOs;
 using Aspian.Domain.UserModel;
 using Aspian.Persistence;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -28,7 +30,7 @@ namespace Infrastructure.Security
         }
 
         //
-        public string CreateToken(User user, Claim claim = null)
+        public async Task<string> CreateTokenAsync(User user, Claim claim = null)
         {
             var claims = new List<Claim>
             {
@@ -56,14 +58,14 @@ namespace Infrastructure.Security
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
-            var newRefreshToken = generateRefreshToken(user);
+            var newRefreshToken = await generateRefreshTokenAsync(user);
             _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken, cookieOptions);
 
             return tokenHandler.WriteToken(token);
         }
 
         //
-        public string CreateToken(User user, List<Claim> claimRange = null)
+        public async Task<string> CreateTokenAsync(User user, List<Claim> claimRange = null)
         {
             var claims = new List<Claim>
             {
@@ -91,22 +93,22 @@ namespace Infrastructure.Security
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
-            var newRefreshToken = generateRefreshToken(user);
+            var newRefreshToken = await generateRefreshTokenAsync(user);
             _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken, cookieOptions);
 
             return tokenHandler.WriteToken(token);
         }
 
         //
-        public RefreshTokenDto RefreshToken(User user, string token, List<Claim> claimRange = null)
+        public async Task<RefreshTokenDto> RefreshTokenAsync(User user, string token, List<Claim> claimRange = null)
         {
-            var refreshToken = _context.Tokens.SingleOrDefault(ut => ut.RefreshToken == token);
+            var refreshToken = await _context.Tokens.SingleOrDefaultAsync(ut => ut.RefreshToken == token);
 
             // return null if token is no longer active
             if (!refreshToken.IsActive) return null;
 
             // replace old refresh token with a new one and save
-            var newRefreshToken = generateRefreshToken(user);
+            var newRefreshToken = await generateRefreshTokenAsync(user);
             if (newRefreshToken == null)
                 throw new Exception("Problem generating new refresh token!");
 
@@ -115,11 +117,11 @@ namespace Infrastructure.Security
 
             if (jwtToken != null)
             {
-                refreshToken.RevokedAt = DateTime.UtcNow;
+                refreshToken.RevokedAt = DateTime.UtcNow.AddMinutes(5);
                 refreshToken.ReplacedByToken = newRefreshToken;
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return new RefreshTokenDto
             {
@@ -179,7 +181,7 @@ namespace Infrastructure.Security
         }
 
         //
-        private string generateRefreshToken(User user)
+        private async Task<string> generateRefreshTokenAsync(User user)
         {
             using (var rngCryptoServiceProvider = new RNGCryptoServiceProvider())
             {
@@ -192,7 +194,7 @@ namespace Infrastructure.Security
                     ExpiresAt = DateTime.UtcNow.AddDays(7)
                 });
 
-                var succeeded = _context.SaveChanges() > 0;
+                var succeeded = await _context.SaveChangesAsync() > 0;
 
                 return refreshToken;
             }

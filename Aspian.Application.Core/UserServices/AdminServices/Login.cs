@@ -87,7 +87,7 @@ namespace Aspian.Application.Core.UserServices.AdminServices
                     return new UserDto
                     {
                         DisplayName = user.DisplayName,
-                        Token = _jwtGenerator.CreateToken(user, claims.ToList()),
+                        Token = await _jwtGenerator.CreateTokenAsync(user, claims.ToList()),
                         UserName = user.UserName,
                         Role = user.Role,
                         //ProfilePhotoName = user.CreatedAttachments?.FirstOrDefault(x => x.Type == AttachmentTypeEnum.Photo && x.IsMain)?.FileName

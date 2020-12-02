@@ -19,6 +19,7 @@ namespace Aspian.Domain.UserModel.Policy
         public const string AdminAttachmentDownloadClaim = "AdminAttachmentDownload";
         public const string AdminAttachmentGetImageClaim = "AdminAttachmentGetImage";
         public const string AdminAttachmentListClaim = "AdminAttachmentList";
+        public const string AdminAttachmentSettingsClaim = "AdminAttachmentSettings";
 
         // Comment Claims
         // Admin services

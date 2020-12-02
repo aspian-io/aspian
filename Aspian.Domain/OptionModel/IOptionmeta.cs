@@ -26,35 +26,41 @@ namespace Aspian.Domain.OptionModel
         Activity__Pruning,
         Activity__PruningDate,
 
-        Attachment__Photo_Png,
-        Attachment__Photo_Jpg,
-        Attachment__Photo_Bmp,
-        Attachment__Photo_Gif,
-        Attachment__Photo_Svg,
+        Attachment__Multiple_Upload,
+        Attachment__Upload_Auto_Proceed,
+        Attachment__Upload_Max_FileSize,
+        Attachment__Upload_Max_NumberOfFile,
+        Attachment__Upload_Min_NumberOfFile,
 
-        Attachment__Video_3gp,
-        Attachment__Video_Avi,
-        Attachment__Video_Flv,
-        Attachment__Video_Wmv,
-        Attachment__Video_Mp4,
-        Attachment__Video_Mpeg,
-        Attachment__Video_Mkv,
+        AttachmentFileType__Photo_Png,
+        AttachmentFileType__Photo_Jpg,
+        AttachmentFileType__Photo_Bmp,
+        AttachmentFileType__Photo_Gif,
+        AttachmentFileType__Photo_Svg,
 
-        Attachment__Audio_Wma,
-        Attachment__Audio_Mp3,
+        AttachmentFileType__Video_3gp,
+        AttachmentFileType__Video_Avi,
+        AttachmentFileType__Video_Flv,
+        AttachmentFileType__Video_Wmv,
+        AttachmentFileType__Video_Mp4,
+        AttachmentFileType__Video_Mpeg,
+        AttachmentFileType__Video_Mkv,
 
-        Attachment__Text_Pdf,
+        AttachmentFileType__Audio_Wma,
+        AttachmentFileType__Audio_Mp3,
 
-        Attachment__Text_Txt,
-        Attachment__Text_Rtf,
-        Attachment__Text_Doc,
-        Attachment__Text_Docx,
-        Attachment__Text_Xls,
-        Attachment__Text_Xlsx,
+        AttachmentFileType__Text_Pdf,
 
-        Attachment__Compressed_Zip,
-        Attachment__Compressed_Rar,
-        Attachment__Compressed_7z,
+        AttachmentFileType__Text_Txt,
+        AttachmentFileType__Text_Rtf,
+        AttachmentFileType__Text_Doc,
+        AttachmentFileType__Text_Docx,
+        AttachmentFileType__Text_Xls,
+        AttachmentFileType__Text_Xlsx,
+
+        AttachmentFileType__Compressed_Zip,
+        AttachmentFileType__Compressed_Rar,
+        AttachmentFileType__Compressed_7z,
 
         Blog__Comment,
     }
@@ -70,8 +76,14 @@ namespace Aspian.Domain.OptionModel
         Activity__PruningDate_EverySixMonths,
         Activity__PruningDate_EveryYear,
 
-        Attachments__Allowed,
-        Attachments__NotAllowed,
+        Attachment__Allowed,
+        Attachment__NotAllowed,
+
+        Attachment__Specified,
+        Attachment__NotSpecified,
+
+        AttachmentFileType__Allowed,
+        AttachmentFileType__NotAllowed,
 
         Comment_Approved,
         Comment_NotApproved

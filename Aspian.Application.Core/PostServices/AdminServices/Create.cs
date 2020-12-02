@@ -90,7 +90,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices
 
                 var success = await _context.SaveChangesAsync() > 0;
 
-                if (request.PostStatus == PostStatusEnum.Future && post.ScheduledFor != null && post.Id != null)
+                if (request.PostStatus == PostStatusEnum.Future && post.ScheduledFor != null)
                 {
                     await _scheduler.SetAndQueueTaskAsync(ScheduleTypeEnum.Post, post.ScheduledFor ?? DateTime.UtcNow, post.Id);
                 } else {

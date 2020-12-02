@@ -18,7 +18,7 @@ namespace Aspian.Application.Core.Interfaces
         /// </returns>
         /// <param name="user" >The user of type of User for which we want to issue a JWT.</param>
         /// <param name="claim" >The user's claim of type of Claim for which we want to issue a JWT.</param>
-        string CreateToken(User user, Claim claim = null);
+        Task<string> CreateTokenAsync(User user, Claim claim = null);
 
         /// <summary>
         /// Creates JWT using <paramref name="user"/> and <paramref name="claimRange"/>.
@@ -28,7 +28,7 @@ namespace Aspian.Application.Core.Interfaces
         /// </returns>
         /// <param name="user" >The user of type of User for which we want to issue a JWT.</param>
         /// <param name="claimRange" >The list of user's claims of type of Claim for which we want to issue a JWT.</param>
-        string CreateToken(User user, List<Claim> claimRange = null);
+        Task<string> CreateTokenAsync(User user, List<Claim> claimRange = null);
 
         /// <summary>
         /// Refreshes JWT using <paramref name="user"/> and <paramref name="token"/>.
@@ -38,7 +38,7 @@ namespace Aspian.Application.Core.Interfaces
         /// </returns>
         /// <param name="user" >The user of type of User for which we want to issue a JWT.</param>
         /// <param name="token" >Previous refresh token.</param>
-        RefreshTokenDto RefreshToken(User user, string token, List<Claim> claimRange = null);
+        Task<RefreshTokenDto> RefreshTokenAsync(User user, string token, List<Claim> claimRange = null);
 
         /// <summary>
         /// Revokes refresh token using <paramref name="user"/> and <paramref name="token"/>.
