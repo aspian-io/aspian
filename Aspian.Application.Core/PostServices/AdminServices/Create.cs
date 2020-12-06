@@ -84,7 +84,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices
 
                 var post = _mapper.Map<Post>(request);
                 post.Site = site;
-                post.ScheduledFor = request.PostStatus == PostStatusEnum.Future ? Convert.ToDateTime(request.ScheduledFor) : DateTime.UtcNow;
+                post.ScheduledFor = request.PostStatus == PostStatusEnum.Future ? Convert.ToDateTime(request.ScheduledFor) : null;
 
                 _context.Posts.Add(post);
 

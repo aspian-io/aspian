@@ -7,6 +7,7 @@ namespace Aspian.Application.Core.AttachmentServices.AdminServices.DTOs
     {
         public Guid Id { get; set; }
         public AttachmentTypeEnum Type { get; set; }
+        public string MimeType { get; set; }
         public UploadLocationEnum UploadLocation { get; set; }
         public string RelativePath { get; set; }
         public string FileName { get; set; }

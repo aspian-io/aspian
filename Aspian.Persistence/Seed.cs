@@ -891,7 +891,7 @@ namespace Aspian.Persistence
                             new Optionmeta {
                                 PublicKeyName = ".rar",
                                 Key = KeyEnum.AttachmentFileType__Compressed_Rar,
-                                KeyDescription = "application/x-rar-compressed",
+                                KeyDescription = "application/x-rar",
                                 Value = ValueEnum.AttachmentFileType__NotAllowed,
                                 ValueDescription = "NotAllowed",
                                 DefaultValue = ValueEnum.AttachmentFileType__NotAllowed,
