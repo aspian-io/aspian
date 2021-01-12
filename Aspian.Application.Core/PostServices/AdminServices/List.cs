@@ -26,7 +26,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices
             public int MaxAttachmentsNumber { get; set; }
             public int MaxViewCount { get; set; }
             public int MaxComments { get; set; }
-            public int MaxChildPosts { get; set; }
         }
         public class Query : IRequest<PostsEnvelope>
         {
@@ -93,12 +92,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                     .OrderByDescending(x => x.Comments.Count)
                     .First().Comments.Count :
                     0;
-                var maxChildPosts = helperTDO.PostCount > 0 ?
-                    _context.Posts
-                    .Where(x => x.Type == PostTypeEnum.Posts)
-                    .OrderByDescending(x => x.ChildPosts.Count)
-                    .First().ChildPosts.Count :
-                    0;
 
                 await _logger.LogActivity(
                     site.Id,
@@ -114,7 +107,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                     MaxAttachmentsNumber = maxAttachmentsNumber,
                     MaxViewCount = maxViewCount,
                     MaxComments = maxComments,
-                    MaxChildPosts = maxChildPosts
                 };
 
             }

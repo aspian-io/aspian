@@ -15,21 +15,17 @@ namespace Aspian.Domain.PostModel
         string Excerpt { get; set; }
         string Content { get; set; }
         string Slug { get; set; }
+        PostVisibility Visibility { get; set; }
         PostStatusEnum PostStatus { get; set; }
         DateTime? ScheduledFor { get; set; }
         bool CommentAllowed { get; set; }
-        int Order { get; set; }
         int ViewCount { get; set; }
         PostTypeEnum Type { get; set; }
         bool IsPinned { get; set; }
-        int PinOrder { get; set; }
 
 
         #region Navigation Properties
         ICollection<PostAttachment> PostAttachments { get; set; }
-        Guid? ParentId { get; set; }
-        Post Parent { get; set; }
-        ICollection<Post> ChildPosts { get; set; }
         Guid SiteId { get; set; }
         Site Site { get; set; }
         ICollection<TaxonomyPost> TaxonomyPosts { get; set; }
@@ -44,11 +40,13 @@ namespace Aspian.Domain.PostModel
         Future,
         Draft,
         Pending,
-        Private,
-        Trash,
         AutoDraft,
         Inherit
+    }
 
+    public enum PostVisibility {
+        Public,
+        Private
     }
 
     public enum PostTypeEnum

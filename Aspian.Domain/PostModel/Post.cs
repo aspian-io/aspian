@@ -15,21 +15,17 @@ namespace Aspian.Domain.PostModel
         public string Excerpt { get; set; }
         public string Content { get; set; }
         public string Slug { get; set; }
+        public PostVisibility Visibility { get; set; }
         public PostStatusEnum PostStatus { get; set; }
         public DateTime? ScheduledFor { get; set; }
         public bool CommentAllowed { get; set; }
-        public int Order { get; set; }
         public int ViewCount { get; set; }
         public PostTypeEnum Type { get; set; }
         public bool IsPinned { get; set; }
-        public int PinOrder { get; set; }
 
 
         #region Navigation Properties
         public virtual ICollection<PostAttachment> PostAttachments { get; set; }
-        public Guid? ParentId { get; set; }
-        public virtual Post Parent { get; set; }
-        public virtual ICollection<Post> ChildPosts { get; set; }
         public Guid SiteId { get; set; }
         public virtual Site Site { get; set; }
         public virtual ICollection<TaxonomyPost> TaxonomyPosts { get; set; }

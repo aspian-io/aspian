@@ -25,10 +25,6 @@ namespace Aspian.Domain.PostModel
                 .WithMany(u => u.CreatedPostAttachments)
                 .HasForeignKey(pa => pa.CreatedById);
 
-            builder
-                .HasOne(pa => pa.ModifiedBy)
-                .WithMany(u => u.ModifiedPostAttachments)
-                .HasForeignKey(pa => pa.ModifiedById);
         }
     }
 }

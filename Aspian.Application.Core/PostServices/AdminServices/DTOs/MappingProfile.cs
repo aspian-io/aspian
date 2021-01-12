@@ -59,8 +59,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
 
 
             CreateMap<Post, PostDto>()
-                .ForMember(d => d.Comments, o => o.MapFrom(s => s.Comments.Count))
-                .ForMember(d => d.ChildPosts, o => o.MapFrom(s => s.ChildPosts.Count));
+                .ForMember(d => d.Comments, o => o.MapFrom(s => s.Comments.Count));
             CreateMap<Postmeta, PostmetaDto>();
             CreateMap<Attachment, PhotoDto>();
             CreateMap<User, UserDto>()
@@ -77,8 +76,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
             CreateMap<Post, AntParentPostTreeSelectDto>()
                 .ForMember(d => d.Title, o => o.MapFrom(s => s.Title))
                 .ForMember(d => d.Value, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.Key, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.Children, o => o.MapFrom(s => s.ChildPosts));
+                .ForMember(d => d.Key, o => o.MapFrom(s => s.Id));
 
         }
     }

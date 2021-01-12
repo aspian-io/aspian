@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aspian.Application.Core.SiteServices.AdminServices;
 using Aspian.Application.Core.SiteServices.AdminServices.DTOs;
+using Aspian.Domain.SiteModel;
 using Aspian.Domain.UserModel.Policy;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,10 +21,10 @@ namespace Aspian.Web.Areas.Admin.API.v1.Controllers
         }
 
         [Authorize(Policy = AspianCorePolicy.AdminSiteDetailsPolicy)]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<SiteDto>> Details(Guid id)
+        [HttpGet("{siteType}")]
+        public async Task<ActionResult<SiteDto>> Details(SiteTypeEnum siteType)
         {
-            return await Mediator.Send(new Details.Query { Id = id });
+            return await Mediator.Send(new Details.Query { SiteType = siteType });
         }
 
         [Authorize(Policy = AspianCorePolicy.AdminSiteEditPolicy)]

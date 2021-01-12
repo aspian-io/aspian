@@ -4,14 +4,16 @@ using Aspian.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210101095956_ChildPostAndOrderFieldsRemoved")]
+    partial class ChildPostAndOrderFieldsRemoved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -503,14 +505,17 @@ namespace Aspian.Persistence.Migrations
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("UserAgent")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserIPAddress")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("PostId", "AttachmentId");
 
@@ -518,7 +523,7 @@ namespace Aspian.Persistence.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ModifiedById");
 
                     b.ToTable("PostAttachments");
                 });
@@ -1362,19 +1367,21 @@ namespace Aspian.Persistence.Migrations
                         .WithMany("CreatedPostAttachments")
                         .HasForeignKey("CreatedById");
 
+                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
+                        .WithMany("ModifiedPostAttachments")
+                        .HasForeignKey("ModifiedById");
+
                     b.HasOne("Aspian.Domain.PostModel.Post", "Post")
                         .WithMany("PostAttachments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Aspian.Domain.UserModel.User", null)
-                        .WithMany("ModifiedPostAttachments")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Attachment");
 
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
 
                     b.Navigation("Post");
                 });

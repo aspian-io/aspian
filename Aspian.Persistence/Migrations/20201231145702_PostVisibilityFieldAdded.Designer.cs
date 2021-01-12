@@ -4,14 +4,16 @@ using Aspian.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aspian.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201231145702_PostVisibilityFieldAdded")]
+    partial class PostVisibilityFieldAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -431,6 +433,15 @@ namespace Aspian.Persistence.Migrations
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("PinOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("PostStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -473,6 +484,8 @@ namespace Aspian.Persistence.Migrations
 
                     b.HasIndex("ModifiedById");
 
+                    b.HasIndex("ParentId");
+
                     b.HasIndex("SiteId");
 
                     b.HasIndex("Slug")
@@ -503,14 +516,17 @@ namespace Aspian.Persistence.Migrations
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("UserAgent")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserIPAddress")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("PostId", "AttachmentId");
 
@@ -518,7 +534,7 @@ namespace Aspian.Persistence.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ModifiedById");
 
                     b.ToTable("PostAttachments");
                 });
@@ -1337,6 +1353,10 @@ namespace Aspian.Persistence.Migrations
                         .WithMany("ModifiedPosts")
                         .HasForeignKey("ModifiedById");
 
+                    b.HasOne("Aspian.Domain.PostModel.Post", "Parent")
+                        .WithMany("ChildPosts")
+                        .HasForeignKey("ParentId");
+
                     b.HasOne("Aspian.Domain.SiteModel.Site", "Site")
                         .WithMany("Posts")
                         .HasForeignKey("SiteId")
@@ -1346,6 +1366,8 @@ namespace Aspian.Persistence.Migrations
                     b.Navigation("CreatedBy");
 
                     b.Navigation("ModifiedBy");
+
+                    b.Navigation("Parent");
 
                     b.Navigation("Site");
                 });
@@ -1362,19 +1384,21 @@ namespace Aspian.Persistence.Migrations
                         .WithMany("CreatedPostAttachments")
                         .HasForeignKey("CreatedById");
 
+                    b.HasOne("Aspian.Domain.UserModel.User", "ModifiedBy")
+                        .WithMany("ModifiedPostAttachments")
+                        .HasForeignKey("ModifiedById");
+
                     b.HasOne("Aspian.Domain.PostModel.Post", "Post")
                         .WithMany("PostAttachments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Aspian.Domain.UserModel.User", null)
-                        .WithMany("ModifiedPostAttachments")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Attachment");
 
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("ModifiedBy");
 
                     b.Navigation("Post");
                 });
@@ -1624,6 +1648,8 @@ namespace Aspian.Persistence.Migrations
 
             modelBuilder.Entity("Aspian.Domain.PostModel.Post", b =>
                 {
+                    b.Navigation("ChildPosts");
+
                     b.Navigation("Comments");
 
                     b.Navigation("PostAttachments");

@@ -10,6 +10,7 @@ using Aspian.Domain.SiteModel;
 using Aspian.Persistence;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aspian.Application.Core.SiteServices.AdminServices
 {
@@ -17,7 +18,7 @@ namespace Aspian.Application.Core.SiteServices.AdminServices
     {
         public class Query : IRequest<SiteDto>
         {
-            public Guid Id { get; set; }
+            public SiteTypeEnum SiteType { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, SiteDto>
@@ -34,7 +35,7 @@ namespace Aspian.Application.Core.SiteServices.AdminServices
 
             public async Task<SiteDto> Handle(Query request, CancellationToken cancellationToken)
             {
-                var site = await _context.Sites.FindAsync(request.Id);
+                var site = await _context.Sites.SingleOrDefaultAsync(x => x.SiteType == request.SiteType);
 
                 if (site == null)
                     throw new RestException(HttpStatusCode.NotFound, new { site = "Not found!" });

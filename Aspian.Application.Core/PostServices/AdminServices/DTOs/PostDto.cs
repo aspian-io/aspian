@@ -15,16 +15,15 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
         public string Excerpt { get; set; }
         public string Content { get; set; }
         public string Slug { get; set; }
-        public string PostStatus { get; set; }
+        public PostVisibility Visibility { get; set; }
+        public PostStatusEnum PostStatus { get; set; }
+        public DateTime? ScheduledFor { get; set; }
         public bool CommentAllowed { get; set; }
-        public int Order { get; set; }
         public int ViewCount { get; set; }
         public PostTypeEnum Type { get; set; }
         public bool IsPinned { get; set; }
-        public int PinOrder { get; set; }
         public int PostHistories { get; set; }
         public int Comments { get; set; }
-        public int ChildPosts { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
         public string UserAgent { get; set; }
@@ -35,11 +34,10 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
         public virtual UserDto CreatedBy { get; set; }
         public UserDto ModifiedBy { get; set; }
         public virtual ICollection<PostAttachmentDto> PostAttachments { get; set; }
-        public virtual PostDto Parent { get; set; }
         public virtual SiteDto Site { get; set; }
         public virtual ICollection<TaxonomyPostDto> TaxonomyPosts { get; set; }
         //public virtual ICollection<PostmetaDto> Postmetas { get; set; }
-        
+
         #endregion
     }
 }

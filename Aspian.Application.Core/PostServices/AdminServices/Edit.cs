@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,19 +29,18 @@ namespace Aspian.Application.Core.PostServices.AdminServices
             public string Excerpt { get; set; }
             public string Content { get; set; }
             public string Slug { get; set; }
+            public PostVisibility Visibility { get; set; }
             public PostStatusEnum PostStatus { get; set; }
+            public string ScheduledFor { get; set; }
             public bool CommentAllowed { get; set; }
-            public int Order { get; set; }
             public int ViewCount { get; set; }
             public PostTypeEnum Type { get; set; }
             public bool IsPinned { get; set; }
-            public int PinOrder { get; set; }
 
 
-            public virtual ICollection<PostAttachmentDto> PostAttachments { get; set; }
-            public Guid? ParentId { get; set; }
-            public virtual ICollection<TaxonomyPostDto> TaxonomyPosts { get; set; }
-            public virtual ICollection<PostmetaDto> Postmetas { get; set; }
+            public virtual ICollection<PostAttachment> PostAttachments { get; set; }
+            public virtual ICollection<TaxonomyPost> TaxonomyPosts { get; set; }
+            public virtual ICollection<Postmeta> Postmetas { get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -76,18 +76,38 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                         throw new RestException(HttpStatusCode.BadRequest, new { slug = "duplicate slug is no allowed" });
                 }
 
+                var taxonomyPosts = request.TaxonomyPosts;
+                foreach (var tp in request.TaxonomyPosts.ToList())
+                {
+                    if (tp.Taxonomy != null)
+                    {
+                        var tag = await _context.Terms.SingleOrDefaultAsync(t => t.Name == tp.Taxonomy.Term.Name);
+                        if (tag != null)
+                        {
+                            taxonomyPosts.Remove(tp);
+                            taxonomyPosts.Add(new TaxonomyPost
+                            {
+                                TaxonomyId = tag.TaxonomyId
+                            });
+                        }
+                    }
+                }
+
                 _mapper.Map(request, post);
+
+                post.ScheduledFor = request.PostStatus == PostStatusEnum.Future ? Convert.ToDateTime(request.ScheduledFor) : null;
 
                 var success = await _context.SaveChangesAsync() > 0;
 
-                if (success) 
+                if (success)
                 {
+                    var postTruncatedContent = post.Title.Length > 30 ? post.Title.Substring(0, 30) + "..." : post.Title;
                     await _logger.LogActivity(
                         site.Id,
                         ActivityCodeEnum.PostEdit,
                         ActivitySeverityEnum.Low,
                         ActivityObjectEnum.Post,
-                        $"The comment \"{post.Title.Substring(0, 30)}...\" has been modified.");
+                        $"The comment \"{postTruncatedContent}...\" has been modified.");
 
                     return Unit.Value;
                 }

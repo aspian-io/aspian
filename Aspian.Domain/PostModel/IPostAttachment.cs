@@ -4,7 +4,7 @@ using Aspian.Domain.BaseModel;
 
 namespace Aspian.Domain.PostModel
 {
-    public interface IPostAttachment : IEntityCreate, IEntityModify, IEntityInfo
+    public interface IPostAttachment : IEntityCreate, IEntityInfo
     {
         bool IsMain { get; set; }
         Guid PostId { get; set; }

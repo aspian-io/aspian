@@ -18,6 +18,11 @@ namespace Aspian.Domain.PostModel
                 .Property(p => p.Type)
                 .HasConversion(typeConverter);
 
+            var visibilityConverter = new EnumToStringConverter<PostVisibility>();
+            builder
+                .Property(p => p.Visibility)
+                .HasConversion(visibilityConverter); 
+
             builder
                 .HasIndex(p => p.Title)
                 .IsUnique();
@@ -35,11 +40,6 @@ namespace Aspian.Domain.PostModel
                 .HasOne(p => p.ModifiedBy)
                 .WithMany(u => u.ModifiedPosts)
                 .HasForeignKey(p => p.ModifiedById);
-
-            builder
-                .HasMany(p => p.ChildPosts)
-                .WithOne(p => p.Parent)
-                .HasForeignKey(p => p.ParentId);
 
         }
     }

@@ -30,9 +30,9 @@ namespace Aspian.Domain.SiteModel
 
     public enum SiteTypeEnum
     {
-        Blog,
-        Store,
-        LMS,
-        eHealth
+        Blog = 0,
+        Store = 1,
+        LMS = 2,
+        eHealth = 3
     }
 }

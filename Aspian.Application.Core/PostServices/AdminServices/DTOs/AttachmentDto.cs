@@ -7,8 +7,9 @@ namespace Aspian.Application.Core.PostServices.AdminServices.DTOs
     public class AttachmentDto
     {
         public Guid Id { get; set; }
-        public string Type { get; set; }
+        public AttachmentTypeEnum Type { get; set; }
         public string FileName { get; set; }
+        public string PublicFileName { get; set; }
         public string FileExtension { get; set; }
         public string FileSize { get; set; }
         public string MimeType { get; set; }

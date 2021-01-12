@@ -51,7 +51,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                         await RemoveCommentChildren(item.Id);
                     }
                     _context.Comments.RemoveRange(post.Comments);
-                    await RemovePostChildren(post.Id);
                     _context.Posts.Remove(post);
 
                     posts.Add(post);
@@ -78,17 +77,6 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                 }
 
                 throw new Exception("Problem saving changes!");
-            }
-
-            // Removing post children recursively
-            private async Task RemovePostChildren(Guid id)
-            {
-                var children = await _context.Posts.Where(c => c.ParentId == id).ToListAsync();
-                foreach (var child in children)
-                {
-                    await RemovePostChildren(child.Id);
-                    _context.Posts.Remove(child);
-                }
             }
 
             // Removing comment children recursively

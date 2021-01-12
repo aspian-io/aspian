@@ -39,11 +39,13 @@ using Aspian.Domain.SiteModel;
 using Infrastructure.Upload.Tus.Stores;
 using FluentFTP;
 using Aspian.Domain.AttachmentModel;
+using Microsoft.Data.SqlClient;
 
 namespace Aspian.Web
 {
     public class Startup
     {
+        private string _connection = null;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -59,13 +61,18 @@ namespace Aspian.Web
             services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
             services.AddSingleton<IScheduler, ScheduleTask>();
 
+            var builder = new SqlConnectionStringBuilder(
+            Configuration.GetConnectionString("AspianConnection"));
+            builder.Password = Configuration["DbPassword"];
+            _connection = builder.ConnectionString;
+
             // Adding data context
             services.AddDbContext<DataContext>(options =>
             {
                 // Providing Lazy Loading service for Entity Framework models
                 options.UseLazyLoadingProxies();
                 // Using MSSQL Server driver and providing access to connection string
-                options.UseSqlServer(Configuration.GetConnectionString("AspianConnection"));
+                options.UseSqlServer(_connection);
             });
 
             // CORS services and policies
@@ -335,10 +342,15 @@ namespace Aspian.Web
                         // Saving file information into database
                         await tusUploadUtils.SaveTusFileInfoAsync(file, SiteTypeEnum.Blog, refreshToken, uploadLocation, UploadLinkAccessibilityEnum.Private, eventContext.CancellationToken);
 
-                        // create an FTP client
-                        FtpClient client = new FtpClient(config.Value.ServerUri, config.Value.ServerPort, config.Value.ServerUsername, config.Value.ServerPassword);
-                        // Connecting to the server
-                        await client.DisconnectAsync();
+                        // If FTP server is the storage
+                        if (uploadLocation == UploadLocationEnum.FtpServer)
+                        {
+                            // create an FTP client
+                            FtpClient client = new FtpClient(config.Value.ServerUri, config.Value.ServerPort, config.Value.ServerUsername, config.Value.ServerPassword);
+                            // Connecting to the server
+                            await client.DisconnectAsync();
+                        }
+
                     },
                 }
             });
@@ -449,10 +461,15 @@ namespace Aspian.Web
                         // Saving file information into database
                         await tusUploadUtils.SaveTusFileInfoAsync(file, SiteTypeEnum.Blog, refreshToken, uploadLocation, UploadLinkAccessibilityEnum.Public, eventContext.CancellationToken);
 
-                        // create an FTP client
-                        FtpClient client = new FtpClient(config.Value.ServerUri, config.Value.ServerPort, config.Value.ServerUsername, config.Value.ServerPassword);
-                        // Connecting to the server
-                        await client.DisconnectAsync();
+                        // If FTP server is the storage
+                        if (uploadLocation == UploadLocationEnum.FtpServer)
+                        {
+                            // create an FTP client
+                            FtpClient client = new FtpClient(config.Value.ServerUri, config.Value.ServerPort, config.Value.ServerUsername, config.Value.ServerPassword);
+                            // Connecting to the server
+                            await client.DisconnectAsync();
+                        }
+
                     },
                 }
             });

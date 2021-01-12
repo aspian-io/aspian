@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,23 +23,22 @@ namespace Aspian.Application.Core.PostServices.AdminServices
     {
         public class Command : IRequest
         {
+            public Guid Id { get; set; }
             public string Title { get; set; }
             public string Subtitle { get; set; }
             public string Excerpt { get; set; }
             public string Content { get; set; }
             public string Slug { get; set; }
+            public PostVisibility Visibility { get; set; }
             public PostStatusEnum PostStatus { get; set; }
             public string ScheduledFor { get; set; }
             public bool CommentAllowed { get; set; }
-            public int Order { get; set; }
             public int ViewCount { get; set; }
             public PostTypeEnum Type { get; set; }
             public bool IsPinned { get; set; }
-            public int PinOrder { get; set; }
 
 
             public virtual ICollection<PostAttachment> PostAttachments { get; set; }
-            public Guid? ParentId { get; set; }
             public virtual ICollection<TaxonomyPost> TaxonomyPosts { get; set; }
             public virtual ICollection<Postmeta> Postmetas { get; set; }
         }
@@ -48,6 +48,7 @@ namespace Aspian.Application.Core.PostServices.AdminServices
             public CommandValidator()
             {
                 RuleFor(x => x.Title).NotEmpty().MaximumLength(150);
+                RuleFor(x => x.Subtitle).MaximumLength(150);
                 RuleFor(x => x.Content).NotEmpty();
                 RuleFor(x => x.PostStatus).NotNull();
                 RuleFor(x => x.Type).NotNull();
@@ -76,6 +77,23 @@ namespace Aspian.Application.Core.PostServices.AdminServices
                 if (isTitleExist)
                     throw new RestException(HttpStatusCode.BadRequest, new { title = "duplicate title is no allowed" });
 
+                var taxonomyPosts = request.TaxonomyPosts;
+                foreach (var tp in request.TaxonomyPosts.ToList())
+                {
+                    if (tp.Taxonomy != null)
+                    {
+                        var tag = await _context.Terms.SingleOrDefaultAsync(t => t.Name == tp.Taxonomy.Term.Name);
+                        if (tag != null)
+                        {
+                            taxonomyPosts.Remove(tp);
+                            taxonomyPosts.Add(new TaxonomyPost
+                            {
+                                TaxonomyId = tag.TaxonomyId
+                            });
+                        }
+                    }
+                }
+
                 var site = await _context.Sites.SingleOrDefaultAsync(x => x.SiteType == SiteTypeEnum.Blog);
 
                 request.Slug = string.IsNullOrWhiteSpace(request.Slug) ?
@@ -90,11 +108,16 @@ namespace Aspian.Application.Core.PostServices.AdminServices
 
                 var success = await _context.SaveChangesAsync() > 0;
 
-                if (request.PostStatus == PostStatusEnum.Future && post.ScheduledFor != null)
+                if (request.PostStatus == PostStatusEnum.Future)
                 {
-                    await _scheduler.SetAndQueueTaskAsync(ScheduleTypeEnum.Post, post.ScheduledFor ?? DateTime.UtcNow, post.Id);
-                } else {
-                    throw new RestException(HttpStatusCode.BadRequest, new { post = "publish date is required!" });
+                    if (post.ScheduledFor != null)
+                    {
+                        await _scheduler.SetAndQueueTaskAsync(ScheduleTypeEnum.Post, post.ScheduledFor ?? DateTime.UtcNow, post.Id);
+                    }
+                    else
+                    {
+                        throw new RestException(HttpStatusCode.BadRequest, new { post = "publish date is required!" });
+                    }
                 }
 
                 if (success)

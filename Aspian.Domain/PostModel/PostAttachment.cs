@@ -11,9 +11,6 @@ namespace Aspian.Domain.PostModel
         public DateTime CreatedAt { get; set; }
         public string CreatedById { get; set; }
         public virtual User CreatedBy { get; set; }
-        public DateTime? ModifiedAt { get; set; }
-        public string ModifiedById { get; set; }
-        public virtual User ModifiedBy { get; set; }
 
 
         #region Navigation Properties
